@@ -8,9 +8,7 @@
 
 CLevel_Tool::CLevel_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
-    , m_pUI(CUI_Tool::GetInstance())
 {
-    Safe_AddRef(m_pUI);
 }
 
 HRESULT CLevel_Tool::Initialize()
@@ -32,16 +30,6 @@ HRESULT CLevel_Tool::Initialize()
 
     if (FAILED(Ready_Layer_Environments(TEXT("Layer_Environments"))))
         return E_FAIL;
-    m_pUI->Add_LayerKeys("Layer_Environments");
-
-    CGameInstance* pGameInstance = CGameInstance::GetInstance();
-    Safe_AddRef(pGameInstance);
-
-    LIGHTDESC LightDesc = *pGameInstance->Get_Light();
-
-    m_pUI->Set_DefaultLight_ImGui(LightDesc);
-    
-    Safe_Release(pGameInstance);
 
     return S_OK;
 }
@@ -51,7 +39,6 @@ void CLevel_Tool::Tick(_double dTimeDelta)
     __super::Tick(dTimeDelta);
     SetWindowText(g_hWnd, TEXT("Tool"));
 
-    m_pUI->ImGui_Set();
 }
 
 HRESULT CLevel_Tool::Render()
@@ -209,6 +196,4 @@ CLevel_Tool* CLevel_Tool::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 void CLevel_Tool::Free()
 {
     __super::Free();
-
-    Safe_Release(m_pUI);
 }

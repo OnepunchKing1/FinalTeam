@@ -31,7 +31,7 @@ void CLevel_Loading_Tool::Tick(_double dTimeDelta)
 	__super::Tick(dTimeDelta);
 
 	if (true == m_pLoader->Get_Finished())
-	{
+	{      
 		if (GetKeyState(VK_SPACE) & 0x8000)
 		{
 			CLevel* pLevel = { nullptr };
