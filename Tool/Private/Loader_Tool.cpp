@@ -217,7 +217,7 @@ HRESULT CLoader_Tool::LoadingForTool()
 
 	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
 
-	CUI_Tool* pUI = CUI_Tool::GetInstance();
+	CImGui_Manager_Tool* pUI = CImGui_Manager_Tool::GetInstance();
 	Safe_AddRef(pUI);
 
 #pragma region Object

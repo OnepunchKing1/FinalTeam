@@ -1,17 +1,17 @@
 #include "pch.h"
-#include "..\Public\UI_Tool.h"
+#include "..\Public\ImGui_Manager_Tool.h"
 
 #include "GameInstance.h"
 
-IMPLEMENT_SINGLETON(CUI_Tool)
+IMPLEMENT_SINGLETON(CImGui_Manager_Tool)
 
-CUI_Tool::CUI_Tool()
+CImGui_Manager_Tool::CImGui_Manager_Tool()
 {
 
 }
 
 
-void CUI_Tool::ImGui_Set()
+void CImGui_Manager_Tool::ImGui_Set()
 {
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
@@ -142,7 +142,7 @@ void CUI_Tool::ImGui_Set()
     Safe_Release(pGameInstance);
 }
 
-void CUI_Tool::ImGUI_ShowDemo()
+void CImGui_Manager_Tool::ImGUI_ShowDemo()
 {
 	_bool show_deme_window = true;
 
@@ -152,7 +152,7 @@ void CUI_Tool::ImGUI_ShowDemo()
 
 
 #pragma region Place Objects
-const _tchar* CUI_Tool::Get_SelectedLayer_ImGui()
+const _tchar* CImGui_Manager_Tool::Get_SelectedLayer_ImGui()
 {
     ZeroMemory(m_szSelectedLayer, MAX_PATH);
 
@@ -161,7 +161,7 @@ const _tchar* CUI_Tool::Get_SelectedLayer_ImGui()
     return m_szSelectedLayer;
 }
 
-const _tchar* CUI_Tool::Get_SelectedObject_ImGui()
+const _tchar* CImGui_Manager_Tool::Get_SelectedObject_ImGui()
 {
     ZeroMemory(m_szSelectedObject, MAX_PATH);
 
@@ -172,7 +172,7 @@ const _tchar* CUI_Tool::Get_SelectedObject_ImGui()
 #pragma endregion
 
 #pragma region Light Set
-void CUI_Tool::Set_DefaultLight_ImGui(LIGHTDESC LightDesc)
+void CImGui_Manager_Tool::Set_DefaultLight_ImGui(LIGHTDESC LightDesc)
 {
     m_vLightDesc[0] = LightDesc.vLightDir;
     m_vLightDesc[1] = LightDesc.vLightDiffuse;
@@ -181,7 +181,7 @@ void CUI_Tool::Set_DefaultLight_ImGui(LIGHTDESC LightDesc)
 }
 #pragma endregion
 
-HRESULT CUI_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+HRESULT CImGui_Manager_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -196,20 +196,20 @@ HRESULT CUI_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
     return S_OK;
 }
-void CUI_Tool::Tick_ImGui()
+void CImGui_Manager_Tool::Tick_ImGui()
 {
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 }
 
-void CUI_Tool::Render_ImGui()
+void CImGui_Manager_Tool::Render_ImGui()
 {
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void CUI_Tool::Release_ImGui()
+void CImGui_Manager_Tool::Release_ImGui()
 {
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
@@ -217,6 +217,6 @@ void CUI_Tool::Release_ImGui()
 }
 
 
-void CUI_Tool::Free()
+void CImGui_Manager_Tool::Free()
 {
 }

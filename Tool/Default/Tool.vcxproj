@@ -180,7 +180,7 @@
     <ClInclude Include="..\Public\Player_Tool.h" />
     <ClInclude Include="..\Public\Tool_Defines.h" />
     <ClInclude Include="..\Public\Terrain_Tool.h" />
-    <ClInclude Include="..\Public\UI_Tool.h" />
+    <ClInclude Include="..\Public\ImGui_Manager_Tool.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -203,7 +203,7 @@
     <ClCompile Include="..\Private\MainApp_Tool.cpp" />
     <ClCompile Include="..\Private\Player_Tool.cpp" />
     <ClCompile Include="..\Private\Terrain_Tool.cpp" />
-    <ClCompile Include="..\Private\UI_Tool.cpp" />
+    <ClCompile Include="..\Private\ImGui_Manager_Tool.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

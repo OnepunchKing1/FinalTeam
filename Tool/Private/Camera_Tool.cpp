@@ -41,32 +41,12 @@ HRESULT CCamera_Tool::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-	CUI_Tool* pUI = CUI_Tool::GetInstance();
-	Safe_AddRef(pUI);
-
-	pUI->Set_CameraSpeed(m_CameraDesc.TransformDesc.dSpeedPerSec);
-
-	Safe_Release(pUI);
-
 	return S_OK;
 }
 
 void CCamera_Tool::Tick(_double dTimeDelta)
 {
-	CUI_Tool* pUI = CUI_Tool::GetInstance();
-	Safe_AddRef(pUI);
-
-	m_pTransform->Set_Speed(pUI->Get_CameraSpeed());
-
-	Safe_Release(pUI);
-
-	ImGui::Begin("MousePos");
-
 	KeyInput(dTimeDelta);
-
-	ImGui::TextColored(ImVec4(0.f, 1.f, 0.f, 1.f), "X : %.1f, Y : %.1f, Z : %.1f", m_vTargetPos.x, m_vTargetPos.y, m_vTargetPos.z);
-
-	ImGui::End();
 
 	__super::Tick(dTimeDelta);
 }

@@ -114,7 +114,7 @@
     <ClInclude Include="..\Public\Terrain_Tool.h">
       <Filter>02. GameObjects\Environment\Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Tool.h">
+    <ClInclude Include="..\Public\ImGui_Manager_Tool.h">
       <Filter>03. UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Character_Tool.h">
@@ -170,7 +170,7 @@
     <ClCompile Include="..\Private\Terrain_Tool.cpp">
       <Filter>02. GameObjects\Environment\Terrain</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Tool.cpp">
+    <ClCompile Include="..\Private\ImGui_Manager_Tool.cpp">
       <Filter>03. UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Character_Tool.cpp">
