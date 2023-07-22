@@ -16,8 +16,6 @@ public:
 	virtual HRESULT		Render() override;
 
 private:
-	CUI_Tool*		m_pUI = { nullptr };
-	
 
 private:
 	HRESULT	Ready_Lights();

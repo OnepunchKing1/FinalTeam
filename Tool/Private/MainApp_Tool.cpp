@@ -7,7 +7,7 @@
 
 CMainApp_Tool::CMainApp_Tool()
 	: m_pGameInstance(CGameInstance::GetInstance())
-	, m_pUI(CUI_Tool::GetInstance())
+	, m_pUI(CImGui_Manager_Tool::GetInstance())
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pUI);
@@ -70,6 +70,8 @@ void CMainApp_Tool::Tick(_double dTimeDelta)
 	m_pUI->Tick_ImGui();
 
 	m_pGameInstance->Tick_Engine(dTimeDelta);
+
+	m_pUI->ImGui_Set();
 
 	m_pUI->ImGUI_ShowDemo();
 }
@@ -221,6 +223,6 @@ void CMainApp_Tool::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
 
-	CUI_Tool::DestroyInstance();
+	CImGui_Manager_Tool::DestroyInstance();
 	CGameInstance::Release_Engine();
 }

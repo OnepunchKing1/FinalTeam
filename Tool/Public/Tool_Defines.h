@@ -17,6 +17,6 @@ namespace Tool
 extern HWND g_hWnd;
 extern HINSTANCE g_hInstance;
 
-#include "UI_Tool.h"
+#include "ImGui_Manager_Tool.h"
 
 using namespace Tool;

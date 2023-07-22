@@ -5,12 +5,12 @@
 
 BEGIN(Tool)
 
-class CUI_Tool final : public CBase
+class CImGui_Manager_Tool final : public CBase
 {
-	DECLARE_SINGLETON(CUI_Tool)
+	DECLARE_SINGLETON(CImGui_Manager_Tool)
 private:
-	CUI_Tool();
-	virtual ~CUI_Tool() = default;
+	CImGui_Manager_Tool();
+	virtual ~CImGui_Manager_Tool() = default;
 
 public:
 	void ImGui_Set();
