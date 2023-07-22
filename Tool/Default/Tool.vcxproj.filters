@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="00. MainApp">
+      <UniqueIdentifier>{ce2ca4eb-eaa8-4c90-b74d-7f09144d0f6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. Defines">
+      <UniqueIdentifier>{847fb93c-e2cc-46a0-a630-c862b694c89f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98. Default">
+      <UniqueIdentifier>{4cc8e033-5360-4113-ac96-056f122349d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. ShderFiles">
+      <UniqueIdentifier>{8c272283-34ca-4f90-9168-ad49a70ce1bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels">
+      <UniqueIdentifier>{faa445ff-3c43-4834-953f-34dd358a1783}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\99.Loading">
+      <UniqueIdentifier>{ae32f236-6c55-4660-ad48-972c0f28862c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\99.Loading\Loader">
+      <UniqueIdentifier>{a4e87e3f-2278-4bd3-846d-67905aa9fb51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\00.Tool">
+      <UniqueIdentifier>{fbea4d1e-796c-4d41-b7c4-2b1f35c8aeab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects">
+      <UniqueIdentifier>{59f6681f-1c75-4fc7-b6da-6ba3a7472a93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Camera">
+      <UniqueIdentifier>{0b5cb3bb-20dc-4b36-9d85-164181fd7895}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="999. ImGUI">
+      <UniqueIdentifier>{2ac1e055-2611-4055-beb5-232e14e6f931}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. UI">
+      <UniqueIdentifier>{c52b4366-b176-47df-83b6-f6113e9dff93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Camera\Tool">
+      <UniqueIdentifier>{965f6f27-2a1f-4b22-b126-353e673e0c72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Character">
+      <UniqueIdentifier>{8065672f-4e88-42b4-8e74-832bdd1e84c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment">
+      <UniqueIdentifier>{03e4a4c8-2f80-4421-a62e-900880c56453}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\Terrain">
+      <UniqueIdentifier>{5d5aef8a-e692-44ff-a2d1-7953f1dbc0d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Character\Player">
+      <UniqueIdentifier>{a0b19276-052a-4300-8baa-093480bd50d1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Tool.h">
+      <Filter>98. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Defines.h">
+      <Filter>99. Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MainApp_Tool.h">
+      <Filter>00. MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imconfig.h">
+      <Filter>999. ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imgui.h">
+      <Filter>999. ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imgui_impl_dx11.h">
+      <Filter>999. ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imgui_impl_win32.h">
+      <Filter>999. ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imgui_internal.h">
+      <Filter>999. ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imstb_rectpack.h">
+      <Filter>999. ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imstb_textedit.h">
+      <Filter>999. ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imstb_truetype.h">
+      <Filter>999. ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Loading_Tool.h">
+      <Filter>01. Levels\99.Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader_Tool.h">
+      <Filter>01. Levels\99.Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Tool.h">
+      <Filter>01. Levels\00.Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Camera_Tool.h">
+      <Filter>02. GameObjects\Camera\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Terrain_Tool.h">
+      <Filter>02. GameObjects\Environment\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Tool.h">
+      <Filter>03. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Character_Tool.h">
+      <Filter>02. GameObjects\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Tool.h">
+      <Filter>02. GameObjects\Character\Player</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Tool.cpp">
+      <Filter>98. Default</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>98. Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainApp_Tool.cpp">
+      <Filter>00. MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui.cpp">
+      <Filter>999. ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui_draw.cpp">
+      <Filter>999. ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui_impl_dx11.cpp">
+      <Filter>999. ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui_impl_win32.cpp">
+      <Filter>999. ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui_tables.cpp">
+      <Filter>999. ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui_widgets.cpp">
+      <Filter>999. ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui_demo.cpp">
+      <Filter>999. ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Loading_Tool.cpp">
+      <Filter>01. Levels\99.Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader_Tool.cpp">
+      <Filter>01. Levels\99.Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Tool.cpp">
+      <Filter>01. Levels\00.Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Camera_Tool.cpp">
+      <Filter>02. GameObjects\Camera\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Terrain_Tool.cpp">
+      <Filter>02. GameObjects\Environment\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Tool.cpp">
+      <Filter>03. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Character_Tool.cpp">
+      <Filter>02. GameObjects\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Tool.cpp">
+      <Filter>02. GameObjects\Character\Player</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>98. Default</Filter>
+    </Image>
+    <Image Include="Tool.ico">
+      <Filter>98. Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Tool.rc">
+      <Filter>98. Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
+      <Filter>97. ShderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl">
+      <Filter>97. ShderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl">
+      <Filter>97. ShderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
+      <Filter>97. ShderFiles</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
