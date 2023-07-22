@@ -435,7 +435,9 @@ Reference/Header/Engine
 
 !Client/Bin
 Client/Bin/*
+!Client/Bin/DataFiles
 !Client/Bin/Resource
+!Client/Bin/ShaderFiles
 
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
