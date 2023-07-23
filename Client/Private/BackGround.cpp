@@ -26,6 +26,9 @@ HRESULT CBackGround::Initialize_Prototype()
 
 HRESULT CBackGround::Initialize(void* pArg)
 {
+	if (nullptr != pArg)
+		m_iTextureIndex = (*(_uint*)pArg);
+
 	if (FAILED(__super::Initialize(pArg)))
 	{
 		MSG_BOX("Failed to Initialize : BackGround");

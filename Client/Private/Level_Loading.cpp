@@ -35,6 +35,8 @@ HRESULT CLevel_Loading::Initialize(LEVELID eNextLevelID)
 void CLevel_Loading::Tick(_double dTimeDelta)
 {
     __super::Tick(dTimeDelta);
+
+    m_pBackGround->Set_TextureIndex(iLoadingTextureIndex % 3);
   
     m_pBackGround->Tick(dTimeDelta);
 
@@ -58,6 +60,8 @@ void CLevel_Loading::Tick(_double dTimeDelta)
 
             if (nullptr == pLevel)
                 return;
+
+            iLoadingTextureIndex += 2;
 
             HRESULT hr = 0;
 

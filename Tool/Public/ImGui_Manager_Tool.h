@@ -3,6 +3,8 @@
 #include "Tool_Defines.h"
 #include "Base.h"
 
+#include "Camera.h"
+
 BEGIN(Tool)
 
 class CImGui_Manager_Tool final : public CBase
@@ -16,36 +18,12 @@ public:
 	void ImGui_Set();
 	void ImGUI_ShowDemo();
 
-#pragma region Place Objects
-public:
-	const _tchar* Get_SelectedLayer_ImGui();
-	const _tchar* Get_SelectedObject_ImGui();
-
-public:
-	void	Add_LayerKeys(const char* pKeys) {
-		m_Layers.emplace_back(pKeys);
-	}
-	void	Add_ObjectKeys(const char* pKeys) {
-		m_Objects.emplace_back(pKeys);
-	}
-
-private:
-	vector<const char*> m_Layers;
-	_uint	m_iLayerIndex = { 0 };
-	_tchar	m_szSelectedLayer[MAX_PATH] = { TEXT("") };
-
-private:
-	vector<const char*> m_Objects;
-	_uint	m_iObjectIndex = { 0 };
-	_tchar	m_szSelectedObject[MAX_PATH] = { TEXT("") };
-#pragma endregion
-
 #pragma region Camera Set
 public:
-	_double Get_CameraSpeed() { return (_double)m_fCameraSpeed; }
-	void Set_CameraSpeed(_double dSpeed) { m_fCameraSpeed = (_float)dSpeed; }
+	CCamera::CAMERADESC Get_CameraDesc() { return m_CameraDesc; }
+	void Set_CameraDesc(void* pArg) { memcpy(&m_CameraDesc, pArg, sizeof m_CameraDesc); }
 private:
-	_float m_fCameraSpeed;
+	CCamera::CAMERADESC		m_CameraDesc;
 #pragma endregion
 
 #pragma region Light Set

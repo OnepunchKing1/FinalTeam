@@ -5,14 +5,16 @@ CBone::CBone()
 {
 }
 
-HRESULT CBone::Initialize(aiNode* pAINode, _int iParentIndex)
+HRESULT CBone::Initialize(ifstream* pFin)
 {
-	strcpy_s(m_szName, pAINode->mName.data);
-	memcpy(&m_TransformationMatrix, &pAINode->mTransformation, sizeof(_float4x4));
-	XMStoreFloat4x4(&m_TransformationMatrix, XMMatrixTranspose(XMLoadFloat4x4(&m_TransformationMatrix)));
+	_uint iSize = { 0 };
+	pFin->read(reinterpret_cast<char*>(&iSize), sizeof(_uint));
+	pFin->read(m_szName, iSize);
+	strcat_s(m_szName, "\0");
+	pFin->read(reinterpret_cast<char*>(&m_TransformationMatrix), sizeof(_float4x4));
+	pFin->read(reinterpret_cast<char*>(&m_iParentIndex), sizeof(_int));
 	XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_OffsetMatrix, XMMatrixIdentity());
-	m_iParentIndex = iParentIndex;
 
 	return S_OK;
 }
@@ -35,11 +37,11 @@ void CBone::Invalidate_CombinedTransformationMatrix(CModel* pModel)
 	}
 }
 
-CBone* CBone::Create(aiNode* pAINode, _int iParentIndex)
+CBone* CBone::Create(ifstream* pFin)
 {
 	CBone* pInstance = new CBone();
 
-	if (FAILED(pInstance->Initialize(pAINode, iParentIndex)))
+	if (FAILED(pInstance->Initialize(pFin)))
 	{
 		MSG_BOX("Failed to Created : CBone");
 		Safe_Release(pInstance);

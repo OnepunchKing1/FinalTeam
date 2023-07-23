@@ -40,7 +40,7 @@ public:
 	virtual			HRESULT Render();
 
 protected:
-	CTransform*			m_pTransform = { nullptr };
+	CTransform*			m_pTransformCom = { nullptr };
 	CAMERADESC			m_CameraDesc;
 	class CPipeLine*	m_pPipeLine = { nullptr };
 

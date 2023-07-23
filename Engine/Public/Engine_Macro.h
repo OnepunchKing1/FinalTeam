@@ -46,3 +46,5 @@
 			}													\
 			return dwRefCnt;									\
 		}
+
+#define TEXTURE_TYPE_MAX 18

@@ -13,7 +13,6 @@ CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CModel::CModel(const CModel& rhs)
 	: CComponent(rhs)
-	, m_pAIScene(rhs.m_pAIScene)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
 	, m_Meshes(rhs.m_Meshes)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
@@ -30,7 +29,7 @@ CModel::CModel(const CModel& rhs)
 
 	for (auto& Material : m_Materials)
 	{
-		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; i++)
+		for (_uint i = 0; i < TEXTURE_TYPE_MAX; i++)
 			Safe_AddRef(Material.pTexture[i]);
 	}
 
@@ -77,47 +76,60 @@ HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char* pModelFilePath
 {
 	m_eModelType = eModelType;
 
-	_uint iFlag = { 0 };
+	/*char szDrive[MAX_PATH] = { "" };
+	char szDir[MAX_PATH] = { "" };
+	char szFileName[MAX_PATH] = { "" };
+	_splitpath_s(pModelFilePath, szDrive, MAX_PATH, szDir, MAX_PATH, szFileName, MAX_PATH, nullptr, 0);
+	
+	char szFullPath[MAX_PATH] = { "" };
 
-	if (TYPE_NONANIM == eModelType)
-		iFlag = aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
-	else
-		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
+	strcpy_s(szFullPath, szDrive);
+	strcat_s(szFullPath, szDir);
+	strcat_s(szFullPath, szFileName);
+	strcat_s(szFullPath, ".bin");*/
+	
+	ifstream fin;
+	fin.open(pModelFilePath, ios::binary);
 
-
-	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
-
-	if (nullptr == m_pAIScene)
+	if (false == fin.is_open())
 	{
-		MSG_BOX("Failed to ReadModelFile : CModel");
+		MSG_BOX("Failed to ReadModelBinaryFile : CModel");
 		return E_FAIL;
 	}
 
 	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
 
-	if (FAILED(Ready_HierarchyBones(m_pAIScene->mRootNode, -1)))
+	/*if (FAILED(Ready_HierarchyBones(m_pAIScene->mRootNode, -1)))
+	{
+		MSG_BOX("Failed to Ready_HierarchyBones : CModel");
+		return E_FAIL;
+	}*/
+
+	if (FAILED(Ready_HierarchyBones(&fin)))
 	{
 		MSG_BOX("Failed to Ready_HierarchyBones : CModel");
 		return E_FAIL;
 	}
 
-	if (FAILED(Ready_Meshes()))
+	if (FAILED(Ready_Meshes(&fin)))
 	{
 		MSG_BOX("Failed to Ready_Meshes : CModel");
 		return E_FAIL;
 	}
 
-	if (FAILED(Ready_Materials(pModelFilePath)))
+	if (FAILED(Ready_Materials(pModelFilePath, &fin)))
 	{
 		MSG_BOX("Failed to Ready_Materials : CModel");
 		return E_FAIL;
 	}
 
-	if (FAILED(Ready_Animations()))
+	if (FAILED(Ready_Animations(&fin)))
 	{
 		MSG_BOX("Failed to Ready_Animations : CModel");
 		return E_FAIL;
 	}
+
+	fin.close();
 
 	return S_OK;
 }
@@ -148,7 +160,7 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
-HRESULT CModel::Bind_ShaderResource(_uint iMeshIndex, CShader* pShader, const char* pConstantName, aiTextureType eType)
+HRESULT CModel::Bind_ShaderResource(_uint iMeshIndex, CShader* pShader, const char* pConstantName, MESHMATERIALS::TEXTURETYPE eType)
 {
 	return m_Materials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].pTexture[eType]->Bind_ShaderResourceView(pShader, pConstantName);
 	/* A메쉬가 그려지기 위해 필요한 B 머티리얼이 가진 텍스처들 중 C를 셰이더의 전역변수에 던져준다
@@ -167,16 +179,16 @@ HRESULT CModel::Bind_ShaderBoneMatrices(_uint iMeshIndex, CShader* pShader, cons
 	return pShader->SetUp_Matrix_Array(pConstantName, BoneMatrices, 256);
 }
 
-HRESULT CModel::Ready_Meshes()
+HRESULT CModel::Ready_Meshes(ifstream* pFin)
 {
-	if (nullptr == m_pAIScene)
+	if (nullptr == pFin)
 		return E_FAIL;
 
-	m_iNumMeshes = m_pAIScene->mNumMeshes;
+	pFin->read(reinterpret_cast<char*>(&m_iNumMeshes), sizeof(_uint));
 
 	for (_uint i = 0; i < m_iNumMeshes; i++)
 	{
-		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_eModelType, m_pAIScene->mMeshes[i], XMLoadFloat4x4(&m_PivotMatrix), this);
+		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_eModelType, pFin, XMLoadFloat4x4(&m_PivotMatrix), this);
 		if (nullptr == pMesh)
 		{
 			MSG_BOX("Failed to CreateMesh : CModel");
@@ -186,40 +198,33 @@ HRESULT CModel::Ready_Meshes()
 		m_Meshes.emplace_back(pMesh);
 	}
 
+
 	return S_OK;
 }
 
-HRESULT CModel::Ready_Materials(const char* pModelFilePath)
+HRESULT CModel::Ready_Materials(const char* pModelFilePath, ifstream* pFin)
 {
-	if (nullptr == m_pAIScene)
-		return E_FAIL;
-
-	m_iNumMaterials = m_pAIScene->mNumMaterials;
+	pFin->read(reinterpret_cast<char*>(&m_iNumMaterials), sizeof(_uint));
 
 	//읽은 파일(fbx)의 머티리얼 수 만큼 반복
 	for (_uint i = 0; i < m_iNumMaterials; i++)
 	{
-		aiMaterial* pAIMaterial = m_pAIScene->mMaterials[i];
-
 		MESHMATERIALS MeshMaterial;
 		ZeroMemory(&MeshMaterial, sizeof MeshMaterial);
 
 		//머티리얼이 가질 수 있는 최대 텍스처의 갯수(18)만큼 반복
-		for (_uint j = 0; j < AI_TEXTURE_TYPE_MAX; j++)
+		for (_uint j = 0; j < TEXTURE_TYPE_MAX; j++)
 		{
-			aiString StrPath;
-			//파일에 저장된 텍스처의 이름을 StrPath에 저장
-			if (FAILED(pAIMaterial->GetTexture(aiTextureType(j), 0, &StrPath)))
+			_uint iSize = { 0 };
+			pFin->read(reinterpret_cast<char*>(&iSize), sizeof(_uint));
+			char szFilePath[MAX_PATH] = { "" };
+
+			if (1 >= iSize)
+				continue;
+			else
 			{
-				/*if (12 == j)
-				{
-					_splitpath_s(pModelFilePath, nullptr, 0, nullptr, 0, StrPath.data, MAX_PATH, nullptr, 0);
-					strcat_s(StrPath.data, "_bc.png");
-				}
-
-
-				else*/
-					continue;
+				pFin->read(szFilePath, iSize);
+				strcat_s(szFilePath, "\0");
 			}
 
 			//가져온 텍스처의 경로에 잘못된 값이 있을 수 있으므로 파일 이름과 경로를 다시 잡아주는 작업
@@ -232,7 +237,7 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 			char szFileName[MAX_PATH] = { "" };
 			char szExt[MAX_PATH] = { "" };
 
-			_splitpath_s(StrPath.data, nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
+			_splitpath_s(szFilePath, nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
 
 			char szFullPath[MAX_PATH] = { "" };
 
@@ -258,30 +263,32 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 	return S_OK;
 }
 
-HRESULT CModel::Ready_HierarchyBones(aiNode* pAINode, _int iIndex)
+HRESULT CModel::Ready_HierarchyBones(ifstream* pFin)
 {
-	CBone* pBone = CBone::Create(pAINode, iIndex);
-	if (nullptr == pBone)
-		return E_FAIL;
+	_uint iNumBones = { 0 };
+	pFin->read(reinterpret_cast<char*>(&iNumBones), sizeof(_uint));
 
-	m_Bones.emplace_back(pBone);
+	m_Bones.reserve(iNumBones);
 
-	_uint	iParentIndex = (_uint)m_Bones.size() - 1;
+	for (_uint i = 0; i < iNumBones; i++)
+	{
+		CBone* pBone = CBone::Create(pFin);
+		if (nullptr == pBone)
+			return E_FAIL;
 
-	for (_uint i = 0; i < pAINode->mNumChildren; i++)
-		Ready_HierarchyBones(pAINode->mChildren[i], iParentIndex);
+		m_Bones.emplace_back(pBone);
+	}
 
 	return S_OK;
 }
 
-HRESULT CModel::Ready_Animations()
+HRESULT CModel::Ready_Animations(ifstream* pFin)
 {
-	//모델의 애니메이션 갯수만큼 CAnimation을 만들어 벡터에 저장
-	m_iNumAnimations = m_pAIScene->mNumAnimations;
+	pFin->read(reinterpret_cast<char*>(&m_iNumAnimations), sizeof(_uint));
 
 	for (_uint i = 0; i < m_iNumAnimations; i++)
 	{
-		CAnimation* pAnimation = CAnimation::Create(m_pAIScene->mAnimations[i], this);
+		CAnimation* pAnimation = CAnimation::Create(pFin, this);
 		if (nullptr == pAnimation)
 			return E_FAIL;
 
@@ -339,7 +346,7 @@ void CModel::Free()
 
 	for (auto& Material : m_Materials)
 	{
-		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; i++)
+		for (_uint i = 0; i < TEXTURE_TYPE_MAX; i++)
 			Safe_Release(Material.pTexture[i]);
 	}
 

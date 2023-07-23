@@ -23,7 +23,7 @@ public:
 	const vector<_float4>&	Get_VertexPos() const { return m_VertexPos; }
 	const vector<_uint3>	Get_Faces()		const { return m_Faces; }
 public:
-	HRESULT Initialize_Prototype(CModel::TYPE eModelType, const aiMesh* pAIMesh, _fmatrix PivotMatrix, class CModel* pModel);
+	HRESULT Initialize_Prototype(CModel::TYPE eModelType, ifstream* pFin, _fmatrix PivotMatrix, class CModel* pModel);
 	HRESULT Initialize(void* pArg) override;
 
 private:
@@ -39,11 +39,11 @@ private:
 	vector<_uint3>			m_Faces;
 
 private:
-	HRESULT Ready_VertexBuffer_NonAnim(const aiMesh* pAIMesh, _fmatrix PivotMatrix);
-	HRESULT Ready_VertexBuffer_Anim(const aiMesh* pAIMesh, CModel* pModel);
+	HRESULT Ready_VertexBuffer_NonAnim(ifstream* pFin, _fmatrix PivotMatrix);
+	HRESULT Ready_VertexBuffer_Anim(ifstream* pFin, CModel* pModel);
 
 public:
-	static CMesh* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, CModel::TYPE eModelType, const aiMesh * pAIMesh, _fmatrix PivotMatrix, class CModel* pModel);
+	static CMesh* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, CModel::TYPE eModelType, ifstream* pFin, _fmatrix PivotMatrix, class CModel* pModel);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 }; 

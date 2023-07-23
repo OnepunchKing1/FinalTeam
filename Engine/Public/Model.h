@@ -44,13 +44,8 @@ public:
 public:
 	HRESULT Play_Animation(_double dTimeDelta);
 	HRESULT Render(_uint iMeshIndex);
-	HRESULT Bind_ShaderResource(_uint iMeshIndex, class CShader* pShader, const char* pConstantName, aiTextureType eType);
+	HRESULT Bind_ShaderResource(_uint iMeshIndex, class CShader* pShader, const char* pConstantName, MESHMATERIALS::TEXTURETYPE eType);
 	HRESULT Bind_ShaderBoneMatrices(_uint iMeshIndex, class CShader* pShader, const char* pConstantName);
-
-
-private:
-	Assimp::Importer			m_Importer;
-	const aiScene*				m_pAIScene = { nullptr };
 
 private:
 	_float4x4					m_PivotMatrix;
@@ -73,10 +68,10 @@ private:
 	vector<class CAnimation*>	m_Animations;
 
 private:
-	HRESULT Ready_Meshes();
-	HRESULT Ready_Materials(const char* pModelFilePath);
-	HRESULT Ready_HierarchyBones(aiNode* pAINode, _int iIndex);
-	HRESULT Ready_Animations();
+	HRESULT Ready_Meshes(ifstream* pFin);
+	HRESULT Ready_Materials(const char* pModelFilePath, ifstream* pFin);
+	HRESULT Ready_HierarchyBones(ifstream* pFin);
+	HRESULT Ready_Animations(ifstream* pFin);
 	
 public:
 	static CModel* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, TYPE eModelType, const char* pModelFilePath, _matrix PivotMatrix);

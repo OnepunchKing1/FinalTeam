@@ -7,14 +7,13 @@ CChannel::CChannel()
 {
 }
 
-HRESULT CChannel::Initialize(const aiNodeAnim* pAIChannel, _uint iBoneIndex)
+HRESULT CChannel::Initialize(ifstream* pFin, const char* pName, _uint iBoneIndex)
 {
-	strcpy_s(m_szName, pAIChannel->mNodeName.data);
+	strcpy_s(m_szName, pName);
 
 	m_iBoneIndex = iBoneIndex;
 
-	m_iNumKeyFrames = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys);
-	m_iNumKeyFrames = max(m_iNumKeyFrames, pAIChannel->mNumPositionKeys);
+	pFin->read(reinterpret_cast<char*>(&m_iNumKeyFrames), sizeof(_uint));
 
 	_float3		vScale = { 0.f, 0.f, 0.f };
 	_float4		vRotation = { 0.f, 0.f, 0.f, 0.f };
@@ -25,25 +24,28 @@ HRESULT CChannel::Initialize(const aiNodeAnim* pAIChannel, _uint iBoneIndex)
 		KEYFRAME KeyFrame;
 		ZeroMemory(&KeyFrame, sizeof KeyFrame);
 	
-		if (i < pAIChannel->mNumScalingKeys)
+		_uint iKey = { 0 };
+		pFin->read(reinterpret_cast<char*>(&iKey), sizeof(_uint));
+		if (i < iKey)
 		{
-			memcpy(&vScale, &pAIChannel->mScalingKeys[i].mValue, sizeof(_float3));
-			KeyFrame.dTime = pAIChannel->mScalingKeys[i].mTime;
+			pFin->read(reinterpret_cast<char*>(&vScale), sizeof(_float3));
+			pFin->read(reinterpret_cast<char*>(&KeyFrame.dTime), sizeof(_double));
 		}
 
-		if (i < pAIChannel->mNumRotationKeys)
+		iKey = { 0 };
+		pFin->read(reinterpret_cast<char*>(&iKey), sizeof(_uint));
+		if (i < iKey)
 		{
-			vRotation.x = pAIChannel->mRotationKeys[i].mValue.x;
-			vRotation.y = pAIChannel->mRotationKeys[i].mValue.y;
-			vRotation.z = pAIChannel->mRotationKeys[i].mValue.z;
-			vRotation.w = pAIChannel->mRotationKeys[i].mValue.w;
-			KeyFrame.dTime = pAIChannel->mRotationKeys[i].mTime;
+			pFin->read(reinterpret_cast<char*>(&vRotation), sizeof(_float4));
+			pFin->read(reinterpret_cast<char*>(&KeyFrame.dTime), sizeof(_double));
 		}
 
-		if (i < pAIChannel->mNumPositionKeys)
+		iKey = { 0 };
+		pFin->read(reinterpret_cast<char*>(&iKey), sizeof(_uint));
+		if (i < iKey)
 		{
-			memcpy(&vPosition, &pAIChannel->mPositionKeys[i].mValue, sizeof(_float3));
-			KeyFrame.dTime = pAIChannel->mPositionKeys[i].mTime;
+			pFin->read(reinterpret_cast<char*>(&vPosition), sizeof(_float3));
+			pFin->read(reinterpret_cast<char*>(&KeyFrame.dTime), sizeof(_double));
 		}
 
 		KeyFrame.vScale = vScale;
@@ -125,11 +127,11 @@ void CChannel::Invalidate(CModel* pModel, _uint& pCurrentKeyFrame, _double Track
 	//위에서 보간한 상태로 행렬을 만들고, 해당 행렬로 뼈를 갱신한다
 }
 
-CChannel* CChannel::Create(const aiNodeAnim* pAIChannel, _uint iBoneIndex)
+CChannel* CChannel::Create(ifstream* pFin, const char* pName, _uint iBoneIndex)
 {
 	CChannel* pInstance = new CChannel();
 
-	if (FAILED(pInstance->Initialize(pAIChannel, iBoneIndex)))
+	if (FAILED(pInstance->Initialize(pFin, pName, iBoneIndex)))
 	{
 		MSG_BOX("Failed to Created : CChannel");
 		Safe_Release(pInstance);

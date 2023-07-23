@@ -31,7 +31,7 @@ public:
 	}
 
 public:
-	HRESULT		Initialize(aiNode* pAINode, _int iParentIndex);
+	HRESULT		Initialize(ifstream* pFin);
 	void		Invalidate_CombinedTransformationMatrix(class CModel* pModel);
 
 private:
@@ -42,7 +42,7 @@ private:
 	_int		m_iParentIndex = { -1 };
 
 public:
-	static CBone* Create(aiNode* pAINode, _int iParentIndex);
+	static CBone* Create(ifstream* pFin);
 	CBone* Clone();
 	virtual void Free() override;
 };

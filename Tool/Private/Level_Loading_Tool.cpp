@@ -45,7 +45,7 @@ void CLevel_Loading_Tool::Tick(_double dTimeDelta)
 
 			if (nullptr == pLevel)
 				return;
-
+			
 			HRESULT hr = 0;
 
 			CGameInstance* pGameInstance = CGameInstance::GetInstance();

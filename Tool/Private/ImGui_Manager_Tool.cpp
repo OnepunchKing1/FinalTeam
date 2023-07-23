@@ -17,77 +17,21 @@ void CImGui_Manager_Tool::ImGui_Set()
     Safe_AddRef(pGameInstance);
 
     ImGui::Begin("Tool");
-    /*
-#pragma region Place Objects
-
-
-    if (ImGui::TreeNode("Place Objects"))
-    {
-        _uint iNumLayers = (_uint)m_Layers.size();
-        _uint iNumObjects = (_uint)m_Objects.size();
-
-        ImGui::Text("Layers :");
-        if (ImGui::BeginListBox("##listbox 1", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
-        {
-            for (_uint n = 0; n < iNumLayers; n++)
-            {
-                const bool is_selected = (m_iLayerIndex == n);
-                if (ImGui::Selectable(m_Layers[n], is_selected))
-                    m_iLayerIndex = n;
-
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndListBox();
-        }
-
-        ImGui::Text("Objects :");
-        if (ImGui::BeginListBox("##listbox 2", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
-        {
-            for (_uint n = 0; n < iNumObjects; n++)
-            {
-                const bool is_selected = (m_iObjectIndex == n);
-                if (ImGui::Selectable(m_Objects[n], is_selected))
-                    m_iObjectIndex = n;
-
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndListBox();
-        }
-
-        if (ImGui::BeginTable("", 2))
-        {
-            ImGui::TableNextColumn();
-            if (ImGui::Button("Save"))
-            {
-
-            }
-
-            ImGui::TableNextColumn();
-            if (ImGui::Button("Load"))
-            {
-
-            }
-
-            ImGui::EndTable();
-        }
-
-        ImGui::TreePop();
-    }
-
-#pragma endregion
-
+    
 #pragma region Camera Set
     if (ImGui::TreeNode("Camera Set"))
     {
-        //ImGui::SeparatorText("Direction");
-        
-        ImGui::SliderFloat("Speed", &m_fCameraSpeed, 0.0f, 1000.0f, "%.1f");
-        
-        ImGui::TreePop();
-    }
+        _float fSpeed = (_float)m_CameraDesc.TransformDesc.dSpeedPerSec;
+        ImGui::SliderFloat("Speed", &fSpeed, 0.f, 1000.0f, "%.1f");
+        m_CameraDesc.TransformDesc.dSpeedPerSec = (_double)fSpeed;
 
+        ImGui::SliderFloat("Far", &m_CameraDesc.fFarZ, 0.1f, 10000.0f, "%.1f");
+
+        ImGui::SliderFloat("Fov", &m_CameraDesc.fFovY, 0.1f, 2.f, "%.1f");
+
+        ImGui::TreePop();
+
+    }
 #pragma endregion
 
 #pragma region Light Set
@@ -136,7 +80,7 @@ void CImGui_Manager_Tool::ImGui_Set()
         ImGui::TreePop();
     }
 #pragma endregion
-*/
+
     ImGui::End();
 
     Safe_Release(pGameInstance);
@@ -149,27 +93,6 @@ void CImGui_Manager_Tool::ImGUI_ShowDemo()
 	if (show_deme_window)
 		ImGui::ShowDemoWindow(&show_deme_window);
 }
-
-
-#pragma region Place Objects
-const _tchar* CImGui_Manager_Tool::Get_SelectedLayer_ImGui()
-{
-    ZeroMemory(m_szSelectedLayer, MAX_PATH);
-
-    MultiByteToWideChar(CP_ACP, 0, m_Layers[m_iLayerIndex], (_int)strlen(m_Layers[m_iLayerIndex]), m_szSelectedLayer, MAX_PATH);
-
-    return m_szSelectedLayer;
-}
-
-const _tchar* CImGui_Manager_Tool::Get_SelectedObject_ImGui()
-{
-    ZeroMemory(m_szSelectedObject, MAX_PATH);
-
-    MultiByteToWideChar(CP_ACP, 0, m_Objects[m_iObjectIndex], (_int)strlen(m_Objects[m_iObjectIndex]), m_szSelectedObject, MAX_PATH);
-
-    return m_szSelectedObject;
-}
-#pragma endregion
 
 #pragma region Light Set
 void CImGui_Manager_Tool::Set_DefaultLight_ImGui(LIGHTDESC LightDesc)

@@ -41,16 +41,16 @@ void CCamera_Free::Tick(_double dTimeDelta)
 	Safe_AddRef(pGameInstance);
 
 	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
-		m_pTransform->Go_Straight(dTimeDelta);
+		m_pTransformCom->Go_Straight(dTimeDelta);
 
 	if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
-		m_pTransform->Go_Backward(dTimeDelta);
+		m_pTransformCom->Go_Backward(dTimeDelta);
 
 	if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
-		m_pTransform->Go_Left(dTimeDelta);
+		m_pTransformCom->Go_Left(dTimeDelta);
 
 	if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
-		m_pTransform->Go_Right(dTimeDelta);
+		m_pTransformCom->Go_Right(dTimeDelta);
 	
 	if (pGameInstance->Get_DIKeyState(DIK_F7) & 0x80)
 		Set_Fov(0.1f);
@@ -63,12 +63,12 @@ void CCamera_Free::Tick(_double dTimeDelta)
 	if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_X))
 	{
 		//m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_UP), (dTimeDelta * MouseMove * Get_Sensitivity()));
-		m_pTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), (dTimeDelta * MouseMove * Get_Sensitivity()));
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), (dTimeDelta * MouseMove * Get_Sensitivity()));
 	}
 
 	if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_Y))
 	{
-		m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), (dTimeDelta * MouseMove * Get_Sensitivity()));
+		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), (dTimeDelta * MouseMove * Get_Sensitivity()));
 	}
 
 

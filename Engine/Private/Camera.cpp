@@ -22,19 +22,19 @@ HRESULT CCamera::Initialize_Prototype()
 
 HRESULT CCamera::Initialize(void* pArg)
 {
-	m_pTransform = CTransform::Create(m_pDevice, m_pContext);
+	m_pTransformCom = CTransform::Create(m_pDevice, m_pContext);
 
-	if (nullptr == m_pTransform)
+	if (nullptr == m_pTransformCom)
 		return E_FAIL;
 		
 	memcpy(&m_CameraDesc, pArg, sizeof m_CameraDesc);
 
-	if(FAILED(m_pTransform->Initialize(&m_CameraDesc.TransformDesc)))
+	if(FAILED(m_pTransformCom->Initialize(&m_CameraDesc.TransformDesc)))
 		return E_FAIL;
 
-	m_pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_CameraDesc.vEye));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_CameraDesc.vEye));
 
-	m_pTransform->LookAt(XMLoadFloat4(&m_CameraDesc.vAt));
+	m_pTransformCom->LookAt(XMLoadFloat4(&m_CameraDesc.vAt));
 
 	return S_OK;
 }
@@ -44,7 +44,7 @@ void CCamera::Tick(_double dTimeDelta)
 	if (nullptr == m_pPipeLine)
 		return;
 
-	m_pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransform->Get_WorldFloat4x4_Inverse());
+	m_pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransformCom->Get_WorldFloat4x4_Inverse());
 
 	_float4x4 ProjMatrix;
 
@@ -66,6 +66,6 @@ void CCamera::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pTransform);
+	Safe_Release(m_pTransformCom);
 	Safe_Release(m_pPipeLine);
 }
