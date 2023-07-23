@@ -439,6 +439,12 @@ Client/Bin/*
 !Client/Bin/DataFiles
 !Client/Bin/Resource
 !Client/Bin/ShaderFiles
+!Engine/Bin/Engine.dll
+!Engine/Bin/Engine.lib
+!Engine/Bin/ShaderFiles
+!Tool/Bin/DataFiles
+!Tool/Bin/Resource
+!Tool/Bin/ShaderFiles
 
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
