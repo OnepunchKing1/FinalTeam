@@ -443,6 +443,7 @@ Client/Bin/*
 Engine/Bin/*
 !Engine/Bin/Engine.dll
 !Engine/Bin/ShaderFiles
+!Engine/ThirdPartyLib/*
 !Tool/Bin
 Tool/Bin/*
 !Tool/Bin/DataFiles
