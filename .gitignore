@@ -433,7 +433,6 @@ FodyWeavers.xsd
 *.sln.iml
 
 Reference/Header/Engine
-Reference/ShaderFiles
 
 !Client/Bin
 Client/Bin/*

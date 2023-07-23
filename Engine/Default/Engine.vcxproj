@@ -142,6 +142,8 @@ call Update.bat</Command>
     </FxCompile>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,6 +174,8 @@ call Update.bat</Command>
     </FxCompile>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -276,6 +280,7 @@ call Update.bat</Command>
     <ClCompile Include="..\Public\Engine_Struct.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
