@@ -433,17 +433,20 @@ FodyWeavers.xsd
 *.sln.iml
 
 Reference/Header/Engine
+Reference/ShaderFiles
 
 !Client/Bin
 Client/Bin/*
 !Client/Bin/DataFiles
 !Client/Bin/Resource
 !Client/Bin/ShaderFiles
+!Engine/Bin
+Engine/Bin/*
 !Engine/Bin/Engine.dll
-!Engine/Bin/Engine.lib
 !Engine/Bin/ShaderFiles
+!Tool/Bin
+Tool/Bin/*
 !Tool/Bin/DataFiles
-!Tool/Bin/Resource
 !Tool/Bin/ShaderFiles
 
 ### VisualStudio Patch ###
