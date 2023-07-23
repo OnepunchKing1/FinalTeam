@@ -28,12 +28,12 @@ HRESULT CColliderManager::Check_Collider(_uint iLevelIndex, _double dTimeDelta)
 
 HRESULT CColliderManager::Check_PlayerToMonster(_uint iLevelIndex, _double dTimeDelta)
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT CColliderManager::Check_MonsterToMonster(_uint iLevelIndex, _double dTimeDelta)
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 void CColliderManager::Free()
