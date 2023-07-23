@@ -52,6 +52,15 @@
     <Filter Include="02. GameObjects\LoadingTexture">
       <UniqueIdentifier>{8e689594-7817-4b2f-8a62-f8fa397152e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Component">
+      <UniqueIdentifier>{51356e46-d48f-449d-99b0-692cc918261a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. ColliderManager">
+      <UniqueIdentifier>{62ff6dde-8f02-498e-8df6-a97627179e2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. SoundManager">
+      <UniqueIdentifier>{92e546b6-8735-4d8b-9fbe-42feeaf4296f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -102,6 +111,9 @@
     <ClInclude Include="..\Public\Player.h">
       <Filter>02. GameObjects\Character\Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ColliderManager.h">
+      <Filter>04. ColliderManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -139,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02. GameObjects\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ColliderManager.cpp">
+      <Filter>04. ColliderManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
