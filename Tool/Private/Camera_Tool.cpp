@@ -2,6 +2,7 @@
 #include "..\Public\Camera_Tool.h"
 
 #include "GameInstance.h"
+#include "ImGui_Manager_Tool.h"
 
 CCamera_Tool::CCamera_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera(pDevice, pContext)
@@ -41,12 +42,30 @@ HRESULT CCamera_Tool::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
+	CImGui_Manager_Tool* pGUI = CImGui_Manager_Tool::GetInstance();
+	Safe_AddRef(pGUI);
+
+	pGUI->Set_CameraDesc((void*)&m_CameraDesc);
+
+	Safe_Release(pGUI);
+
 	return S_OK;
 }
 
 void CCamera_Tool::Tick(_double dTimeDelta)
 {
+	CImGui_Manager_Tool* pGUI = CImGui_Manager_Tool::GetInstance();
+	Safe_AddRef(pGUI);
+
+	CAMERADESC CameraDesc = pGUI->Get_CameraDesc();
+
+	m_pTransformCom->Set_Speed(CameraDesc.TransformDesc.dSpeedPerSec);
+	m_CameraDesc.fFarZ = (CameraDesc.fFarZ);
+	m_CameraDesc.fFovY = (CameraDesc.fFovY);
+
 	KeyInput(dTimeDelta);
+
+	Safe_Release(pGUI);
 
 	__super::Tick(dTimeDelta);
 }
@@ -73,16 +92,16 @@ void CCamera_Tool::KeyInput(_double dTimeDelta)
 	Safe_AddRef(pGameInstance);
 
 	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
-		m_pTransform->Go_Straight(dTimeDelta);
+		m_pTransformCom->Go_Straight(dTimeDelta);
 
 	if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
-		m_pTransform->Go_Backward(dTimeDelta);
+		m_pTransformCom->Go_Backward(dTimeDelta);
 
 	if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
-		m_pTransform->Go_Left(dTimeDelta);
+		m_pTransformCom->Go_Left(dTimeDelta);
 
 	if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
-		m_pTransform->Go_Right(dTimeDelta);
+		m_pTransformCom->Go_Right(dTimeDelta);
 
 	_long MouseMove = { 0 };
 
@@ -91,12 +110,12 @@ void CCamera_Tool::KeyInput(_double dTimeDelta)
 		if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_X))
 		{
 			//m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_UP), (dTimeDelta * MouseMove * Get_Sensitivity()));
-			m_pTransform->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), (dTimeDelta * MouseMove * Get_Sensitivity()));
+			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), (dTimeDelta * MouseMove * Get_Sensitivity()));
 		}
 
 		if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_Y))
 		{
-			m_pTransform->Turn(m_pTransform->Get_State(CTransform::STATE_RIGHT), (dTimeDelta * MouseMove * Get_Sensitivity()));
+			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), (dTimeDelta * MouseMove * Get_Sensitivity()));
 		}
 	}
 	

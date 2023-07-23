@@ -11,7 +11,7 @@ private:
 	virtual ~CAnimation() = default;
 
 public:
-	HRESULT Initialize(const aiAnimation* pAIAnimation, class CModel* pModel);
+	HRESULT Initialize(ifstream* pFin, class CModel* pModel);
 	void	Invalidate_TransformationMatrices(class CModel* pModel, _double dTimeDelta);
 
 private:
@@ -28,7 +28,7 @@ private:
 	vector<_uint>				m_iCurrentKeyFrames;
 
 public:
-	static CAnimation* Create(const aiAnimation* pAIAnimation, class CModel* pModel);
+	static CAnimation* Create(ifstream* pFin, class CModel* pModel);
 	CAnimation* Clone();
 	virtual void Free() override;
 };

@@ -60,7 +60,7 @@ HRESULT CTerrain_Tool::Render()
 
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
-		if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_DiffuseTexture", aiTextureType_DIFFUSE)))
+		if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
 			return E_FAIL;
 
 		m_pShaderCom->Begin(0);

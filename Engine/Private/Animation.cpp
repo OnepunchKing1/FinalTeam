@@ -23,21 +23,30 @@ CAnimation::CAnimation(const CAnimation& rhs)
 	strcpy_s(m_szName, rhs.m_szName);
 }
 
-HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, CModel* pModel)
+HRESULT CAnimation::Initialize(ifstream* pFin, CModel* pModel)
 {
-	strcpy_s(m_szName, pAIAnimation->mName.data);
-	m_dDuration = pAIAnimation->mDuration;
-	m_dTickPerSecond = pAIAnimation->mTicksPerSecond;
-	
-	m_iNumChannels = pAIAnimation->mNumChannels;
+	_uint iSize = { 0 };
+	pFin->read(reinterpret_cast<char*>(&iSize), sizeof(_uint));
+	pFin->read(m_szName, iSize);
+	strcat_s(m_szName, "\0");
+	pFin->read(reinterpret_cast<char*>(&m_dDuration), sizeof(_double));
+	pFin->read(reinterpret_cast<char*>(&m_dTickPerSecond), sizeof(_double));
+	pFin->read(reinterpret_cast<char*>(&m_iNumChannels), sizeof(_uint));
+
 	m_iCurrentKeyFrames.resize(m_iNumChannels);
 	
 	for (_uint i = 0; i < m_iNumChannels; i++)
 	{
-		//이 애니메이션에서 움직이는 뼈와 이름이 같은 모델의 뼈를 찾아 pBone에 저장
-		CBone * pBone = pModel->Get_Bone(pAIAnimation->mChannels[i]->mNodeName.data);
+		iSize = { 0 };
+		pFin->read(reinterpret_cast<char*>(&iSize), sizeof(_uint));
+		char szName[MAX_PATH] = { "" };
+		pFin->read(szName, iSize);
+		strcat_s(szName, "\0");
 
-		CChannel* pChannel = CChannel::Create(pAIAnimation->mChannels[i], pModel->Get_BoneIndex(pBone->Get_Name()));
+		//이 애니메이션에서 움직이는 뼈와 이름이 같은 모델의 뼈를 찾아 pBone에 저장
+		CBone * pBone = pModel->Get_Bone(szName);
+
+		CChannel* pChannel = CChannel::Create(pFin, szName, pModel->Get_BoneIndex(pBone->Get_Name()));
 		if (nullptr == pChannel)
 			return E_FAIL;
 
@@ -69,11 +78,11 @@ void CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTime
 	}
 }
 
-CAnimation* CAnimation::Create(const aiAnimation* pAIAnimation, class CModel* pModel)
+CAnimation* CAnimation::Create(ifstream* pFin, class CModel* pModel)
 {
 	CAnimation* pInstance = new CAnimation();
 
-	if (FAILED(pInstance->Initialize(pAIAnimation, pModel)))
+	if (FAILED(pInstance->Initialize(pFin, pModel)))
 	{
 		MSG_BOX("Failed to Created : CAnimation");
 		Safe_Release(pInstance);

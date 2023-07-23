@@ -192,14 +192,21 @@ HRESULT CLoader::LoadingForGamePlay()
 #pragma endregion
 	
 #pragma region Character
-
+	/* Prototype_Component_Model_Tanjiro */
+	PivotMatrix = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tanjiro"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Tanjiro_Texture/Tanjiro_Anim2out.bin", PivotMatrix))))
+	{
+		MSG_BOX("Failed to Add_Prototype_Model_Tanjiro");
+		return E_FAIL;
+	}
 #pragma endregion
 
 #pragma region NonCharacter
 	/* Prototype_Component_Model_TestBox */
 	PivotMatrix = XMMatrixTranslation(-21.9f, 215.2f, -158.6f);
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TestBox"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/TestBox/mdlChest2.fbx", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/TestBox/mdlChest2.bin", PivotMatrix))))
 	{
 		MSG_BOX("Failed to Add_Prototype_Model_TestBox");
 		return E_FAIL;

@@ -42,7 +42,7 @@ void CPlayer_Tool::Tick(_double dTimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (pGameInstance->Get_DIKeyState(DIK_UPARROW) & 0x80)
+	if (pGameInstance->Get_DIKeyDown(DIK_UPARROW))
 	{
 		++m_iNumAnim;
 		if (m_pModelCom->Get_NumAnims() <= m_iNumAnim)
@@ -50,7 +50,7 @@ void CPlayer_Tool::Tick(_double dTimeDelta)
 		m_pModelCom->Set_Animation(m_iNumAnim);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_DOWNARROW) & 0x80)
+	if (pGameInstance->Get_DIKeyDown(DIK_DOWNARROW))
 	{
 		if (0 < m_iNumAnim)
 			--m_iNumAnim;
@@ -92,7 +92,7 @@ HRESULT CPlayer_Tool::Render()
 
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
-		if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_DiffuseTexture", aiTextureType_DIFFUSE)))
+		if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Bind_ShaderBoneMatrices(i, m_pShaderCom, "g_BoneMatrices")))
@@ -109,7 +109,7 @@ HRESULT CPlayer_Tool::Render()
 HRESULT CPlayer_Tool::Add_Components()
 {
 	/* for.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_TOOL, TEXT("Prototype_Component_Model_TestBox"),
+	if (FAILED(__super::Add_Component(LEVEL_TOOL, TEXT("Prototype_Component_Model_Tanjiro"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 	{
 		MSG_BOX("Failed to Add_Com_Model : CPlayer_Tool");

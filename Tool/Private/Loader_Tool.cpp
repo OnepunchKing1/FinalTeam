@@ -105,7 +105,7 @@ HRESULT CLoader_Tool::LoadingForTool()
 #pragma region Model
 	
 #pragma region Buffer
-	/* Prototype_Component_VIBuffer_Terrain */
+	/* Prototype_Component_VIBuffer_Terrain */	
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_VIBuffer_Terrain"),
 		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Heightmap.bmp")))))
 	{
@@ -120,14 +120,21 @@ HRESULT CLoader_Tool::LoadingForTool()
 #pragma endregion
 
 #pragma region Character
-
+	/* Prototype_Component_Model_Tanjiro */
+	PivotMatrix = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Tanjiro"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Tanjiro/Tanjiro.bin", PivotMatrix))))
+	{
+		MSG_BOX("Failed to Add_Prototype_Model_Tanjiro");
+		return E_FAIL;
+	}
 #pragma endregion
 
 #pragma region NonCharacter
 	/* Prototype_Component_Model_TestBox */
 	PivotMatrix = XMMatrixTranslation(-21.9f, 215.2f, -158.6f);
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_TestBox"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/TestBox/mdlChest2.fbx", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/TestBox/mdlChest2.bin", PivotMatrix))))
 	{
 		MSG_BOX("Failed to Add_Prototype_Model_TestBox");
 		return E_FAIL;
@@ -138,7 +145,7 @@ HRESULT CLoader_Tool::LoadingForTool()
 	/* Prototype_Component_Model_Terrain */
 	PivotMatrix = XMMatrixIdentity();
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Terrain"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Terrain/Terrain_T.fbx", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Terrain/Terrain.bin", PivotMatrix))))
 	{
 		MSG_BOX("Failed to Add_Prototype_Model_Terrain");
 		return E_FAIL;
@@ -236,8 +243,6 @@ HRESULT CLoader_Tool::LoadingForTool()
 		MSG_BOX("Failed to Add_Prototype_GameObject_Player_Tool");
 		return E_FAIL;
 	}
-	pUI->Add_ObjectKeys("Prototype_GameObject_Player_Tool");
-
 #pragma endregion
 
 #pragma region Environment
@@ -249,8 +254,6 @@ HRESULT CLoader_Tool::LoadingForTool()
 		MSG_BOX("Failed to Add_Prototype_GameObject_Terrain_Tool");
 		return E_FAIL;
 	}
-	pUI->Add_ObjectKeys("Prototype_GameObject_Terrain_Tool");
-
 #pragma endregion
 
 #pragma region UI

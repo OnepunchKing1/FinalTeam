@@ -10,7 +10,7 @@ private:
 	virtual ~CChannel() = default;
 
 public:
-	HRESULT Initialize(const aiNodeAnim* pAIChannel, _uint iBoneIndex);
+	HRESULT Initialize(ifstream* pFin, const char* pName, _uint iBoneIndex);
 	void	Invalidate(class CModel* pModel, _uint& pCurrentKeyFrame, _double TrackPosition);
 
 private:
@@ -23,7 +23,7 @@ private:
 	vector<KEYFRAME>	m_KeyFrames;
 
 public:
-	static CChannel* Create(const aiNodeAnim* pAIChannel, _uint iBoneIndex);
+	static CChannel* Create(ifstream* pFin, const char* pName, _uint iBoneIndex);
 	virtual void Free() override;
 };
 
