@@ -26,13 +26,13 @@ float			g_fFar = 3000.f;
 struct VS_IN
 {
 	float3		vPosition : POSITION;	
-	float2		vUV : TEXCOORD0;
+	float2		vTexUV : TEXCOORD0;
 };
 
 struct VS_OUT
 {
 	float4		vPosition : SV_POSITION;	
-	float2		vUV : TEXCOORD0;
+	float2		vTexUV : TEXCOORD0;
 };
 
 VS_OUT VS_Main(VS_IN _In)
@@ -43,7 +43,7 @@ VS_OUT VS_Main(VS_IN _In)
 	matrix		matWVP = mul(matWV, g_ProjMatrix);
 
 	Out.vPosition = mul(vector(_In.vPosition, 1.f), matWVP);
-	Out.vUV = _In.vUV;
+	Out.vTexUV = _In.vTexUV;
 
 	return Out;
 }
@@ -51,7 +51,7 @@ VS_OUT VS_Main(VS_IN _In)
 struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
-	float2		vUV : TEXCOORD0;
+	float2		vTexUV : TEXCOORD0;
 };
 
 struct PS_OUT
@@ -63,7 +63,7 @@ PS_OUT  PS_Main_Debug(PS_IN _In)
 {
 	PS_OUT	Out = (PS_OUT)0;
 	
-	Out.vColor = g_Texture.Sample(LinearSampler, _In.vUV);
+	Out.vColor = g_Texture.Sample(LinearSampler, _In.vTexUV);
 
 	return Out;		
 }
@@ -79,7 +79,7 @@ PS_OUT_LIGHT  PS_Main_Directional(PS_IN _In)
 	PS_OUT_LIGHT	Out = (PS_OUT_LIGHT)0;
 	 
 	/* for Shade */
-	vector	vNormalDesc = g_NormalTexture.Sample(PointSampler, _In.vUV);
+	vector	vNormalDesc = g_NormalTexture.Sample(PointSampler, _In.vTexUV);
 	vector	vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 	
 	Out.vShade = (max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
@@ -88,13 +88,13 @@ PS_OUT_LIGHT  PS_Main_Directional(PS_IN _In)
 	/* for Specular */
 	vector	vReflect = reflect(normalize(g_vLightDir), vNormal);
 
-	vector	vDepth = g_DepthTexture.Sample(PointSampler, _In.vUV);
+	vector	vDepth = g_DepthTexture.Sample(PointSampler, _In.vTexUV);
 	float	fViewZ = vDepth.x * 300.f;
 
 	vector vWorldPos;
 
-	vWorldPos.x = _In.vUV.x * 2.f - 1.f;
-	vWorldPos.y = _In.vUV.y * -2.f + 1.f;
+	vWorldPos.x = _In.vTexUV.x * 2.f - 1.f;
+	vWorldPos.y = _In.vTexUV.y * -2.f + 1.f;
 	vWorldPos.z = vDepth.y;
 	vWorldPos.w = 1.f;
 
@@ -114,7 +114,7 @@ PS_OUT_LIGHT  PS_Main_Point(PS_IN _In)
 {
 	PS_OUT_LIGHT	Out = (PS_OUT_LIGHT)0;
 
-	vector	vNormalDesc = g_NormalTexture.Sample(LinearSampler, _In.vUV);
+	vector	vNormalDesc = g_NormalTexture.Sample(LinearSampler, _In.vTexUV);
 	vector	vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 
 	Out.vShade = max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f);
@@ -127,9 +127,9 @@ PS_OUT  PS_Main_Deferred(PS_IN _In)
 {
 	PS_OUT	Out = (PS_OUT)0;
 
-	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vUV);
-	vector vShade = g_ShadeTexture.Sample(LinearSampler, _In.vUV);
-	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, _In.vUV);
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vTexUV);
+	vector vShade = g_ShadeTexture.Sample(LinearSampler, _In.vTexUV);
+	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, _In.vTexUV);
 
 	/*if (0.2f >= vShade.r)
 	{

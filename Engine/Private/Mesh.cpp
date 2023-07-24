@@ -139,7 +139,7 @@ HRESULT CMesh::Ready_VertexBuffer_NonAnim(ifstream* pFin, _fmatrix PivotMatrix)
 		pFin->read(reinterpret_cast<char*>(&pVertices[i].vNormal), sizeof(_float3));
 		XMStoreFloat3(&pVertices[i].vNormal, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vNormal), PivotMatrix));
 		
-		pFin->read(reinterpret_cast<char*>(&pVertices[i].vUV), sizeof(_float2));
+		pFin->read(reinterpret_cast<char*>(&pVertices[i].vTexUV), sizeof(_float2));
 		pFin->read(reinterpret_cast<char*>(&pVertices[i].vTangent), sizeof(_float3));
 	}
 
@@ -167,7 +167,7 @@ HRESULT CMesh::Ready_VertexBuffer_Anim(ifstream* pFin, CModel* pModel)
 
 		pFin->read(reinterpret_cast<char*>(&pVertices[i].vNormal), sizeof(_float3));
 
-		pFin->read(reinterpret_cast<char*>(&pVertices[i].vUV), sizeof(_float2));
+		pFin->read(reinterpret_cast<char*>(&pVertices[i].vTexUV), sizeof(_float2));
 		pFin->read(reinterpret_cast<char*>(&pVertices[i].vTangent), sizeof(_float3));
 	}
 

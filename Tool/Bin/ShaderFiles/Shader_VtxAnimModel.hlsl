@@ -15,7 +15,7 @@ struct VS_IN
 {
 	float3		vPosition	: POSITION;
 	float3		vNormal		: NORMAL;
-	float2		vUV	: TEXCOORD0;
+	float2		vTexUV	: TEXCOORD0;
 	float3		vTangent	: TANGENT;
 	uint4		vBlendIndices : BLENDINDEX;
 	float4		vBlendWeights : BLENDWEIGHT;
@@ -25,7 +25,7 @@ struct VS_OUT
 {
 	float4		vPosition : SV_POSITION;
 	float4		vNormal : NORMAL;
-	float2		vUV : TEXCOORD0;
+	float2		vTexUV : TEXCOORD0;
 	float4		vWorldPos : TEXCOORD1;
 	float4		vProjPos : TEXCOORD2;
 };
@@ -50,7 +50,7 @@ VS_OUT VS_Main(VS_IN _In)
 
 	Out.vPosition = mul(vPosition, matWVP);
 	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
-	Out.vUV = _In.vUV;
+	Out.vTexUV = _In.vTexUV;
 	Out.vWorldPos = mul(vector(_In.vPosition, 1.f), g_WorldMatrix);
 	Out.vProjPos = Out.vPosition;
 
@@ -61,7 +61,7 @@ struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
 	float4		vNormal : NORMAL;
-	float2		vUV : TEXCOORD0;
+	float2		vTexUV : TEXCOORD0;
 	float4		vWorldPos : TEXCOORD1;
 	float4		vProjPos : TEXCOORD2;
 };
@@ -77,7 +77,7 @@ PS_OUT  PS_Main(PS_IN _In)
 {
 	PS_OUT	Out = (PS_OUT)0;
 
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vUV);
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vTexUV);
 
 	//if (vMtrlDiffuse.a < 0.1f)
 	//	discard;
@@ -95,7 +95,7 @@ PS_OUT  PS_RIMLIGHT(PS_IN _In)
 {
 	PS_OUT   Out = (PS_OUT)0;
 
-	vector   vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vUV);
+	vector   vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vTexUV);
 
 	if (vMtrlDiffuse.a < 0.1f)
 		discard;

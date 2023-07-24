@@ -193,7 +193,7 @@ HRESULT CLoader::LoadingForGamePlay()
 	
 #pragma region Character
 	/* Prototype_Component_Model_Tanjiro */
-	PivotMatrix = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tanjiro"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Tanjiro/Tanjiro.bin", PivotMatrix))))
 	{

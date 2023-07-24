@@ -59,6 +59,7 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_pModelCom->Set_Animation(m_iNumAnim);
 	}
 
+
 	Safe_Release(pGameInstance);
 
 	m_pModelCom->Play_Animation(dTimeDelta);
@@ -90,6 +91,26 @@ HRESULT CPlayer::Render()
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
+	//Outline Render
+	for (m_iMeshNum = 0; m_iMeshNum < iNumMeshes; m_iMeshNum++)
+	{
+
+
+		if (FAILED(m_pModelCom->Bind_ShaderResource(m_iMeshNum, m_pShaderCom, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_ShaderBoneMatrices(m_iMeshNum, m_pShaderCom, "g_BoneMatrices")))
+			return E_FAIL;
+
+		if (m_iMeshNum == 2)
+			m_pShaderCom->Begin(2);
+		else
+			m_pShaderCom->Begin(1);
+
+		m_pModelCom->Render(m_iMeshNum);
+	}
+
+	// Default Render
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
@@ -109,7 +130,7 @@ HRESULT CPlayer::Render()
 HRESULT CPlayer::Add_Components()
 {
 	/* for.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TestBox"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tanjiro"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 	{
 		MSG_BOX("Failed to Add_Com_Model : CPlayer");
@@ -145,6 +166,18 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	_float4x4 ProjMatrix = pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ);
 	if (FAILED(m_pShaderCom->SetUp_Matrix("g_ProjMatrix", &ProjMatrix)))
 		return E_FAIL;
+
+
+	// OutlineThickness
+	if (FAILED(m_pShaderCom->SetUp_RawValue("g_OutlineThickness", &m_fOutlineThickness, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetUp_RawValue("g_OutlineFaceThickness", &m_fOutlineFaceThickness, sizeof(_float))))
+		return E_FAIL;
+
+
+
+
 
 	Safe_Release(pGameInstance);
 
