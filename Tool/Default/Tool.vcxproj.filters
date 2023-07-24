@@ -52,6 +52,9 @@
     <Filter Include="02. GameObjects\Character\Player">
       <UniqueIdentifier>{a0b19276-052a-4300-8baa-093480bd50d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Character\Anim_Character">
+      <UniqueIdentifier>{37e945e1-c81f-4407-99fb-ae893ae2fd57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -123,6 +126,9 @@
     <ClInclude Include="..\Public\Player_Tool.h">
       <Filter>02. GameObjects\Character\Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AnimCharacter_Tool.h">
+      <Filter>02. GameObjects\Character\Anim_Character</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -178,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_Tool.cpp">
       <Filter>02. GameObjects\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AnimCharacter_Tool.cpp">
+      <Filter>02. GameObjects\Character\Anim_Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -10,7 +10,6 @@ CImGui_Manager_Tool::CImGui_Manager_Tool()
 
 }
 
-
 void CImGui_Manager_Tool::ImGui_Set()
 {
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -94,6 +93,19 @@ void CImGui_Manager_Tool::ImGUI_ShowDemo()
 		ImGui::ShowDemoWindow(&show_deme_window);
 }
 
+void CImGui_Manager_Tool::Animation_ImGui_Set()
+{
+    CGameInstance* pGameInstance = CGameInstance::GetInstance();
+    Safe_AddRef(pGameInstance);
+    ImGui::Begin("AnimationTool");
+
+
+
+
+    ImGui::End();
+    Safe_Release(pGameInstance);
+}
+
 #pragma region Light Set
 void CImGui_Manager_Tool::Set_DefaultLight_ImGui(LIGHTDESC LightDesc)
 {
@@ -119,6 +131,7 @@ HRESULT CImGui_Manager_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11Devic
 
     return S_OK;
 }
+
 void CImGui_Manager_Tool::Tick_ImGui()
 {
     ImGui_ImplDX11_NewFrame();
