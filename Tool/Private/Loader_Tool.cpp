@@ -6,6 +6,8 @@
 #include "Player_Tool.h"
 #include "Terrain_Tool.h"
 
+//AnimTool¿ë
+#include "AnimCharacter_Tool.h"
 
 CLoader_Tool::CLoader_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
@@ -24,7 +26,7 @@ unsigned int APIENTRY Loading_Main(void* pArg)
 	EnterCriticalSection(pLoader->Get_CS());
 
 	HRESULT hr = 0;
-
+	
 	switch (pLoader->Get_LevelID())
 	{
 	case LEVEL_TOOL:
@@ -121,13 +123,16 @@ HRESULT CLoader_Tool::LoadingForTool()
 
 #pragma region Character
 	/* Prototype_Component_Model_Tanjiro */
-	PivotMatrix = XMMatrixScaling(0.1f, 0.1f, 0.1f);
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Tanjiro"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Tanjiro/Tanjiro.bin", PivotMatrix))))
 	{
 		MSG_BOX("Failed to Add_Prototype_Model_Tanjiro");
 		return E_FAIL;
 	}
+
+
+
 #pragma endregion
 
 #pragma region NonCharacter
@@ -241,6 +246,15 @@ HRESULT CLoader_Tool::LoadingForTool()
 		CPlayer_Tool::Create(m_pDevice, m_pContext))))
 	{
 		MSG_BOX("Failed to Add_Prototype_GameObject_Player_Tool");
+		return E_FAIL;
+	}
+
+	//AnimTool¿ë
+	/* Prototype_GameObject_AnimCharacter_Tool */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_AnimCharacter_Tool"),
+		CAnimCharacter_Tool::Create(m_pDevice, m_pContext))))
+	{
+		MSG_BOX("Failed to Add_Prototype_GameObject_AnimCharacter_Tool");
 		return E_FAIL;
 	}
 #pragma endregion

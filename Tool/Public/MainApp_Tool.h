@@ -26,7 +26,7 @@ private:
 	CGameInstance*			m_pGameInstance = { nullptr };
 	ID3D11Device*			m_pDevice = { nullptr };
 	ID3D11DeviceContext*	m_pContext = { nullptr };
-	CImGui_Manager_Tool*				m_pUI = { nullptr };
+	CImGui_Manager_Tool*		m_pUI = { nullptr };
 
 
 private:

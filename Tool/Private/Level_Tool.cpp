@@ -157,10 +157,19 @@ HRESULT CLevel_Tool::Ready_Layer_Player(const _tchar* pLayerTag)
     CharacterDesc.NaviDesc.iCurrentIndex = 0;
     CharacterDesc.NaviDesc.vStartPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 
+    /*
     if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, pLayerTag, 
         TEXT("Prototype_GameObject_Player_Tool"), &CharacterDesc)))
     {
         MSG_BOX("Failed to Add_GameObject : CPlayer_Tool");
+        return E_FAIL;
+    }*/
+
+    // AnimTool¿ë
+    if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, pLayerTag,
+        TEXT("Prototype_GameObject_AnimCharacter_Tool"), &CharacterDesc)))
+    {
+        MSG_BOX("Failed to Add_GameObject : AnimCharacter_Tool");
         return E_FAIL;
     }
 
