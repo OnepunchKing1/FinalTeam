@@ -10,7 +10,6 @@ CImGui_Manager_Tool::CImGui_Manager_Tool()
 
 }
 
-
 void CImGui_Manager_Tool::ImGui_Set()
 {
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -119,6 +118,7 @@ HRESULT CImGui_Manager_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11Devic
 
     return S_OK;
 }
+
 void CImGui_Manager_Tool::Tick_ImGui()
 {
     ImGui_ImplDX11_NewFrame();

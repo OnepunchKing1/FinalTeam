@@ -4,6 +4,8 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 
+//#include "Engine_Defines.h"
+//#include "Engine_Struct.h"
 #include <process.h>
 
 namespace Tool
@@ -18,5 +20,6 @@ extern HWND g_hWnd;
 extern HINSTANCE g_hInstance;
 
 #include "ImGui_Manager_Tool.h"
+#include "ImGui_Animation_Tool.h"
 
 using namespace Tool;

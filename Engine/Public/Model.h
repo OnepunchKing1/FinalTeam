@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 
+
 BEGIN(Engine)
 
 class ENGINE_DLL CModel final : public CComponent
@@ -13,29 +14,22 @@ private:
 	virtual ~CModel() = default;
 
 public:
-	_uint Get_NumMeshes() const {
-		return m_iNumMeshes;
-	}
+	_uint Get_NumMeshes() const	{ return m_iNumMeshes; }
 	
-	_uint Get_NumAnims() const {
-		return m_iNumAnimations;
-	}
+	_uint Get_NumAnims() const	{ return m_iNumAnimations; }
 
-	class CMesh* Get_Mesh(_uint iIndex) {
-		return m_Meshes[iIndex];
-	}
+	class CMesh* Get_Mesh(_uint iIndex) { return m_Meshes[iIndex]; }
 
 	class CBone* Get_Bone(const char* pBoneName);
-	class CBone* Get_Bone(_uint iIndex) {
-		return m_Bones[iIndex];
-	}
+	class CBone* Get_Bone(_uint iIndex)	{ return m_Bones[iIndex]; }
 
 	_int Get_BoneIndex(const char* pBoneName);
 
+	class CAnimation* Get_Animation() { return m_Animations[m_iCurrentAnimIndex]; }
+	vector<class CAnimation*> Get_vecAnimation() { return m_Animations; }
+
 public:
-	void Set_Animation(_uint iAnimIndex) {
-		m_iCurrentAnimIndex = iAnimIndex;
-	}
+	void Set_Animation(_uint iAnimIndex) { m_iCurrentAnimIndex = iAnimIndex; }
 
 public:
 	HRESULT Initialize_Prototype(TYPE eModelType, const char* pModelFilePath, _fmatrix PivotMatrix);

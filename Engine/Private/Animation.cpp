@@ -9,33 +9,34 @@ CAnimation::CAnimation()
 }
 
 CAnimation::CAnimation(const CAnimation& rhs)
-	: m_dDuration(rhs.m_dDuration)
+	: m_AnimationDesc(rhs.m_AnimationDesc)
+	/*m_dDuration(rhs.m_dDuration)
 	, m_dTickPerSecond(rhs.m_dTickPerSecond)
 	, m_dTimeAcc(rhs.m_dTimeAcc)
 	, m_isFinish(rhs.m_isFinish)
 	, m_iNumChannels(rhs.m_iNumChannels)
 	, m_Channels(rhs.m_Channels)
-	, m_iCurrentKeyFrames(rhs.m_iCurrentKeyFrames)
+	, m_iCurrentKeyFrames(rhs.m_iCurrentKeyFrames)*/
 {
-	for (auto& pChannel : m_Channels)
+	for (auto& pChannel : m_AnimationDesc.m_Channels)
 		Safe_AddRef(pChannel);
 
-	strcpy_s(m_szName, rhs.m_szName);
+	strcpy_s(m_AnimationDesc.m_szName, rhs.m_AnimationDesc.m_szName);
 }
 
 HRESULT CAnimation::Initialize(ifstream* pFin, CModel* pModel)
 {
 	_uint iSize = { 0 };
 	pFin->read(reinterpret_cast<char*>(&iSize), sizeof(_uint));
-	pFin->read(m_szName, iSize);
-	strcat_s(m_szName, "\0");
-	pFin->read(reinterpret_cast<char*>(&m_dDuration), sizeof(_double));
-	pFin->read(reinterpret_cast<char*>(&m_dTickPerSecond), sizeof(_double));
-	pFin->read(reinterpret_cast<char*>(&m_iNumChannels), sizeof(_uint));
+	pFin->read(m_AnimationDesc.m_szName, iSize);
+	strcat_s(m_AnimationDesc.m_szName, "\0");
+	pFin->read(reinterpret_cast<char*>(&m_AnimationDesc.m_dDuration), sizeof(_double));
+	pFin->read(reinterpret_cast<char*>(&m_AnimationDesc.m_dTickPerSecond), sizeof(_double));
+	pFin->read(reinterpret_cast<char*>(&m_AnimationDesc.m_iNumChannels), sizeof(_uint));
 
-	m_iCurrentKeyFrames.resize(m_iNumChannels);
+	m_AnimationDesc.m_iCurrentKeyFrames.resize(m_AnimationDesc.m_iNumChannels);
 	
-	for (_uint i = 0; i < m_iNumChannels; i++)
+	for (_uint i = 0; i < m_AnimationDesc.m_iNumChannels; i++)
 	{
 		iSize = { 0 };
 		pFin->read(reinterpret_cast<char*>(&iSize), sizeof(_uint));
@@ -50,7 +51,7 @@ HRESULT CAnimation::Initialize(ifstream* pFin, CModel* pModel)
 		if (nullptr == pChannel)
 			return E_FAIL;
 
-		m_Channels.emplace_back(pChannel);
+		m_AnimationDesc.m_Channels.emplace_back(pChannel);
 	}
 
 	return S_OK;
@@ -58,23 +59,24 @@ HRESULT CAnimation::Initialize(ifstream* pFin, CModel* pModel)
 
 void CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTimeDelta)
 {
-	m_isFinish = false;
+	m_AnimationDesc.m_isFinish = false;
 
 	/* 현재 재생되는 애니메이션 */
-	m_dTimeAcc += m_dTickPerSecond * dTimeDelta;
+	if(m_ControlDesc.m_isPlay)
+		m_AnimationDesc.m_dTimeAcc += m_AnimationDesc.m_dTickPerSecond * dTimeDelta;
 
-	if (m_dDuration <= m_dTimeAcc)
+	if (m_AnimationDesc.m_dDuration <= m_AnimationDesc.m_dTimeAcc)
 	{
 		// 전체 재생시간보다 누적시간이 커졌다 == 애니메이션이 끝났다
-		m_isFinish = true;
-		m_dTimeAcc = 0.0;
+		m_AnimationDesc.m_isFinish = true;
+		m_AnimationDesc.m_dTimeAcc = 0.0;
 	}
 
 	_uint	iIndex = { 0 };
-	for (auto& pChannel : m_Channels)
+	for (auto& pChannel : m_AnimationDesc.m_Channels)
 	{
 		//이 애니메이션에서 움직이는 뼈들의 상태를 시간에 맞게 갱신한다.
-		pChannel->Invalidate(pModel, m_iCurrentKeyFrames[iIndex++], m_dTimeAcc);
+		pChannel->Invalidate(pModel, m_AnimationDesc.m_iCurrentKeyFrames[iIndex++], m_AnimationDesc.m_dTimeAcc);
 	}
 }
 
@@ -98,8 +100,8 @@ CAnimation* CAnimation::Clone()
 
 void CAnimation::Free()
 {
-	for (auto& pChannel : m_Channels)
+	for (auto& pChannel : m_AnimationDesc.m_Channels)
 		Safe_Release(pChannel);
 
-	m_Channels.clear();
+	m_AnimationDesc.m_Channels.clear();
 }
