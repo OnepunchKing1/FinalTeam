@@ -5,6 +5,7 @@
 
 #include "Camera_Tool.h"
 #include "Player_Tool.h"
+#include "MapObject.h"
 
 CLevel_Tool::CLevel_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
@@ -29,6 +30,9 @@ HRESULT CLevel_Tool::Initialize()
         return E_FAIL;
 
     if (FAILED(Ready_Layer_Environments(TEXT("Layer_Environments"))))
+        return E_FAIL;
+
+    if (FAILED(Ready_Layer_MapObject(TEXT("Layer_MapObject"))))
         return E_FAIL;
 
     return S_OK;
@@ -85,11 +89,11 @@ HRESULT CLevel_Tool::Ready_Layer_BackGround(const _tchar* pLayerTag)
         return E_FAIL;
     }*/
 
-    if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, pLayerTag, TEXT("Prototype_GameObject_Terrain_Tool"))))
+   /* if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, pLayerTag, TEXT("Prototype_GameObject_Terrain_Tool"))))
     {
         MSG_BOX("Failed to Add_GameObject : CTerrain_Tool");
         return E_FAIL;
-    }
+    }*/
 
     Safe_Release(pGameInstance);
 
@@ -182,6 +186,75 @@ HRESULT CLevel_Tool::Ready_Layer_Environments(const _tchar* pLayerTag)
 {
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
+
+    Safe_Release(pGameInstance);
+
+    return S_OK;
+}
+
+HRESULT CLevel_Tool::Ready_Layer_MapObject(const _tchar* pLayerTag)
+{
+    Load_MapObject_Info(TEXT("../../Data/Object/Room1.dat"), pLayerTag);
+
+    return S_OK;
+}
+
+HRESULT CLevel_Tool::Load_MapObject_Info(const _tchar* pPath, const _tchar* pLayerTag)
+{
+    CGameInstance* pGameInstance = CGameInstance::GetInstance();
+    Safe_AddRef(pGameInstance);
+
+    HANDLE hFile = CreateFile(pPath, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+    if (INVALID_HANDLE_VALUE == hFile)
+        return E_FAIL;
+
+    _ulong			dwByte = 0;
+    _ulong			dwStrByte = 0;
+    _uint			iSize = 0;
+
+    CGameObject* pGameObject = { nullptr };
+
+    ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        CMapObject::MAPOBJECT_INFO tMapObject_Info;
+        ZeroMemory(&tMapObject_Info, sizeof tMapObject_Info);
+
+        ReadFile(hFile, &tMapObject_Info.vPos, sizeof(_float4), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.vRotAngle, sizeof(_float3), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.vScale, sizeof(_float3), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.iMapObjectType, sizeof(_uint), &dwByte, nullptr);
+
+        ReadFile(hFile, &dwStrByte, sizeof(_ulong), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.szMeshName, dwStrByte, &dwByte, nullptr);
+
+        const _tchar* pMapObjectTypeTag = TEXT("");
+
+        switch (tMapObject_Info.iMapObjectType)
+        {
+        case CMapObject::MAPOBJECT_STATIC:
+            if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, TEXT("Layer_MapObject"),
+                TEXT("Prototype_GameObject_StaticMapObject"), &tMapObject_Info)))
+                return E_FAIL;
+            break;
+        case CMapObject::MAPOBJECT_TERRAIN:
+            if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, TEXT("Layer_MapObject"),
+                TEXT("Prototype_GameObject_TerrainMapObject"), &tMapObject_Info)))
+                return E_FAIL;
+            break;
+        case CMapObject::MAPOBJECT_ROTATION:
+            if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, TEXT("Layer_MapObject"),
+                TEXT("Prototype_GameObject_RotationMapObject"), &tMapObject_Info)))
+                return E_FAIL;
+            break;
+        default:
+            break;
+        }
+    }
+
+    CloseHandle(hFile);
 
     Safe_Release(pGameInstance);
 
