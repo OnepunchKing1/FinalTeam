@@ -25,6 +25,11 @@ HRESULT CRenderer::Initialize_Prototype()
 	D3D11_VIEWPORT	Viewport;
 	m_pContext->RSGetViewports(&iNumViewports, &Viewport);
 
+	/* For.Target_Default */
+	_float4 vColor_Diffuse = { 0.8f, 0.5f, 0.5f, 0.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Diffuse")
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_B8G8R8A8_UNORM, vColor_Diffuse)))
+		return E_FAIL;
 	/* For.Target_Diffuse */
 	_float4 vColor_Diffuse = { 1.f, 0.f, 1.f, 0.f };
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Diffuse")
@@ -50,6 +55,7 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Specular")
 		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R16G16B16A16_UNORM, vColor_Specular)))
 		return E_FAIL;
+
 
 	/* For.MRT_GameObject */
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Diffuse"))))
@@ -176,6 +182,39 @@ HRESULT CRenderer::Draw_RenderObjects()
 		}
 	}
 #endif // _DEBUG
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Begin_MRT(const _tchar* pMRT_Tag)
+{
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, pMRT_Tag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::End_MRT()
+{
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Add_RenderTarget(const _tchar* pMRT_Tag, const _tchar* pRenderTargetTag, DXGI_FORMAT eFormat, _float4 vColor)
+{
+	_uint	iNumViewports = { 1 };
+	D3D11_VIEWPORT	Viewport;
+	m_pContext->RSGetViewports(&iNumViewports, &Viewport);
+
+	_float4 vColor_Diffuse = { 1.f, 0.f, 1.f, 0.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, pRenderTargetTag
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, eFormat, vColor)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Add_MRT(pMRT_Tag, pRenderTargetTag)))
+		return E_FAIL;
 
 	return S_OK;
 }

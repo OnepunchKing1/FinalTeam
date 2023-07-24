@@ -26,12 +26,12 @@ private:
 	CGameInstance*			m_pGameInstance = { nullptr };
 	ID3D11Device*			m_pDevice = { nullptr };
 	ID3D11DeviceContext*	m_pContext = { nullptr };
-	CImGui_Manager_Tool*		m_pUI = { nullptr };
+	CImGui_Manager_Tool*	m_pGUI = { nullptr };
 
 
 private:
 	CRenderer*				m_pRenderer = { nullptr };
-	_float4					m_vTestBG = { 0.5f, 0.8f, 0.5f, 1.0f };
+	_float4					m_vTestBG = { 0.5f, 0.8f, 0.5f, 0.f };
 
 #ifdef _DEBUG
 private:

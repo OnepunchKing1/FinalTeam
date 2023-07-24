@@ -236,8 +236,8 @@ HRESULT CLoader_Tool::LoadingForTool()
 
 	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
 
-	CImGui_Manager_Tool* pUI = CImGui_Manager_Tool::GetInstance();
-	Safe_AddRef(pUI);
+	CImGui_Manager_Tool* pGUI = CImGui_Manager_Tool::GetInstance();
+	Safe_AddRef(pGUI);
 
 #pragma region Object
 	/* Prototype_GameObject_Camera_Tool */
@@ -315,7 +315,7 @@ HRESULT CLoader_Tool::LoadingForTool()
 #pragma endregion
 
 
-	Safe_Release(pUI);
+	Safe_Release(pGUI);
 #pragma endregion
 
 	Safe_Release(pGameInstance);
