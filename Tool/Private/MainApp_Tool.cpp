@@ -59,6 +59,8 @@ HRESULT CMainApp_Tool::Initialize()
 		return E_FAIL;
 	}
 
+	m_pRenderer->Add_RenderTarget(TEXT("MRT_GUI"), TEXT("Target_GUI"), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f));
+
 	return S_OK;
 }
 
@@ -67,11 +69,22 @@ void CMainApp_Tool::Tick(_double dTimeDelta)
 	if (nullptr == m_pGameInstance)
 		return;
 
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_DIKeyDown(DIK_F7))
+		m_isRenderFPS = !m_isRenderFPS;
+
+	if (m_pGameInstance->Get_DIKeyDown(DIK_F8))
+		m_pRenderer->OnOff_RenderTarget();
+	m_TimeAcc += dTimeDelta;
+#endif
+
 	m_pGUI->Tick_ImGui();
 
 	m_pGameInstance->Tick_Engine(dTimeDelta);
 
 	m_pGUI->ImGui_Set();
+
+
 
 	m_pGUI->ImGUI_ShowDemo();
 }
@@ -123,8 +136,7 @@ HRESULT CMainApp_Tool::Render()
 		return E_FAIL;
 #endif
 
-	m_pGUI->Render_ImGui();
-
+	m_pGUI->Render_ImGui(m_pRenderer);
 	m_pGUI->TakeOut_ImGui();
 
 	if (FAILED(m_pGameInstance->Present()))

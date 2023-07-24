@@ -19,6 +19,9 @@ public:
 public:
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pGameObject);
 	HRESULT Draw_RenderObjects();
+	HRESULT	Add_RenderTarget(const _tchar* pMRT_Tag, const _tchar* pRenderTargetTag, enum DXGI_FORMAT eFormat, _float4 vColor);
+	HRESULT Begin_MRT(const _tchar* pMRT_Tag);
+	HRESULT End_MRT();
 #ifdef _DEBUG
 public:
 	void OnOff_RenderTarget() { m_isRenderTarget = !m_isRenderTarget; }

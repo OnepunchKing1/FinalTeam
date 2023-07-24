@@ -31,7 +31,7 @@ private:
 
 private:
 	CRenderer*				m_pRenderer = { nullptr };
-	_float4					m_vTestBG = { 0.5f, 0.8f, 0.5f, 1.0f };
+	_float4					m_vTestBG = { 0.5f, 0.8f, 0.5f, 0.f };
 
 #ifdef _DEBUG
 private:

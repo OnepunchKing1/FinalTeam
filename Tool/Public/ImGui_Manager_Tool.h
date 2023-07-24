@@ -5,6 +5,10 @@
 
 #include "Camera.h"
 
+BEGIN(Engine)
+class CRenderer;
+END
+
 BEGIN(Tool)
 
 class CImGui_Manager_Tool final : public CBase
@@ -43,7 +47,7 @@ private:
 public:
 	HRESULT Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	void Tick_ImGui();
-	void Render_ImGui();
+	HRESULT Render_ImGui(CRenderer* pRenderer);
 	void TakeOut_ImGui();
 	void Release_ImGui();
 
