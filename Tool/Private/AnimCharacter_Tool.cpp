@@ -18,8 +18,6 @@ HRESULT CAnimCharacter_Tool::Initialize_Prototype()
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
-	int ak = 1;
-
 	return S_OK;
 }
 
