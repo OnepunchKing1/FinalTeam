@@ -19,18 +19,6 @@ public:
 	void ImGUI_ShowDemo();
 
 
-#pragma region Animation Set
-
-public:
-	void Animation_ImGui_Set();
-private:
-	
-
-#pragma endregion
-
-
-
-
 #pragma region Camera Set
 public:
 	CCamera::CAMERADESC Get_CameraDesc() { return m_CameraDesc; }

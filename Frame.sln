@@ -4,10 +4,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.33328.57
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Default\Client.vcxproj", "{CA734E84-E906-49A8-9AE3-4151F762B19D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FC8F43AD-7D12-4589-AAD0-2582B6315B70} = {FC8F43AD-7D12-4589-AAD0-2582B6315B70}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Default\Engine.vcxproj", "{FC8F43AD-7D12-4589-AAD0-2582B6315B70}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tool", "Tool\Default\Tool.vcxproj", "{D5E4C728-D1C1-44FC-AC26-ABFE872A07F0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FC8F43AD-7D12-4589-AAD0-2582B6315B70} = {FC8F43AD-7D12-4589-AAD0-2582B6315B70}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

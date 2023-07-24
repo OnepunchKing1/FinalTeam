@@ -23,14 +23,22 @@ public:
 	virtual void	LateTick(_double dTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public: // ImGui
+	void	ImGUI_Control(_double dTimeDelta);
+
+public: // 키인풋
+	void	KeyInput(_double dTimeDelta);
+
 private:
 	// 임시 코드 
 	_uint	m_iNumAnim = { 0 };
 
 
 private: //ImGui 변수
-	CImGui_Manager_Tool* m_pImGui = { nullptr };
+	CImGui_Animation_Tool* m_pImGui_Anim = { nullptr };
 
+	vector<char*> m_vecName;
+	_bool	m_isFirst_Name = { true };
 
 private:
 	HRESULT Add_Components();
