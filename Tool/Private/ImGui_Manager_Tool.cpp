@@ -93,19 +93,6 @@ void CImGui_Manager_Tool::ImGUI_ShowDemo()
 		ImGui::ShowDemoWindow(&show_deme_window);
 }
 
-void CImGui_Manager_Tool::Animation_ImGui_Set()
-{
-    CGameInstance* pGameInstance = CGameInstance::GetInstance();
-    Safe_AddRef(pGameInstance);
-    ImGui::Begin("AnimationTool");
-
-
-
-
-    ImGui::End();
-    Safe_Release(pGameInstance);
-}
-
 #pragma region Light Set
 void CImGui_Manager_Tool::Set_DefaultLight_ImGui(LIGHTDESC LightDesc)
 {
