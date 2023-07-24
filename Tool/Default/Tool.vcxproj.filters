@@ -55,6 +55,18 @@
     <Filter Include="02. GameObjects\Character\Anim_Character">
       <UniqueIdentifier>{37e945e1-c81f-4407-99fb-ae893ae2fd57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject">
+      <UniqueIdentifier>{623afc70-deac-4151-b5a8-efe88a528e4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject\Static">
+      <UniqueIdentifier>{f007f135-3c55-48cc-b982-0e14c0de5bbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject\Terrain">
+      <UniqueIdentifier>{9e48e7dd-c2ce-4b35-a80c-0b3560fe1e42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject\Rotation">
+      <UniqueIdentifier>{d2805afa-dbf5-4b18-865d-615809121805}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -129,6 +141,18 @@
     <ClInclude Include="..\Public\AnimCharacter_Tool.h">
       <Filter>02. GameObjects\Character\Anim_Character</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotationMapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject\Rotation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TerrainMapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StaticMapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject\Static</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -187,6 +211,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\AnimCharacter_Tool.cpp">
       <Filter>02. GameObjects\Character\Anim_Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotationMapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject\Rotation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TerrainMapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticMapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject\Static</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
