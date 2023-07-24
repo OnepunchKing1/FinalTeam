@@ -44,6 +44,7 @@ public:
 	HRESULT Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	void Tick_ImGui();
 	void Render_ImGui();
+	void TakeOut_ImGui();
 	void Release_ImGui();
 
 public:

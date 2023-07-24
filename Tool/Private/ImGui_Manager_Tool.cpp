@@ -111,6 +111,7 @@ HRESULT CImGui_Manager_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11Devic
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -130,6 +131,15 @@ void CImGui_Manager_Tool::Render_ImGui()
 {
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+}
+
+void CImGui_Manager_Tool::TakeOut_ImGui()
+{
+   /* if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+    }*/
 }
 
 void CImGui_Manager_Tool::Release_ImGui()
