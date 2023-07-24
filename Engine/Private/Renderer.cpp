@@ -26,9 +26,9 @@ HRESULT CRenderer::Initialize_Prototype()
 	m_pContext->RSGetViewports(&iNumViewports, &Viewport);
 
 	/* For.Target_Default */
-	_float4 vColor_Diffuse = { 0.8f, 0.5f, 0.5f, 0.f };
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Diffuse")
-		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_B8G8R8A8_UNORM, vColor_Diffuse)))
+	_float4 vColor_Default = { 0.8f, 0.5f, 0.5f, 0.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_Default")
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_B8G8R8A8_UNORM, vColor_Default)))
 		return E_FAIL;
 	/* For.Target_Diffuse */
 	_float4 vColor_Diffuse = { 1.f, 0.f, 1.f, 0.f };
