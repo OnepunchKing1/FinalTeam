@@ -52,6 +52,27 @@
     <Filter Include="02. GameObjects\Character\Player">
       <UniqueIdentifier>{a0b19276-052a-4300-8baa-093480bd50d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Character\Anim_Character">
+      <UniqueIdentifier>{37e945e1-c81f-4407-99fb-ae893ae2fd57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="999. ImGUI\ImGUI_Sub">
+      <UniqueIdentifier>{1b3e48da-8f45-447e-affb-c3a91cdb09c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. UI\ImGui_Animation">
+      <UniqueIdentifier>{05724e36-080e-4049-8bfb-c6dc427dee8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject">
+      <UniqueIdentifier>{623afc70-deac-4151-b5a8-efe88a528e4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject\Static">
+      <UniqueIdentifier>{f007f135-3c55-48cc-b982-0e14c0de5bbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject\Terrain">
+      <UniqueIdentifier>{9e48e7dd-c2ce-4b35-a80c-0b3560fe1e42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject\Rotation">
+      <UniqueIdentifier>{d2805afa-dbf5-4b18-865d-615809121805}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -74,30 +95,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\MainApp_Tool.h">
       <Filter>00. MainApp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ImGUI\imconfig.h">
-      <Filter>999. ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ImGUI\imgui.h">
-      <Filter>999. ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ImGUI\imgui_impl_dx11.h">
-      <Filter>999. ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ImGUI\imgui_impl_win32.h">
-      <Filter>999. ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ImGUI\imgui_internal.h">
-      <Filter>999. ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ImGUI\imstb_rectpack.h">
-      <Filter>999. ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ImGUI\imstb_textedit.h">
-      <Filter>999. ImGUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\ImGUI\imstb_truetype.h">
-      <Filter>999. ImGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Loading_Tool.h">
       <Filter>01. Levels\99.Loading</Filter>
@@ -123,6 +120,48 @@
     <ClInclude Include="..\Public\Player_Tool.h">
       <Filter>02. GameObjects\Character\Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AnimCharacter_Tool.h">
+      <Filter>02. GameObjects\Character\Anim_Character</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imconfig.h">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imgui_impl_dx11.h">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imgui_impl_win32.h">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imgui_internal.h">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imstb_rectpack.h">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imstb_textedit.h">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imstb_truetype.h">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ImGUI\imgui.h">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGui_Animation_Tool.h">
+      <Filter>03. UI\ImGui_Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotationMapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject\Rotation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TerrainMapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StaticMapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject\Static</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -133,24 +172,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\MainApp_Tool.cpp">
       <Filter>00. MainApp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGUI\imgui.cpp">
-      <Filter>999. ImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGUI\imgui_draw.cpp">
-      <Filter>999. ImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGUI\imgui_impl_dx11.cpp">
-      <Filter>999. ImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGUI\imgui_impl_win32.cpp">
-      <Filter>999. ImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGUI\imgui_tables.cpp">
-      <Filter>999. ImGUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\ImGUI\imgui_widgets.cpp">
-      <Filter>999. ImGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\ImGUI\imgui_demo.cpp">
       <Filter>999. ImGUI</Filter>
@@ -178,6 +199,42 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_Tool.cpp">
       <Filter>02. GameObjects\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AnimCharacter_Tool.cpp">
+      <Filter>02. GameObjects\Character\Anim_Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui_draw.cpp">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui_impl_dx11.cpp">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui_impl_win32.cpp">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui_tables.cpp">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui_widgets.cpp">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImGUI\imgui.cpp">
+      <Filter>999. ImGUI\ImGUI_Sub</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImGui_Animation_Tool.cpp">
+      <Filter>03. UI\ImGui_Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotationMapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject\Rotation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TerrainMapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticMapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject\Static</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

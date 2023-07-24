@@ -53,6 +53,7 @@ public:
 public:
 	void Translation(_float3 vTranslation);			//현재 위치에서 (Right, Up, Look)만큼 이동
 	void Rotation(_fvector _vAxis, _float fDegree);	//초기상태 기준 Axis 축으로 디그리 각도만큼 회전
+	void Rotation(_float3 vAngle); // 초기상태 기준 x, y, z 기준으로 디그리 각도만큼 회전
 	void Turn(_float fDegree, _fvector vAxis);		//현재상태 기준 Axis 축으로 디그리 각도만큼 회전
 	void Turn(_fvector vAxis, _double dTimeDelta);	//현재상태 기준 Axis 축으로 자체 회전속도로 회전
 	void Scaling(const _float3& vScale);			//(Right, Up, Look)만큼 스케일 조정

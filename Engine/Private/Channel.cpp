@@ -83,9 +83,27 @@ void CChannel::Invalidate(CModel* pModel, _uint& pCurrentKeyFrame, _double Track
 	}
 	else
 	{
-		while (TrackPosition >= m_KeyFrames[pCurrentKeyFrame + 1].dTime)
-			++pCurrentKeyFrame;
-		//재생 시간이 다음 키프레임으로 넘어가면 현재 키 프레임을 증가시킨다
+		if (m_dSave_TrackPosition == TrackPosition)
+			m_isReverse = false;
+		if (m_dSave_TrackPosition < TrackPosition)
+			m_isReverse = false;
+		else if (TrackPosition < m_dSave_TrackPosition)
+			m_isReverse = true;
+
+		
+		//일반재생
+		if (m_isReverse == false)
+		{
+			while (TrackPosition >= m_KeyFrames[pCurrentKeyFrame + 1].dTime)
+				++pCurrentKeyFrame;
+			//재생 시간이 다음 키프레임으로 넘어가면 현재 키 프레임을 증가시킨다
+		}
+		//역재생
+		else
+		{
+			while (TrackPosition < m_KeyFrames[pCurrentKeyFrame].dTime)
+				--pCurrentKeyFrame;
+		}
 
 		_double dRatio = (TrackPosition - m_KeyFrames[pCurrentKeyFrame].dTime)
 			/ (m_KeyFrames[pCurrentKeyFrame + 1].dTime - m_KeyFrames[pCurrentKeyFrame].dTime);
@@ -96,7 +114,7 @@ void CChannel::Invalidate(CModel* pModel, _uint& pCurrentKeyFrame, _double Track
 		_float3		vSourScale, vDestScale;
 		_float4		vSourRotation, vDestRotation;
 		_float3		vSourPosition, vDestPosition;
-		
+
 		vSourScale = m_KeyFrames[pCurrentKeyFrame].vScale;
 		vDestScale = m_KeyFrames[pCurrentKeyFrame + 1].vScale;
 
@@ -105,11 +123,11 @@ void CChannel::Invalidate(CModel* pModel, _uint& pCurrentKeyFrame, _double Track
 
 		vSourPosition = m_KeyFrames[pCurrentKeyFrame].vPosition;
 		vDestPosition = m_KeyFrames[pCurrentKeyFrame + 1].vPosition;
-
+		
 		XMStoreFloat3(&vScale, XMVectorLerp(XMLoadFloat3(&vSourScale), XMLoadFloat3(&vDestScale), (_float)dRatio));
 		XMStoreFloat4(&vRotation, XMQuaternionSlerp(XMLoadFloat4(&vSourRotation), XMLoadFloat4(&vDestRotation), (_float)dRatio));
 		XMStoreFloat3(&vPosition, XMVectorLerp(XMLoadFloat3(&vSourPosition), XMLoadFloat3(&vDestPosition), (_float)dRatio));
-		
+
 		/*한 프레임 구간의 상태를 선형보간하는 작업 - Lerp, Slerp
 		* 키프레임 시작지점 - Sour
 		* 키프레임 끝지점 - Dest
@@ -125,6 +143,9 @@ void CChannel::Invalidate(CModel* pModel, _uint& pCurrentKeyFrame, _double Track
 
 	pModel->Get_Bone(m_iBoneIndex)->Set_TransformationMatrix(TransformationMatrix);
 	//위에서 보간한 상태로 행렬을 만들고, 해당 행렬로 뼈를 갱신한다
+
+	//저장
+	m_dSave_TrackPosition = TrackPosition;
 }
 
 CChannel* CChannel::Create(ifstream* pFin, const char* pName, _uint iBoneIndex)

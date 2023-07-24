@@ -186,6 +186,25 @@ void CTransform::Rotation(_fvector _vAxis, _float fDegree)
 	}
 }
 
+void CTransform::Rotation(_float3 vAngle)
+{
+	_float3		vScale = Get_Scaled();
+
+	_vector		vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f) * vScale.x;
+	_vector		vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f) * vScale.y;
+	_vector		vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f) * vScale.z;
+
+	_vector		vAxisX = { 1.f, 0.f, 0.f, 0.f };
+	_vector		vAxisY = { 0.f, 1.f, 0.f, 0.f };
+	_vector		vAxisZ = { 0.f, 0.f, 1.f, 0.f };
+
+	_matrix		RotationMatrix = XMMatrixRotationRollPitchYaw(XMConvertToRadians(vAngle.x), XMConvertToRadians(vAngle.y), XMConvertToRadians(vAngle.z));
+
+	Set_State(CTransform::STATE_RIGHT, XMVector3TransformNormal(vRight, RotationMatrix));
+	Set_State(CTransform::STATE_UP, XMVector3TransformNormal(vUp, RotationMatrix));
+	Set_State(CTransform::STATE_LOOK, XMVector3TransformNormal(vLook, RotationMatrix));
+}
+
 void CTransform::Turn(_float fDegree, _fvector vAxis)
 {
 	_vector vRight = Get_State(CTransform::STATE_RIGHT);
