@@ -7,7 +7,6 @@ CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
 {
 	Safe_AddRef(m_pGameInstance);
-	int a = 10;
 }
 
 HRESULT CMainApp::Initialize()
