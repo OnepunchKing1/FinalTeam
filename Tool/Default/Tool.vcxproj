@@ -176,6 +176,7 @@
     <ClInclude Include="..\Public\AnimCharacter_Tool.h" />
     <ClInclude Include="..\Public\Camera_Tool.h" />
     <ClInclude Include="..\Public\Character_Tool.h" />
+    <ClInclude Include="..\Public\ImGui_Animation_Tool.h" />
     <ClInclude Include="..\Public\Level_Loading_Tool.h" />
     <ClInclude Include="..\Public\Level_Tool.h" />
     <ClInclude Include="..\Public\Loader_Tool.h" />
@@ -201,6 +202,7 @@
     <ClCompile Include="..\Private\AnimCharacter_Tool.cpp" />
     <ClCompile Include="..\Private\Camera_Tool.cpp" />
     <ClCompile Include="..\Private\Character_Tool.cpp" />
+    <ClCompile Include="..\Private\ImGui_Animation_Tool.cpp" />
     <ClCompile Include="..\Private\Level_Loading_Tool.cpp" />
     <ClCompile Include="..\Private\Level_Tool.cpp" />
     <ClCompile Include="..\Private\Loader_Tool.cpp" />

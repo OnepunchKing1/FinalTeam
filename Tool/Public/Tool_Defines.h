@@ -18,5 +18,6 @@ extern HWND g_hWnd;
 extern HINSTANCE g_hInstance;
 
 #include "ImGui_Manager_Tool.h"
+#include "ImGui_Animation_Tool.h"
 
 using namespace Tool;
