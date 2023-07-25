@@ -135,28 +135,17 @@ void CImGui_Manager_Tool::Tick_ImGui()
 
 }
 
-HRESULT CImGui_Manager_Tool::Render_ImGui(CRenderer* pRenderer)
+HRESULT CImGui_Manager_Tool::Render_ImGui()
 {
     ImGui::Render();
-
-    if (FAILED(pRenderer->Begin_MRT(TEXT("MRT_GUI"))))
-        return E_FAIL;
-
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-    if (FAILED(pRenderer->End_MRT()))
-        return E_FAIL;
-
-    return S_OK;
-}
-
-void CImGui_Manager_Tool::TakeOut_ImGui()
-{
     if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
     }
+    return S_OK;
 }
 
 void CImGui_Manager_Tool::Release_ImGui()

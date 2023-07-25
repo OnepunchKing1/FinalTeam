@@ -17,11 +17,18 @@ public:
 	HRESULT Initialize(void* pArg) override;
 
 public:
+	template<typename T>
+	HRESULT RegistCallBack(T* pClassType, HRESULT(T::*fp)());
+
+public:
 	HRESULT Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pGameObject);
-	HRESULT Draw_RenderObjects();
 	HRESULT	Add_RenderTarget(const _tchar* pMRT_Tag, const _tchar* pRenderTargetTag, enum DXGI_FORMAT eFormat, _float4 vColor);
+	HRESULT Draw_RenderObjects(HRESULT (*fp)() = nullptr);
+	HRESULT Begin_DefaultRT();
 	HRESULT Begin_MRT(const _tchar* pMRT_Tag);
+	HRESULT End_DefaultRT();
 	HRESULT End_MRT();
+
 #ifdef _DEBUG
 public:
 	void OnOff_RenderTarget() { m_isRenderTarget = !m_isRenderTarget; }
@@ -42,6 +49,9 @@ private:
 	_float4x4				m_WorldMatrix;
 	_float4x4				m_ViewMatrix;
 	_float4x4				m_ProjMatrix;
+	
+	function<HRESULT()>		m_Func;
+
 
 #ifdef _DEBUG
 private:
@@ -58,6 +68,8 @@ private:
 	HRESULT Render_Blend();
 	HRESULT Render_Effect(); // Effect
 	HRESULT Render_UI();
+
+	HRESULT Render_CallBack();
 
 #ifdef _DEBUG
 private:
@@ -78,3 +90,14 @@ public:
 };
 
 END
+
+template<typename T>
+inline HRESULT CRenderer::RegistCallBack(T* pClassType, HRESULT(T::*fp)())
+{
+	if (nullptr != fp)
+	{
+		m_Func = bind(fp, pClassType);
+	}
+
+	return S_OK;
+}

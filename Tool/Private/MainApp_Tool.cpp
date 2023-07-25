@@ -84,8 +84,6 @@ void CMainApp_Tool::Tick(_double dTimeDelta)
 
 	m_pGUI->ImGui_Set();
 
-
-
 	m_pGUI->ImGUI_ShowDemo();
 }
 
@@ -110,8 +108,12 @@ HRESULT CMainApp_Tool::Render()
 		return E_FAIL;
 	}
 
+	m_pRenderer->RegistCallBack<CImGui_Manager_Tool>(m_pGUI, &CImGui_Manager_Tool::Render_ImGui);
+
 	if (FAILED(m_pRenderer->Draw_RenderObjects()))
+	{
 		return E_FAIL;
+	}
 
 #ifdef _DEBUG
 	++m_iRenderCnt;
@@ -135,9 +137,6 @@ HRESULT CMainApp_Tool::Render()
 	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F8 To OnOff RenderDebug"), _float2(0.f, 700.f), _float2(0.5f, 0.5f))))
 		return E_FAIL;
 #endif
-
-	m_pGUI->Render_ImGui(m_pRenderer);
-	m_pGUI->TakeOut_ImGui();
 
 	if (FAILED(m_pGameInstance->Present()))
 	{
