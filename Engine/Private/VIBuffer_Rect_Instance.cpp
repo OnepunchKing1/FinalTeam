@@ -39,16 +39,16 @@ HRESULT CVIBuffer_Rect_Instance::Initialize_Prototype(_uint iNumInstance)
 	ZeroMemory(pVertices, sizeof(VTXTEX) * m_iNumVertices);
 
 	pVertices[0].vPosition = _float3(-0.5f, 0.5f, 0.f);
-	pVertices[0].vUV = _float2(0.0f, 0.f);
+	pVertices[0].vTexUV = _float2(0.0f, 0.f);
 
 	pVertices[1].vPosition = _float3(0.5f, 0.5f, 0.f);
-	pVertices[1].vUV = _float2(1.0f, 0.f);
+	pVertices[1].vTexUV = _float2(1.0f, 0.f);
 
 	pVertices[2].vPosition = _float3(0.5f, -0.5f, 0.f);
-	pVertices[2].vUV = _float2(1.0f, 1.f);
+	pVertices[2].vTexUV = _float2(1.0f, 1.f);
 
 	pVertices[3].vPosition = _float3(-0.5f, -0.5f, 0.f);
-	pVertices[3].vUV = _float2(0.0f, 1.f);
+	pVertices[3].vTexUV = _float2(0.0f, 1.f);
 
 	ZeroMemory(&m_SubresourceData, sizeof m_SubresourceData);
 	m_SubresourceData.pSysMem = pVertices;
