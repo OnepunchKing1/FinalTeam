@@ -120,7 +120,7 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	_uint      iNumViewport = 1;
 	m_pContext->RSGetViewports(&iNumViewport, &m_VP);
-
+		
 	return S_OK;
 }
 
@@ -145,6 +145,23 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pGameO
 	return S_OK;
 }
 
+HRESULT CRenderer::Add_RenderTarget(const _tchar* pMRT_Tag, const _tchar* pRenderTargetTag, DXGI_FORMAT eFormat, _float4 vColor)
+{
+	_uint	iNumViewports = { 1 };
+	D3D11_VIEWPORT	Viewport;
+	m_pContext->RSGetViewports(&iNumViewports, &Viewport);
+
+	_float4 vColor_Diffuse = { 1.f, 0.f, 1.f, 0.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, pRenderTargetTag
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, eFormat, vColor)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Add_MRT(pMRT_Tag, pRenderTargetTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 #ifdef _DEBUG
 HRESULT CRenderer::Add_DebugGroup(CComponent* pComponent)
 {
@@ -159,8 +176,14 @@ HRESULT CRenderer::Add_DebugGroup(CComponent* pComponent)
 }
 #endif // _DEBUG
 
-HRESULT CRenderer::Draw_RenderObjects()
+HRESULT CRenderer::Draw_RenderObjects(HRESULT (*fp)())
 {
+	if (FAILED(Begin_DefaultRT()))
+	{
+		MSG_BOX("Failed to Begin_DefaultRT");
+		return E_FAIL;
+	}
+
 	if (FAILED(Render_Priority()))
 	{
 		MSG_BOX("Failed to Render_Priority");
@@ -218,6 +241,64 @@ HRESULT CRenderer::Draw_RenderObjects()
 	}
 #endif // _DEBUG
 
+	if (FAILED(Render_CallBack()))
+	{
+		MSG_BOX("Failed to Render_CallBack");
+		return E_FAIL;
+	}
+
+	if (FAILED(End_DefaultRT()))
+	{
+		MSG_BOX("Failed to Begin_DefaultRT");
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Begin_DefaultRT()
+{
+	if (FAILED(m_pTarget_Manager->Begin_DefaultRT()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Begin_MRT(const _tchar* pMRT_Tag)
+{
+	if (FAILED(m_pTarget_Manager->Begin_MRT(pMRT_Tag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::End_DefaultRT()
+{
+	if (FAILED(m_pTarget_Manager->End_DefaultRT()))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Default"), m_pShader, "g_Texture")))
+		return E_FAIL;
+
+	m_pShader->Begin(0);
+
+	m_pVIBuffer->Render();
+	
+	return S_OK;
+}
+
+HRESULT CRenderer::End_MRT()
+{
+	if (FAILED(m_pTarget_Manager->End_MRT()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -263,7 +344,7 @@ HRESULT CRenderer::Render_ShadowDepth()
 
 	m_RenderObjects[RENDER_SHADOWDEPTH].clear();
 
-	m_pTarget_Manager->End_MRT(m_pContext);
+	m_pTarget_Manager->End_MRT();
 
 
 	return S_OK;
@@ -276,7 +357,7 @@ HRESULT CRenderer::Render_NonBlend()
 
 	/* 백버퍼를 빼고 */
 	/* Diffuse + Normal */
-	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_GameObject"))))
+	if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_GameObject"))))
 		return E_FAIL;
 	
 	m_pContext->RSSetViewports(1, &m_VP);
@@ -291,7 +372,7 @@ HRESULT CRenderer::Render_NonBlend()
 
 	m_RenderObjects[RENDER_NONBLEND].clear();
 
-	if (FAILED(m_pTarget_Manager->End_MRT(m_pContext)))
+	if (FAILED(m_pTarget_Manager->End_MRT()))
 		return E_FAIL;
 
 	return S_OK;
@@ -341,6 +422,17 @@ HRESULT CRenderer::Render_UI()
 	}
 
 	m_RenderObjects[RENDER_UI].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_CallBack()
+{
+	if (nullptr != m_Func)
+	{
+		if (FAILED(m_Func()))
+			return S_OK;
+	}
 
 	return S_OK;
 }
@@ -398,7 +490,7 @@ HRESULT CRenderer::Render_Lights()
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_LightAcc"))))
+	if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_LightAcc"))))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -431,7 +523,7 @@ HRESULT CRenderer::Render_Lights()
 
 	m_pLight_Manager->Render(m_pShader, m_pVIBuffer);
 
-	m_pTarget_Manager->End_MRT(m_pContext);
+	m_pTarget_Manager->End_MRT();
 
 	return S_OK;
 }

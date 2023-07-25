@@ -441,7 +441,6 @@ Client/Bin/*
 !Client/Bin/ShaderFiles
 !Engine/Bin
 Engine/Bin/*
-!Engine/Bin/Engine.dll
 !Engine/Bin/ShaderFiles
 !Engine/ThirdPartyLib/*
 !Tool/Bin
