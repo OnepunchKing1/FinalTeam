@@ -37,28 +37,28 @@ HRESULT CVIBuffer_Cube::Initialize_Prototype()
 	ZeroMemory(pVertices, sizeof(VTXCUBETEX) * m_iNumVertices);
 
 	pVertices[0].vPosition = _float3(-0.5f, 0.5f, -0.5f);
-	pVertices[0].vUV = pVertices[0].vPosition;
+	pVertices[0].vTexUV = pVertices[0].vPosition;
 
 	pVertices[1].vPosition = _float3(0.5f, 0.5f, -0.5f);
-	pVertices[1].vUV = pVertices[1].vPosition;
+	pVertices[1].vTexUV = pVertices[1].vPosition;
 
 	pVertices[2].vPosition = _float3(0.5f, -0.5f, -0.5f);
-	pVertices[2].vUV = pVertices[2].vPosition;
+	pVertices[2].vTexUV = pVertices[2].vPosition;
 
 	pVertices[3].vPosition = _float3(-0.5f, -0.5f, -0.5f);
-	pVertices[3].vUV = pVertices[3].vPosition;
+	pVertices[3].vTexUV = pVertices[3].vPosition;
 
 	pVertices[4].vPosition = _float3(-0.5f, 0.5f, 0.5f);
-	pVertices[4].vUV = pVertices[4].vPosition;
+	pVertices[4].vTexUV = pVertices[4].vPosition;
 
 	pVertices[5].vPosition = _float3(0.5f, 0.5f, 0.5f);
-	pVertices[5].vUV = pVertices[5].vPosition;
+	pVertices[5].vTexUV = pVertices[5].vPosition;
 
 	pVertices[6].vPosition = _float3(0.5f, -0.5f, 0.5f);
-	pVertices[6].vUV = pVertices[6].vPosition;
+	pVertices[6].vTexUV = pVertices[6].vPosition;
 
 	pVertices[7].vPosition = _float3(-0.5f, -0.5f, 0.5f);
-	pVertices[7].vUV = pVertices[7].vPosition;
+	pVertices[7].vTexUV = pVertices[7].vPosition;
 
 	ZeroMemory(&m_SubresourceData, sizeof m_SubresourceData);
 	m_SubresourceData.pSysMem = pVertices;

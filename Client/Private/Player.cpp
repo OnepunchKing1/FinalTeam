@@ -29,7 +29,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pModelCom->Set_Animation(0);
+	m_pModelCom->Set_Animation(7);
 
 	return S_OK;
 }
@@ -42,7 +42,7 @@ void CPlayer::Tick(_double dTimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (pGameInstance->Get_DIKeyState(DIK_UPARROW) & 0x80)
+	if (pGameInstance->Get_DIKeyState(DIK_HOME) & 0x80)
 	{
 		++m_iNumAnim;
 		if (m_pModelCom->Get_NumAnims() <= m_iNumAnim)
@@ -50,7 +50,7 @@ void CPlayer::Tick(_double dTimeDelta)
 		m_pModelCom->Set_Animation(m_iNumAnim);
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_DOWNARROW) & 0x80)
+	if (pGameInstance->Get_DIKeyState(DIK_END) & 0x80)
 	{
 		if (0 < m_iNumAnim)
 			--m_iNumAnim;
@@ -58,6 +58,23 @@ void CPlayer::Tick(_double dTimeDelta)
 			m_iNumAnim = 0;
 		m_pModelCom->Set_Animation(m_iNumAnim);
 	}
+	if (pGameInstance->Get_DIKeyState(DIK_UP))
+	{
+		m_pTransformCom->Go_Straight(dTimeDelta);
+	}
+	if (pGameInstance->Get_DIKeyState(DIK_DOWN))
+	{
+		m_pTransformCom->Go_Backward(dTimeDelta);
+	}
+	if (pGameInstance->Get_DIKeyState(DIK_LEFT))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f,1.f,0.f,0.f),-dTimeDelta);
+	}
+	if (pGameInstance->Get_DIKeyState(DIK_RIGHT))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta);
+	}
+
 
 	Safe_Release(pGameInstance);
 
@@ -65,14 +82,18 @@ void CPlayer::Tick(_double dTimeDelta)
 
 	__super::Tick(dTimeDelta);
 
+	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this)))
+		return;
+	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this)))
+		return;
+
 }
 
 void CPlayer::LateTick(_double dTimeDelta)
 {
 	__super::LateTick(dTimeDelta);
 
-	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this)))
-		return;
+	
 
 #ifdef _DEBUG
 	/*if (FAILED(m_pRendererCom->Add_DebugGroup(m_pNavigationCom)))
@@ -90,6 +111,26 @@ HRESULT CPlayer::Render()
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
+	//Outline Render
+	for (m_iMeshNum = 0; m_iMeshNum < iNumMeshes; m_iMeshNum++)
+	{
+
+
+		if (FAILED(m_pModelCom->Bind_ShaderResource(m_iMeshNum, m_pShaderCom, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_ShaderBoneMatrices(m_iMeshNum, m_pShaderCom, "g_BoneMatrices")))
+			return E_FAIL;
+
+		if (m_iMeshNum == 2)
+			m_pShaderCom->Begin(2);
+		else
+			m_pShaderCom->Begin(1);
+
+		m_pModelCom->Render(m_iMeshNum);
+	}
+
+	// Default Render
 	for (_uint i = 0; i < iNumMeshes; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
@@ -106,10 +147,64 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
+HRESULT CPlayer::Render_ShadowDepth()
+{
+	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
+
+	_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_vector	vLightEye = XMVectorSet(-5.f, 10.f, -5.f, 1.f);
+	_vector	vLightAt = XMVectorSet(30.f, 0.f, 30.f, 1.f);
+	_vector	vLightUp = XMVectorSet(0.f, 1.f, 0.f, 1.f);
+
+
+	_matrix      LightViewMatrix = XMMatrixLookAtLH(vLightEye, vLightAt, vLightUp);
+	_float4x4   FloatLightViewMatrix;
+	XMStoreFloat4x4(&FloatLightViewMatrix, LightViewMatrix);
+
+	if (FAILED(m_pShaderCom->SetUp_Matrix("g_ViewMatrix",
+		&FloatLightViewMatrix)))
+		return E_FAIL;
+
+	_matrix      LightProjMatrix;
+	_float4x4   FloatLightProjMatrix;
+
+	LightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(120.f), _float(1280) / _float(720), 0.2f, 300.f);
+	XMStoreFloat4x4(&FloatLightProjMatrix, LightProjMatrix);
+
+	if (FAILED(m_pShaderCom->SetUp_Matrix("g_ProjMatrix",
+		&FloatLightProjMatrix)))
+		return E_FAIL;
+
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; i++)
+	{
+		if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_ShaderBoneMatrices(i, m_pShaderCom, "g_BoneMatrices")))
+			return E_FAIL;
+
+
+ 
+ 		m_pShaderCom->Begin(3);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
 HRESULT CPlayer::Add_Components()
 {
 	/* for.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TestBox"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tanjiro"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 	{
 		MSG_BOX("Failed to Add_Com_Model : CPlayer");
@@ -145,6 +240,18 @@ HRESULT CPlayer::SetUp_ShaderResources()
 	_float4x4 ProjMatrix = pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ);
 	if (FAILED(m_pShaderCom->SetUp_Matrix("g_ProjMatrix", &ProjMatrix)))
 		return E_FAIL;
+
+
+	// OutlineThickness
+	if (FAILED(m_pShaderCom->SetUp_RawValue("g_OutlineThickness", &m_fOutlineThickness, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->SetUp_RawValue("g_OutlineFaceThickness", &m_fOutlineFaceThickness, sizeof(_float))))
+		return E_FAIL;
+
+
+
+
 
 	Safe_Release(pGameInstance);
 

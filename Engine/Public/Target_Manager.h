@@ -12,13 +12,19 @@ private:
 	virtual ~CTarget_Manager() = default;
 
 public:
+	HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+
+public:
 	HRESULT Add_RenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, const _float4& vClearColor);
 	HRESULT Add_MRT(const _tchar* pMRTTag, const _tchar* pTargetTag);
 
 	HRESULT Begin_MRT(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
+	HRESULT Begin_MRT_LightDepth(ID3D11DeviceContext* pContext, const _tchar* pMRTTag); // Shadow
 	HRESULT End_MRT(ID3D11DeviceContext* pContext);
 
 	HRESULT Bind_ShaderResourceView(const _tchar* pTargetTag, class CShader* pShader, const char* pConstantName);
+
+	HRESULT Ready_LightDepthStencilRenderTargetView(); // Shadow
 
 #ifdef _DEBUG
 public:
@@ -37,6 +43,11 @@ private:
 private:
 	ID3D11RenderTargetView*		m_pOldRTV = { nullptr };
 	ID3D11DepthStencilView*		m_pDSV = { nullptr };
+
+	// Shadow
+	ID3D11DepthStencilView* m_pShadowDSV = { nullptr };
+	ID3D11Device* m_pDevice = { nullptr };
+	ID3D11DeviceContext* m_pContext = { nullptr };
 
 private:
 	class CRenderTarget* Find_RenderTarget(const _tchar* pTargetTag);
