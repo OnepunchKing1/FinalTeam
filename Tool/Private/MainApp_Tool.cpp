@@ -7,10 +7,10 @@
 
 CMainApp_Tool::CMainApp_Tool()
 	: m_pGameInstance(CGameInstance::GetInstance())
-	, m_pUI(CImGui_Manager_Tool::GetInstance())
+	, m_pGUI(CImGui_Manager_Tool::GetInstance())
 {
 	Safe_AddRef(m_pGameInstance);
-	Safe_AddRef(m_pUI);
+	Safe_AddRef(m_pGUI);
 }
 
 HRESULT CMainApp_Tool::Initialize()
@@ -41,7 +41,7 @@ HRESULT CMainApp_Tool::Initialize()
 		return E_FAIL;
 	}
 
-	if (FAILED(m_pUI->Initialize_ImGui(m_pDevice, m_pContext)))
+	if (FAILED(m_pGUI->Initialize_ImGui(m_pDevice, m_pContext)))
 	{
 		MSG_BOX("Failed to SetUp_ImGUI");
 		return E_FAIL;
@@ -58,6 +58,8 @@ HRESULT CMainApp_Tool::Initialize()
 		MSG_BOX("Failed to SetUp_StartLevel");
 		return E_FAIL;
 	}
+
+	m_pRenderer->Add_RenderTarget(TEXT("MRT_GUI"), TEXT("Target_GUI"), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f));
 
 	return S_OK;
 }
@@ -76,13 +78,13 @@ void CMainApp_Tool::Tick(_double dTimeDelta)
 	m_TimeAcc += dTimeDelta;
 #endif
 
-	m_pUI->Tick_ImGui();
+	m_pGUI->Tick_ImGui();
 
 	m_pGameInstance->Tick_Engine(dTimeDelta);
 
-	m_pUI->ImGui_Set();
+	m_pGUI->ImGui_Set();
 
-	m_pUI->ImGUI_ShowDemo();
+	m_pGUI->ImGUI_ShowDemo();
 }
 
 HRESULT CMainApp_Tool::Render()
@@ -106,8 +108,12 @@ HRESULT CMainApp_Tool::Render()
 		return E_FAIL;
 	}
 
+	m_pRenderer->RegistCallBack<CImGui_Manager_Tool>(m_pGUI, &CImGui_Manager_Tool::Render_ImGui);
+
 	if (FAILED(m_pRenderer->Draw_RenderObjects()))
+	{
 		return E_FAIL;
+	}
 
 #ifdef _DEBUG
 	++m_iRenderCnt;
@@ -131,8 +137,6 @@ HRESULT CMainApp_Tool::Render()
 	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F8 To OnOff RenderDebug"), _float2(0.f, 700.f), _float2(0.5f, 0.5f))))
 		return E_FAIL;
 #endif
-
-	m_pUI->Render_ImGui();
 
 	if (FAILED(m_pGameInstance->Present()))
 	{
@@ -224,9 +228,9 @@ CMainApp_Tool* CMainApp_Tool::Create()
 
 void CMainApp_Tool::Free()
 {
-	m_pUI->Release_ImGui();
+	m_pGUI->Release_ImGui();
 
-	Safe_Release(m_pUI);
+	Safe_Release(m_pGUI);
 	Safe_Release(m_pRenderer);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
