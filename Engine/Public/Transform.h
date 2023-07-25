@@ -59,6 +59,7 @@ public:
 	void Scaling(const _float3& vScale);			//(Right, Up, Look)만큼 스케일 조정
 	void Scaling(_float fScale);					//fScale만큼 전체 스케일 조정
 	void Chase(_fvector vTargetPos, _double dTimeDelta, _float fMinDis);
+	void Chase_Target(_fvector vTargetPos, _double dTimeDelta, _double ChaseSpeed = 1.0);
 	void LookAt(_fvector vTargetPos);
 
 private:

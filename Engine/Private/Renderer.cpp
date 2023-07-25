@@ -61,6 +61,12 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowDepth"), iShadowMapCX, iShadowMapCY, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_ShadowDepth)))
 		return E_FAIL;
 
+	/*_float4 vColor_SSAO = { 1.f, 1.f, 1.f, 1.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAO"), iShadowMapCX, iShadowMapCY, DXGI_FORMAT_R8_UNORM, vColor_SSAO)))
+		return E_FAIL;*/
+
+
+
 	/* For.MRT_GameObject */
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Diffuse"))))
 		return E_FAIL;
@@ -68,6 +74,8 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Depth"))))
 		return E_FAIL;
+	/*if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_SSAO"))))
+		return E_FAIL;*/
 
 	/* For.MRT_LightAcc */
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade"))))
@@ -92,18 +100,20 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.f, 100.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.f, 100.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.f, 300.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.f, 200.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 500.0f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 300.0f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 300.f, 100.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 200.f, 100.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.0f, 300.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 200.0f, 200.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_ShadowDepth"), 300.0f, 500.f, 200.f, 200.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_ShadowDepth"), 200.0f, 300.f, 100.f, 100.f)))
 		return E_FAIL;
+	/*if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_SSAO"), 100.0f, 400.f, 100.f, 100.f)))
+		return E_FAIL;*/
 #endif // _DEBUG
 
 	
@@ -446,6 +456,9 @@ HRESULT CRenderer::Render_Deferred()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ShadowDepth"), m_pShader, "g_ShadowDepthTexture")))
 		return E_FAIL;
+	/*if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAO"), m_pShader, "g_SSAOTexture")))
+		return E_FAIL;*/
+	
 
 	CPipeLine* pPipeLine = CPipeLine::GetInstance();
 	Safe_AddRef(pPipeLine);
@@ -461,7 +474,7 @@ HRESULT CRenderer::Render_Deferred()
 
 	//_vector	vPlayerPos = XMVectorSet(0.f, 1.f, 0.f, 1.f);
 	_vector	vLightEye = XMVectorSet(-5.f, 10.f, -5.f, 1.f);
-	_vector	vLightAt = XMVectorSet(30.f, 0.f, 30.f, 1.f);
+	_vector	vLightAt = XMVectorSet(60.f, 0.f, 60.f, 1.f);
 	_vector	vLightUp = XMVectorSet(0.f, 1.f, 0.f, 1.f);
 
 	_matrix		LightViewMatrix = XMMatrixLookAtLH(vLightEye, vLightAt, vLightUp);

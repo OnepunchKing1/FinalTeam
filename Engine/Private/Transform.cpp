@@ -265,6 +265,23 @@ void CTransform::Chase(_fvector vTargetPos, _double dTimeDelta, _float fMinDis)
 		vPosition += XMVector3Normalize(vDir) * _float(m_TransformDesc.dSpeedPerSec * dTimeDelta);
 }
 
+void CTransform::Chase_Target(_fvector vTargetPos, _double dTimeDelta, _double ChaseSpeed)
+{
+	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
+	_vector		vDir = vTargetPos - vPosition;
+	_double		Speed = m_TransformDesc.dSpeedPerSec * ChaseSpeed * dTimeDelta;
+
+
+	if (XMVectorGetX(XMVector3Length(vDir)) <= Speed)
+	{
+		vPosition += vDir;
+	}
+	else
+		vPosition += XMVector3Normalize(vDir) * Speed;
+
+	Set_State(CTransform::STATE_POSITION, vPosition);
+}
+
 void CTransform::LookAt(_fvector vTargetPos)
 {
 	_float3 vScale = Get_Scaled();

@@ -16,6 +16,15 @@ float4			g_lineColor = float4(0.f, 0.f, 0.f, 1.f);
 float			g_OutlineThickness;
 float			g_OutlineFaceThickness;
 
+//외곽선 쉐이딩
+float3x3      Kx = { -1, 0, 1,
+				  -2, 0, 2,
+				  -1, 0, 1 };
+
+float3x3      Ky = { 1, 2, 1,
+				  0, 0, 0,
+				  -1, -2, -1 };
+
 struct VS_IN
 {
 	float3		vPosition	: POSITION;
@@ -183,7 +192,7 @@ PS_OUT  PS_Main(PS_IN _In)
 {
 	PS_OUT	Out = (PS_OUT)0;
 
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vTexUV);
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearClampSampler, _In.vTexUV);
 
 	//if (vMtrlDiffuse.a < 0.1f)
 	//	discard;
@@ -201,12 +210,26 @@ PS_OUT  PS_Outline(PS_IN In)
 {
 	PS_OUT	Out = (PS_OUT)0;
 
-	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	
 
-	if (vMtrlDiffuse.a < 0.1f)
+	
+	float4 outlineColor = g_lineColor;
+	float4 diffuseColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	if (diffuseColor.a < 0.1f)
 		discard;
 
-	Out.vDiffuse = g_lineColor;
+	// 외곽선 색상을 덮어씌우기 위해 Alpha 값을 1로 설정
+	outlineColor.a = 1.0f;
+
+	// 외곽선 두께를 적용하여 외곽선 색상과 일반 렌더링 결과를 합성
+	float outlineFactor = saturate(length(In.vNormal.xyz) * g_OutlineThickness);
+	float blendFactor = smoothstep(0.f, 1.f, outlineFactor); // smoothstep(float edge0, float edge1, float x); edge 0 : 보간시작 edge 1 : 보간 끝나느 값 x: 보간대상
+
+	vector Color = lerp(diffuseColor, outlineColor, blendFactor);
+
+	Out.vDiffuse = Color;
+
 	// In.vNormal xyz각각이 -1 ~ 1
 	// Out.vNormal 저장받을 수 있는 xyz각각 0 ~ 1
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);

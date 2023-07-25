@@ -91,7 +91,7 @@ HRESULT CTarget_Manager::Begin_MRT_LightDepth(ID3D11DeviceContext* pContext, con
 	list<CRenderTarget*>* pMRTList = Find_MRT(pMRTTag);
 	if (nullptr == pMRTList)
 		return E_FAIL;
-
+	
 	pContext->ClearDepthStencilView(m_pShadowDSV, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	pContext->OMGetRenderTargets(1, &m_pOldRTV, &m_pDSV);		// 장치에 바인딩 되어있던 0번째 RenderTarget만 꺼내와라
 

@@ -6,7 +6,6 @@
  BORDER  -> 텍스처 좌표를 텍스처의 경계에 도달하면 사용자가 지정한 경계 색상으로 텍스처를 채움
  MIRROR_ONCE -> 텍스처 반복하지만 좌표 0,1 범위를 벗어나면 MIRRO와 유사하게 뒤집힘  -> 이 반복은 한번만 일어남
 */
-
 sampler LinearSampler = sampler_state
 {
 	Filter = MIN_MAG_MIP_LINEAR;
@@ -38,6 +37,7 @@ sampler PointClampSampler = sampler_state
 	AddressU = CLAMP;
 	AddressV = CLAMP;
 };
+
 
 /* For.RasterizerState */
 RasterizerState		RS_Default
@@ -80,6 +80,16 @@ BlendState	 BS_AlphaBlending
 BlendState	 BS_OneByOne
 {
 	BlendEnable[0] = true;
+	SrcBlend = ONE;
+	DestBlend = ONE;
+	BlendOp = Add;
+};
+
+
+BlendState    BS_OneByOne_Engine
+{
+	BlendEnable[0] = true;
+	BlendEnable[1] = true;
 	SrcBlend = ONE;
 	DestBlend = ONE;
 	BlendOp = Add;
