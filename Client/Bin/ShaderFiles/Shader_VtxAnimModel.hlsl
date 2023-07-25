@@ -123,6 +123,38 @@ VS_OUT VS_OutlineFace(VS_IN In)
 	return Out;
 }
 
+VS_OUT VS_MAIN_SHADOW(VS_IN In)
+{
+	VS_OUT		Out = (VS_OUT)0;
+
+	matrix		matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	/* 하드웨어 스키닝. */
+	float		fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+
+	matrix		BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
+		g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
+		g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
+		g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
+
+	vector		vPosition = mul(float4(In.vPosition, 1.f), BoneMatrix);
+	vector		vNormal = normalize(mul(float4(In.vNormal, 0.f), BoneMatrix));
+
+	/*vector		vPosition = mul(vector(In.vPosition.xyz + In.vNormal.xyz * 0.005f, 1.f), BoneMatrix);
+	vector		vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);*/
+
+	Out.vPosition = mul(vPosition, matWVP);
+	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
+	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
+	Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+
+	return Out;
+}
+
 
 struct PS_IN
 {
@@ -134,6 +166,13 @@ struct PS_IN
 };
 
 struct PS_OUT
+{
+	vector		vDiffuse : SV_TARGET0;
+	vector		vNormal : SV_TARGET1;
+	vector		vDepth : SV_TARGET2;
+};
+
+struct PS_OUT_DEFERRED
 {
 	vector		vDiffuse : SV_TARGET0;
 	vector		vNormal : SV_TARGET1;
@@ -175,12 +214,21 @@ PS_OUT  PS_Outline(PS_IN In)
 
 	return Out;
 }
+PS_OUT_DEFERRED PS_MAIN_SHADOW(PS_IN In)
+{
+	PS_OUT_DEFERRED		Out = (PS_OUT_DEFERRED)0;
 
+	Out.vDiffuse.r = In.vProjPos.w / 300.f;
+
+	Out.vDiffuse.a = 1.f;
+
+	return Out;
+}
 	
 
 technique11 DefaultTechnique
 {
-	pass General
+	pass General // 0
 	{
 		SetRasterizerState(RS_Default);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
@@ -193,7 +241,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Main();
 	}
 	
-	pass Outline
+	pass Outline // 1
 	{
 		SetRasterizerState(RS_CULL_CW);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
@@ -206,7 +254,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Outline();
 	}
 
-	pass OutlineFace
+	pass OutlineFace // 2
 	{
 		SetRasterizerState(RS_CULL_CW);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
@@ -217,6 +265,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Outline();
+	}
+
+	pass Shadow  // 3
+	{
+		SetRasterizerState(RS_Default);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetDepthStencilState(DS_Not_ZWrite, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
 	}
 };
 
