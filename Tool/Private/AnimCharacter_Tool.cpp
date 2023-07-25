@@ -105,7 +105,8 @@ void CAnimCharacter_Tool::ImGUI_Control(_double dTimeDelta)
 		for (auto& pAnim : vecAnim)
 		{
 			// 애니메이션 리스트 목록 index
-
+			char szNumberIndex[MAX_PATH] = "_";
+			char szNameCombine[MAX_PATH] = "";
 
 			const char* szName = (pAnim->Get_AnimationDesc()).m_szName;
 			size_t len = strlen(szName) + 1; // +1 for the null-terminator
