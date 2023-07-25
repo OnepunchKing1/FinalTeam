@@ -75,7 +75,7 @@ namespace Engine
 	typedef struct tagVertex_Position_UV
 	{
 		XMFLOAT3 vPosition;
-		XMFLOAT2 vUV;
+		XMFLOAT2 vTexUV;
 	}VTXTEX;
 
 	typedef struct ENGINE_DLL tagVertex_Position_UV_Declaration
@@ -88,7 +88,7 @@ namespace Engine
 	{
 		XMFLOAT3 vPosition;
 		XMFLOAT3 vNormal;
-		XMFLOAT2 vUV;
+		XMFLOAT2 vTexUV;
 	}VTXNORTEX;
 
 	typedef struct ENGINE_DLL tagVertex_Position_Normal_UV_Declaration
@@ -100,7 +100,7 @@ namespace Engine
 	typedef struct tagVertex_Position_Cube_UV
 	{
 		XMFLOAT3		vPosition;
-		XMFLOAT3		vUV;
+		XMFLOAT3		vTexUV;
 	}VTXCUBETEX;
 
 	typedef struct ENGINE_DLL tagVertex_Position_Cube_UV_Declaration
@@ -113,7 +113,7 @@ namespace Engine
 	{
 		XMFLOAT3 vPosition;
 		XMFLOAT3 vNormal;
-		XMFLOAT2 vUV;
+		XMFLOAT2 vTexUV;
 		XMFLOAT3 vTangent;
 	}VTXMODEL;
 
@@ -127,7 +127,7 @@ namespace Engine
 	{
 		XMFLOAT3	vPosition;
 		XMFLOAT3	vNormal;
-		XMFLOAT2	vUV;
+		XMFLOAT2	vTexUV;
 		XMFLOAT3	vTangent;
 		XMUINT4		vBlendIndices;
 		XMFLOAT4	vBlendWeights;

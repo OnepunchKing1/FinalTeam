@@ -11,11 +11,16 @@ texture2D	g_DiffuseTexture;
 
 float		g_fFar;
 
+//OutLineColor_JH
+float4			g_lineColor = float4(0.f, 0.f, 0.f, 1.f);
+float			g_OutlineThickness;
+float			g_OutlineFaceThickness;
+
 struct VS_IN
 {
 	float3		vPosition	: POSITION;
 	float3		vNormal		: NORMAL;
-	float2		vUV	: TEXCOORD0;
+	float2		vTexUV	: TEXCOORD0;
 	float3		vTangent	: TANGENT;
 	uint4		vBlendIndices : BLENDINDEX;
 	float4		vBlendWeights : BLENDWEIGHT;
@@ -25,43 +30,137 @@ struct VS_OUT
 {
 	float4		vPosition : SV_POSITION;
 	float4		vNormal : NORMAL;
-	float2		vUV : TEXCOORD0;
+	float2		vTexUV : TEXCOORD0;
 	float4		vWorldPos : TEXCOORD1;
 	float4		vProjPos : TEXCOORD2;
 };
 
-VS_OUT VS_Main(VS_IN _In)
+VS_OUT VS_Main(VS_IN In)
 {
-	VS_OUT Out = (VS_OUT)0;
+	VS_OUT		Out = (VS_OUT)0;
 
-	matrix matWV = mul(g_WorldMatrix, g_ViewMatrix);
-	matrix matWVP = mul(matWV, g_ProjMatrix);
+	matrix		matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matrix		matWVP = mul(matWV, g_ProjMatrix);
 
-	//뼈가 없는 AnimMesh가 그려지지 않는것을 방지하기 위해 x,y,z가 0이면 w를 1로 만든다.
-	float	fWeightW = 1.f - (_In.vBlendWeights.x + _In.vBlendWeights.y + _In.vBlendWeights.z);
+	/*모델의 특정 메시파트가 혹여 뼈의 영향을 받지 않고 그려진다라면. BlendIndices, BlednWeight모두다 0으로 채워져서 들어오는 경우가 발생하낟. */
+	float		fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
 
-	matrix	BoneMatrix = g_BoneMatrices[_In.vBlendIndices.x] * _In.vBlendWeights.x +
-						g_BoneMatrices[_In.vBlendIndices.y] * _In.vBlendWeights.y +
-						g_BoneMatrices[_In.vBlendIndices.z] * _In.vBlendWeights.z +
-						g_BoneMatrices[_In.vBlendIndices.w] * fWeightW;
+	/* */
+	matrix		BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
+		g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
+		g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
+		g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
 
-	vector	vPosition = mul(vector(_In.vPosition, 1.f), BoneMatrix);
-	vector	vNormal = mul(vector(_In.vNormal, 0.f), BoneMatrix);
+	/* 로컬스페이스 내에서 애님움직임에 ㅁ맞도록 정점을 변환시키낟. */
+	vector		vPosition = mul(vector(In.vPosition, 1.f), BoneMatrix);
+	vector		vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);
 
 	Out.vPosition = mul(vPosition, matWVP);
 	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
-	Out.vUV = _In.vUV;
-	Out.vWorldPos = mul(vector(_In.vPosition, 1.f), g_WorldMatrix);
+	Out.vTexUV = In.vTexUV;
+	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 	Out.vProjPos = Out.vPosition;
 
 	return Out;
-};
+}
+
+VS_OUT VS_Outline(VS_IN In)
+{
+	VS_OUT		Out = (VS_OUT)0;
+
+	matrix		matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matrix		matWVP = mul(matWV, g_ProjMatrix);
+
+	/*모델의 특정 메시파트가 혹여 뼈의 영향을 받지 않고 그려진다라면. BlendIndices, BlednWeight모두다 0으로 채워져서 들어오는 경우가 발생하낟. */
+	float		fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+
+	/* */
+	matrix		BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
+		g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
+		g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
+		g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
+
+	/* 로컬스페이스 내에서 애님움직임에 ㅁ맞도록 정점을 변환시키낟. */
+	vector		vPosition = mul(vector(In.vPosition.xyz + In.vNormal.xyz * g_OutlineThickness, 1.f), BoneMatrix);
+	vector		vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);
+	
+
+	Out.vPosition = mul(vPosition, matWVP);
+	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
+	Out.vTexUV = In.vTexUV;
+	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vProjPos = Out.vPosition;
+
+	return Out;
+}
+VS_OUT VS_OutlineFace(VS_IN In)
+{
+	VS_OUT		Out = (VS_OUT)0;
+
+	matrix		matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matrix		matWVP = mul(matWV, g_ProjMatrix);
+
+	/*모델의 특정 메시파트가 혹여 뼈의 영향을 받지 않고 그려진다라면. BlendIndices, BlednWeight모두다 0으로 채워져서 들어오는 경우가 발생하낟. */
+	float		fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+
+	/* */
+	matrix		BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
+		g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
+		g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
+		g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
+
+	/* 로컬스페이스 내에서 애님움직임에 ㅁ맞도록 정점을 변환시키낟. */
+	vector		vPosition = mul(vector(In.vPosition.xyz + In.vNormal.xyz * g_OutlineFaceThickness, 1.f), BoneMatrix);
+	vector		vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);
+
+
+	Out.vPosition = mul(vPosition, matWVP);
+	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
+	Out.vTexUV = In.vTexUV;
+	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vProjPos = Out.vPosition;
+
+	return Out;
+}
+
+VS_OUT VS_MAIN_SHADOW(VS_IN In)
+{
+	VS_OUT		Out = (VS_OUT)0;
+
+	matrix		matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	/* 하드웨어 스키닝. */
+	float		fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+
+	matrix		BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
+		g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
+		g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
+		g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
+
+	vector		vPosition = mul(float4(In.vPosition, 1.f), BoneMatrix);
+	vector		vNormal = normalize(mul(float4(In.vNormal, 0.f), BoneMatrix));
+
+	/*vector		vPosition = mul(vector(In.vPosition.xyz + In.vNormal.xyz * 0.005f, 1.f), BoneMatrix);
+	vector		vNormal = mul(vector(In.vNormal, 0.f), BoneMatrix);*/
+
+	Out.vPosition = mul(vPosition, matWVP);
+	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
+	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
+	Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+
+	return Out;
+}
+
 
 struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
 	float4		vNormal : NORMAL;
-	float2		vUV : TEXCOORD0;
+	float2		vTexUV : TEXCOORD0;
 	float4		vWorldPos : TEXCOORD1;
 	float4		vProjPos : TEXCOORD2;
 };
@@ -73,11 +172,18 @@ struct PS_OUT
 	vector		vDepth : SV_TARGET2;
 };
 
+struct PS_OUT_DEFERRED
+{
+	vector		vDiffuse : SV_TARGET0;
+	vector		vNormal : SV_TARGET1;
+	vector		vDepth : SV_TARGET2;
+};
+
 PS_OUT  PS_Main(PS_IN _In)
 {
 	PS_OUT	Out = (PS_OUT)0;
 
-	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vUV);
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vTexUV);
 
 	//if (vMtrlDiffuse.a < 0.1f)
 	//	discard;
@@ -90,46 +196,39 @@ PS_OUT  PS_Main(PS_IN _In)
 
 	return Out;
 };
-
-PS_OUT  PS_RIMLIGHT(PS_IN _In)
+//OutLine_PS
+PS_OUT  PS_Outline(PS_IN In)
 {
-	PS_OUT   Out = (PS_OUT)0;
+	PS_OUT	Out = (PS_OUT)0;
 
-	vector   vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vUV);
+	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
 	if (vMtrlDiffuse.a < 0.1f)
 		discard;
 
-	// 1 - 두 벡터가 일치 0 - 두 벡터가 반대
-	float rimLightFactor = saturate(dot(normalize(g_vCamPosition - _In.vWorldPos.xyz), normalize(_In.vNormal.xyz)));
-
-	// 제곱하는 값이 클 수록 강도 증가
-	rimLightFactor = pow(rimLightFactor, 0.5f);
-
-
-	// 대비 - 클 수록 선명해짐
-	float contrastFactor = 3.0f;
-	rimLightFactor = pow(rimLightFactor, contrastFactor);
-
-
-	// 강도를 반전 - 가장자리에 적용
-	rimLightFactor = 1.0f - rimLightFactor;
-
-	//적용할 림 라이트의 색
-	float3 rimColor = float3(245.f / 255.f, 255.f / 255.f, 250.f / 255.f); 
-	float3 finalDiffuse = lerp(vMtrlDiffuse.rgb, rimColor, rimLightFactor);
-
-	Out.vDiffuse = float4(finalDiffuse, vMtrlDiffuse.a);
-	Out.vNormal = vector(_In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-	Out.vDepth = vector(_In.vProjPos.w / 300.f, _In.vProjPos.z / _In.vProjPos.w, 0.f, 0.f);
+	Out.vDiffuse = g_lineColor;
+	// In.vNormal xyz각각이 -1 ~ 1
+	// Out.vNormal 저장받을 수 있는 xyz각각 0 ~ 1
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.w / 300.f, In.vProjPos.z / In.vProjPos.w, 0.f, 0.f);
 
 	return Out;
-};
+}
+PS_OUT_DEFERRED PS_MAIN_SHADOW(PS_IN In)
+{
+	PS_OUT_DEFERRED		Out = (PS_OUT_DEFERRED)0;
+
+	Out.vDiffuse.r = In.vProjPos.w / 300.f;
+
+	Out.vDiffuse.a = 1.f;
+
+	return Out;
+}
 	
 
 technique11 DefaultTechnique
 {
-	pass General
+	pass General // 0
 	{
 		SetRasterizerState(RS_Default);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
@@ -141,18 +240,44 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Main();
 	}
-
-	pass Rim
+	
+	pass Outline // 1
 	{
-		SetRasterizerState(RS_Default);
+		SetRasterizerState(RS_CULL_CW);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DS_Default, 0);
 
-		VertexShader = compile vs_5_0 VS_Main();
+		VertexShader = compile vs_5_0 VS_Outline();
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_RIMLIGHT();
+		PixelShader = compile ps_5_0 PS_Outline();
+	}
+
+	pass OutlineFace // 2
+	{
+		SetRasterizerState(RS_CULL_CW);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DS_Default, 0);
+
+		VertexShader = compile vs_5_0 VS_OutlineFace();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Outline();
+	}
+
+	pass Shadow  // 3
+	{
+		SetRasterizerState(RS_Default);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		SetDepthStencilState(DS_Not_ZWrite, 0);
+
+		VertexShader = compile vs_5_0 VS_MAIN_SHADOW();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SHADOW();
 	}
 };
 

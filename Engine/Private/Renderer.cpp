@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "VIBuffer_Rect.h"
 #include "PipeLine.h"
+#include "GameInstance.h"
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
@@ -20,6 +21,8 @@ HRESULT CRenderer::Initialize_Prototype()
 {
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
+
+	m_pTarget_Manager->Initialize(m_pDevice, m_pContext);
 
 	_uint	iNumViewports = { 1 };
 	D3D11_VIEWPORT	Viewport;
@@ -51,6 +54,13 @@ HRESULT CRenderer::Initialize_Prototype()
 		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R16G16B16A16_UNORM, vColor_Specular)))
 		return E_FAIL;
 
+	/* For.Target_ShadowDepth */
+	_uint		iShadowMapCX = 12800;
+	_uint		iShadowMapCY = 7200;
+	_float4 vColor_ShadowDepth = { 1.f, 1.f, 1.f, 1.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowDepth"), iShadowMapCX, iShadowMapCY, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_ShadowDepth)))
+		return E_FAIL;
+
 	/* For.MRT_GameObject */
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Diffuse"))))
 		return E_FAIL;
@@ -64,6 +74,14 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Specular"))))
 		return E_FAIL;
+
+	// For.MRT_ShadowDepth(Shadow)
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightDepth"), TEXT("Target_ShadowDepth"))))
+		return E_FAIL;
+
+	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(Viewport.Width, Viewport.Height, 1.f));
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f));
 
 	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Deferred.hlsl"), VTXTEX_DECL::Elements, VTXTEX_DECL::iNumElements);
 	if (nullptr == m_pShader)
@@ -84,11 +102,14 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 300.0f, 300.f, 200.f, 200.f)))
 		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_ShadowDepth"), 300.0f, 500.f, 200.f, 200.f)))
+		return E_FAIL;
 #endif // _DEBUG
 
-	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(Viewport.Width, Viewport.Height, 1.f));
-	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f));
+	
+
+	_uint      iNumViewport = 1;
+	m_pContext->RSGetViewports(&iNumViewport, &m_VP);
 
 	return S_OK;
 }
@@ -107,7 +128,7 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject* pGameO
 		return E_FAIL;
 	}
 
-   	m_RenderObjects[eRenderGroup].emplace_back(pGameObject);
+	m_RenderObjects[eRenderGroup].emplace_back(pGameObject);
 
 	Safe_AddRef(pGameObject);
 
@@ -135,6 +156,11 @@ HRESULT CRenderer::Draw_RenderObjects()
 		MSG_BOX("Failed to Render_Priority");
 		return E_FAIL;
 	}
+	if (FAILED(Render_ShadowDepth()))
+	{
+		MSG_BOX("Failed to Render_ShadowDepth");
+		return E_FAIL;
+	}
 	if (FAILED(Render_NonBlend()))
 	{
 		MSG_BOX("Failed to Render_NonBlend");
@@ -158,6 +184,11 @@ HRESULT CRenderer::Draw_RenderObjects()
 	if (FAILED(Render_Blend()))
 	{
 		MSG_BOX("Failed to Render_Blend");
+		return E_FAIL;
+	}
+	if (FAILED(Render_Effect()))
+	{
+		MSG_BOX("Failed to Render_Effect");
 		return E_FAIL;
 	}
 	if (FAILED(Render_UI()))
@@ -196,14 +227,49 @@ HRESULT CRenderer::Render_Priority()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_ShadowDepth()
+{
+	/* ShadowDepth */
+	m_pTarget_Manager->Begin_MRT_LightDepth(m_pContext, TEXT("MRT_LightDepth"));
+
+	D3D11_VIEWPORT VP;
+	ZeroMemory(&VP, sizeof(D3D11_VIEWPORT));
+	VP.TopLeftX = 0.0f;
+	VP.TopLeftY = 0.0f;
+	VP.Width = 12800.f;
+	VP.Height = 7200.f;
+	VP.MinDepth = 0.0f;
+	VP.MaxDepth = 1.0f;
+
+	m_pContext->RSSetViewports(1, &VP);
+
+	for (auto& pGameObject : m_RenderObjects[RENDER_SHADOWDEPTH])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render_ShadowDepth();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObjects[RENDER_SHADOWDEPTH].clear();
+
+	m_pTarget_Manager->End_MRT(m_pContext);
+
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_NonBlend()
 {
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 
+	/* 백버퍼를 빼고 */
+	/* Diffuse + Normal */
 	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pContext, TEXT("MRT_GameObject"))))
 		return E_FAIL;
-
+	
+	m_pContext->RSSetViewports(1, &m_VP);
 	for (auto& pGameObject : m_RenderObjects[RENDER_NONBLEND])
 	{
 		if (nullptr != pGameObject)
@@ -269,6 +335,21 @@ HRESULT CRenderer::Render_UI()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_Effect()
+{
+	for (auto& pGameObject : m_RenderObjects[RENDER_EFFECT])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObjects[RENDER_EFFECT].clear();
+
+	return S_OK;
+}
+
 #ifdef _DEBUG
 HRESULT CRenderer::Render_Debug()
 {
@@ -295,7 +376,9 @@ HRESULT CRenderer::Render_Debug()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
-
+	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_LightDepth"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	
 	return S_OK;
 }
 #endif // _DEBUG
@@ -354,17 +437,54 @@ HRESULT CRenderer::Render_Deferred()
 
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
 		return E_FAIL;
-
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
 		return E_FAIL;
-
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
 		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ShadowDepth"), m_pShader, "g_ShadowDepthTexture")))
+		return E_FAIL;
+
+	CPipeLine* pPipeLine = CPipeLine::GetInstance();
+	Safe_AddRef(pPipeLine);
+
+	_float4x4 matViewInv = pPipeLine->Get_TransformFloat4x4_Inverse(CPipeLine::D3DTS_VIEW);
+	if (FAILED(m_pShader->SetUp_Matrix("g_matViewInv",&matViewInv)))
+		return E_FAIL;
+	_float4x4 matProjInv = pPipeLine->Get_TransformFloat4x4_Inverse(CPipeLine::D3DTS_PROJ);
+	if (FAILED(m_pShader->SetUp_Matrix("g_matProjInv",&matProjInv)))
+		return E_FAIL;
+
+	Safe_Release(pPipeLine);
+
+	//_vector	vPlayerPos = XMVectorSet(0.f, 1.f, 0.f, 1.f);
+	_vector	vLightEye = XMVectorSet(-5.f, 10.f, -5.f, 1.f);
+	_vector	vLightAt = XMVectorSet(30.f, 0.f, 30.f, 1.f);
+	_vector	vLightUp = XMVectorSet(0.f, 1.f, 0.f, 1.f);
+
+	_matrix		LightViewMatrix = XMMatrixLookAtLH(vLightEye, vLightAt, vLightUp);
+	_float4x4	FloatLightViewMatrix;
+	XMStoreFloat4x4(&FloatLightViewMatrix, LightViewMatrix);
+
+	if (FAILED(m_pShader->SetUp_Matrix("g_matLightView",&FloatLightViewMatrix)))
+		return E_FAIL;
+
+	_matrix		LightProjMatrix;
+	_float4x4	FloatLightProjMatrix;
+
+	LightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(120.f), _float(1280) / _float(720), 0.2f, 300.f);
+	XMStoreFloat4x4(&FloatLightProjMatrix, LightProjMatrix);
+
+	if (FAILED(m_pShader->SetUp_Matrix("g_matProj", &FloatLightProjMatrix)))
+		return E_FAIL;
+
 
 	m_pShader->Begin(3);
 
 	m_pVIBuffer->Render();
-
+	
 	return S_OK;
 }
 
@@ -391,7 +511,7 @@ CComponent* CRenderer::Clone(void* pArg)
 void CRenderer::Free()
 {
 	__super::Free();
-	
+
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pTarget_Manager);
