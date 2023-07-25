@@ -24,7 +24,9 @@ public:
 
 	typedef struct tagAnimation_Control
 	{
-		_bool			m_isPlay = { false };
+		_bool			m_isPlay = { true };
+		_float			m_fAnimationSpeed = { 1.0f };
+		_bool			m_isLoop = { false };
 	}CONTROLDESC;
 
 private:

@@ -63,15 +63,26 @@ void CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTime
 
 	/* 현재 재생되는 애니메이션 */
 	if(m_ControlDesc.m_isPlay)
-		m_AnimationDesc.m_dTimeAcc += m_AnimationDesc.m_dTickPerSecond * dTimeDelta;
+		m_AnimationDesc.m_dTimeAcc += m_AnimationDesc.m_dTickPerSecond * dTimeDelta * m_ControlDesc.m_fAnimationSpeed;
 
+	
 	if (m_AnimationDesc.m_dDuration <= m_AnimationDesc.m_dTimeAcc)
 	{
-		// 전체 재생시간보다 누적시간이 커졌다 == 애니메이션이 끝났다
-		m_AnimationDesc.m_isFinish = true;
-		m_AnimationDesc.m_dTimeAcc = 0.0;
+		//루프 애니메이션일때,
+		if (m_ControlDesc.m_isLoop)
+		{
+			// 전체 재생시간보다 누적시간이 커졌다 == 애니메이션이 끝났다
+			m_AnimationDesc.m_isFinish = true;
+			m_AnimationDesc.m_dTimeAcc = 0.0;
+		}
+		//NonLoop 일때,
+		else
+		{
+			m_AnimationDesc.m_isFinish = true;
+			m_AnimationDesc.m_dTimeAcc = m_AnimationDesc.m_dDuration;
+		}
 	}
-
+	
 	_uint	iIndex = { 0 };
 	for (auto& pChannel : m_AnimationDesc.m_Channels)
 	{

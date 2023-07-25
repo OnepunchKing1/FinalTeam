@@ -9,25 +9,6 @@ CImGui_Animation_Tool::CImGui_Animation_Tool()
 
 }
 
-void CImGui_Animation_Tool::Control_Input(CGameInstance* pGameInstance, CAnimation::ANIMATIONDESC AnimationDesc)
-{
-    CAnimation::CONTROLDESC ControlDesc = m_pAnimation->Get_ControlDesc();
-
-#pragma region Play(SpaceBar) 
-    // 재생기능 spacebar
-    if (pGameInstance->Get_DIKeyDown(DIK_SPACE))
-    {
-        if (ControlDesc.m_isPlay)        
-            ControlDesc.m_isPlay = false;
-        else
-            ControlDesc.m_isPlay = true;
-    }
-#pragma endregion
-
-
-
-    m_pAnimation->Set_ControlDesc(ControlDesc);
-}
 
 void CImGui_Animation_Tool::Animation_ImGui_Main()
 {
@@ -37,20 +18,53 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
     ImGui::Begin("AnimationTool");
 
     CAnimation::ANIMATIONDESC AnimationDesc = m_pAnimation->Get_AnimationDesc();
+    CAnimation::CONTROLDESC ControlDesc = m_pAnimation->Get_ControlDesc();
 
-    Control_Input(pGameInstance, AnimationDesc);
-
-
-
-#pragma region Index_List  
-
-    ImGui::ListBox("listbox", &m_iAnimIndex, m_vecName_ForListBox.data(), (_int)(m_vecName_ForListBox.size()), 5);
+#pragma region Play(SpaceBar) 
+    // 재생기능 spacebar
+    if (pGameInstance->Get_DIKeyDown(DIK_SPACE))
+    {
+        if (AnimationDesc.m_dDuration == AnimationDesc.m_dTimeAcc)
+        {
+            AnimationDesc.m_dTimeAcc = 0.0;
+            m_pAnimation->Set_AnimationDesc(AnimationDesc);
+            ControlDesc.m_isPlay = true;
+        }
+        else
+        {
+            if (ControlDesc.m_isPlay)
+                ControlDesc.m_isPlay = false;
+            else
+                ControlDesc.m_isPlay = true;
+        }
+        m_pAnimation->Set_ControlDesc(ControlDesc);
+    }
    
 #pragma endregion
 
 
 
-#pragma region Slider  
+#pragma region Index_List  
+
+    ImGui::ListBox("Animation_List", &m_iAnimIndex, m_vecName_ForListBox.data(), (_int)(m_vecName_ForListBox.size()), 5);
+
+    ImGui::Text("Animation_Index : %d", m_iAnimIndex);
+
+    // 애니메이션 변경시
+    if (m_iSave_AnimIndex != m_iAnimIndex)
+    {
+        AnimationDesc.m_dTimeAcc = 0.0;
+        ControlDesc.m_isPlay = false;
+    }
+    m_iSave_AnimIndex = m_iAnimIndex;
+
+#pragma endregion
+
+
+    ImGui::Text("");  
+
+
+#pragma region Play_Slider  
     // Sliders ui
     static ImGuiSliderFlags AnimSliderflags = ImGuiSliderFlags_None;
  
@@ -59,15 +73,52 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
 
     ImGui::Text("Current Time : %f", fCur_Time);
     ImGui::Text("End Time : %f", fEnd_Time);
-    ImGui::SliderFloat("SliderFloat (0 -> 1)", &fCur_Time, 0.0f, fEnd_Time, "%.2f", AnimSliderflags);
+    ImGui::SliderFloat("Play_Slider", &fCur_Time, 0.0f, fEnd_Time, "%.2f", AnimSliderflags);
+
+    //슬라이더 값을 애니메이션컴포넌트에 보내주기
+    AnimationDesc.m_dTimeAcc = fCur_Time;
+    m_pAnimation->Set_AnimationDesc(AnimationDesc);
+
+#pragma endregion
+
+
+    ImGui::Text("");
+
+
+#pragma region AnimaSpeed_Slider  
+
+   _float fSpeed = ControlDesc.m_fAnimationSpeed;
+
+    ImGui::Text("Speed : %f", fSpeed);
+    ImGui::SliderFloat("FrameSpeed ", &fSpeed, 0.1f, 2.0f, "%.2f");
+
+    ControlDesc.m_fAnimationSpeed = fSpeed;
+    m_pAnimation->Set_ControlDesc(ControlDesc);
+    
+#pragma endregion
+
+
+    ImGui::Text("");
+
+
+#pragma region Loop  
+    // loop, nonLoop check
+    m_isLoop_Check = ControlDesc.m_isLoop;
+    ImGui::Checkbox("Loop_Animation", &m_isLoop_Check);
+    ControlDesc.m_isLoop = m_isLoop_Check;
+    m_pAnimation->Set_ControlDesc(ControlDesc);
 
 #pragma endregion
 
 
 
-    //값을 애니메이션컴포넌트에 보내주기
-    AnimationDesc.m_dTimeAcc = fCur_Time;
-    m_pAnimation->Set_AnimationDesc(AnimationDesc);
+
+#pragma region Connect_Animation
+    // Connect
+    
+
+#pragma endregion
+
 
 
     ImGui::End();

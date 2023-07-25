@@ -28,6 +28,8 @@ public:
 	class CAnimation* Get_Animation() { return m_Animations[m_iCurrentAnimIndex]; }
 	vector<class CAnimation*> Get_vecAnimation() { return m_Animations; }
 
+	
+
 public:
 	void Set_Animation(_uint iAnimIndex) { m_iCurrentAnimIndex = iAnimIndex; }
 
@@ -60,6 +62,7 @@ private:
 	_uint						m_iCurrentAnimIndex = { 0 };
 	_uint						m_iNumAnimations = { 0 };
 	vector<class CAnimation*>	m_Animations;
+	
 
 private:
 	HRESULT Ready_Meshes(ifstream* pFin);

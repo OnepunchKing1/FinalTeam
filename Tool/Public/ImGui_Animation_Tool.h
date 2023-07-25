@@ -20,7 +20,6 @@ private:
 
 
 public: // 함수
-	void Control_Input(CGameInstance* pGameInstance, CAnimation::ANIMATIONDESC AnimationDesc);
 	void Animation_ImGui_Main();
 
 
@@ -38,12 +37,16 @@ private:
 
 	vector<const char*> m_vecName_ForListBox;
 	_int	m_iAnimIndex = { 0 };
+	_int	m_iSave_AnimIndex = { 0 };
 
 	//Slider 변수
 	_double		m_dFixed_Time = { 0.0 };
 	_double		m_dCur_Time = { 0.0 };
 	_double		m_dEnd_Time = { 0.0 };
 
+	// loop checkbox
+	_bool	m_isLoop_Check = { false };
+	
 
 public:
 	virtual void Free() override;

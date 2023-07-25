@@ -50,6 +50,7 @@ void CAnimCharacter_Tool::Tick(_double dTimeDelta)
 
 	m_pModelCom->Play_Animation(dTimeDelta);
 
+
 	__super::Tick(dTimeDelta);
 }
 
@@ -57,7 +58,6 @@ void CAnimCharacter_Tool::LateTick(_double dTimeDelta)
 {
 	__super::LateTick(dTimeDelta);
 
-	m_pModelCom->Set_Animation(m_iNumAnim);
 
 	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this)))
 		return;
@@ -96,7 +96,7 @@ HRESULT CAnimCharacter_Tool::Render()
 
 void CAnimCharacter_Tool::ImGUI_Control(_double dTimeDelta)
 {
-	// 애니메이션 리스트 목록 index
+	//툴작업을 위한 첫 애니메이션 초기화
 	if (m_isFirst_Name)
 	{
 		m_isFirst_Name = false;
@@ -104,19 +104,32 @@ void CAnimCharacter_Tool::ImGUI_Control(_double dTimeDelta)
 		vector<CAnimation*> vecAnim = m_pModelCom->Get_vecAnimation();
 		for (auto& pAnim : vecAnim)
 		{
+			// 애니메이션 리스트 목록 index
+
+
 			const char* szName = (pAnim->Get_AnimationDesc()).m_szName;
 			size_t len = strlen(szName) + 1; // +1 for the null-terminator
 			char* pNewName = new char[len];
 			strcpy_s(pNewName, len, szName);
 
 			m_vecName.emplace_back(pNewName);
+
+			// isPlay 초기화 false로
+			CAnimation::CONTROLDESC control = pAnim->Get_ControlDesc();
+			control.m_isPlay = false;
+			pAnim->Set_ControlDesc(control);
 		}
 		m_pImGui_Anim->Set_vecName(m_vecName);
 	}
 	m_iNumAnim = m_pImGui_Anim->Get_AnimIndex();
 
+	m_pModelCom->Set_Animation(m_iNumAnim);
+
+
+
 	// ImGui에 현재 해당 애니메이션 데이터 넣기. 
 	m_pImGui_Anim->Set_Animation(m_pModelCom->Get_Animation());
+
 
 
 	// 메인 GUI 띄우기
