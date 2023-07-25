@@ -57,38 +57,79 @@ HRESULT CAnimation::Initialize(ifstream* pFin, CModel* pModel)
 	return S_OK;
 }
 
-void CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTimeDelta)
+_int CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTimeDelta, _bool Play)
 {
 	m_AnimationDesc.m_isFinish = false;
 
 	/* 현재 재생되는 애니메이션 */
-	if(m_ControlDesc.m_isPlay)
+	if(Play)
 		m_AnimationDesc.m_dTimeAcc += m_AnimationDesc.m_dTickPerSecond * dTimeDelta * m_ControlDesc.m_fAnimationSpeed;
 
 	
 	if (m_AnimationDesc.m_dDuration <= m_AnimationDesc.m_dTimeAcc)
 	{
-		//루프 애니메이션일때,
-		if (m_ControlDesc.m_isLoop)
-		{
-			// 전체 재생시간보다 누적시간이 커졌다 == 애니메이션이 끝났다
-			m_AnimationDesc.m_isFinish = true;
-			m_AnimationDesc.m_dTimeAcc = 0.0;
-		}
-		//NonLoop 일때,
-		else
-		{
-			m_AnimationDesc.m_isFinish = true;
-			m_AnimationDesc.m_dTimeAcc = m_AnimationDesc.m_dDuration;
-		}
+		// 전체 재생시간보다 누적시간이 커졌다 == 애니메이션이 끝났다
+		m_AnimationDesc.m_isFinish = true;
+		m_AnimationDesc.m_dTimeAcc = 0.0;
 	}
 	
+
+	// RootAnimation 용
+	CChannel* pRoot = Get_Channel("Root");
+	pRoot->Set_Root(true);
+
 	_uint	iIndex = { 0 };
 	for (auto& pChannel : m_AnimationDesc.m_Channels)
 	{
+
+		//if(m_AnimationDesc.m_isFinish = true);
 		//이 애니메이션에서 움직이는 뼈들의 상태를 시간에 맞게 갱신한다.
 		pChannel->Invalidate(pModel, m_AnimationDesc.m_iCurrentKeyFrames[iIndex++], m_AnimationDesc.m_dTimeAcc);
 	}
+
+	m_RootPosition = pRoot->Get_RootPosition();
+	
+
+
+
+	// 애니메이션이 끝날 때, 루프애님이 아니면,  다음 애니메이션 인덱스를 return
+	if (m_AnimationDesc.m_isFinish)
+	{
+		if(m_ControlDesc.m_isCombo)
+			return m_ControlDesc.m_iConnect_ComboAnim;
+		else
+			return m_ControlDesc.m_iConnect_Anim;
+	}
+
+	//그냥 평소에는 -1 을 return(인덱스가 존재하지 않는)
+	return -1;
+}
+
+_bool CAnimation::Invalidate_Linear_TransformationMatrices(CModel* pModel, _double dTimeDelta, _bool Play)
+{
+
+
+
+
+	// 선형보간 계속 진행 true 리턴
+	return true;
+}
+
+CChannel* CAnimation::Get_Channel(const char* pChannelName)
+{
+	auto iter = find_if(m_AnimationDesc.m_Channels.begin(), m_AnimationDesc.m_Channels.end(), [&](CChannel* pChannel)->_bool
+		{
+			if (false == strcmp(pChannel->Get_Name(), pChannelName))
+				return true;
+
+			return false;
+		}
+	);
+
+	if (iter == m_AnimationDesc.m_Channels.end())
+		return nullptr;
+
+	return *iter;
 }
 
 CAnimation* CAnimation::Create(ifstream* pFin, class CModel* pModel)

@@ -141,14 +141,51 @@ HRESULT CModel::Initialize(void* pArg)
 
 HRESULT CModel::Play_Animation(_double dTimeDelta)
 {
-	m_Animations[m_iCurrentAnimIndex]->Invalidate_TransformationMatrices(this, dTimeDelta );
+	//애니메이션이 바뀔 시에 기존 애니메이션의 timeacc초기화
+	if (m_iSaveAnimIndex != m_iCurrentAnimIndex)
+	{
+		m_Animations[m_iSaveAnimIndex]->Reset_TimeAcc();
+		m_iSaveAnimIndex = m_iCurrentAnimIndex;
+	}
+
+	_int	NextAnim = -1;
+	// 선형보간 invalidate
+	if (m_isLinearOn)
+	{
+		m_isLinearOn = m_Animations[m_iCurrentAnimIndex]->Invalidate_Linear_TransformationMatrices(this, dTimeDelta, m_isPlay);
+	}
+	// 일반 invalidate
+	else
+	{
+		NextAnim = m_Animations[m_iCurrentAnimIndex]->Invalidate_TransformationMatrices(this, dTimeDelta, m_isPlay);
+	}
+	
+
 	/* 현재 재생해야할 애니메이션 번호 n == m_iCurrentAnimIndex
 	*  n번의 애니메이션의 행렬 상태로 Trans행렬을 갱신한다.
 	*/
 
 	//위에서 갱신한 Trans를 이용하여 모든 뼈의 Combined를 갱신한다
 	for (auto& pBone : m_Bones)
+	{
 		pBone->Invalidate_CombinedTransformationMatrix(this);
+	}
+
+	
+	// 애니메이션이 끝나서 다음 애니메이션 리턴받을 시
+	if( 0 <= NextAnim)
+	{
+		//현재 애님과 바뀐 애님이 같지 않을 경우 선형보간
+		if (m_iCurrentAnimIndex != NextAnim)
+		{
+			m_isLinearOn = true;
+		}
+
+		m_iCurrentAnimIndex = NextAnim;
+		m_Animations[m_iSaveAnimIndex]->Reset_TimeAcc(); // 기존 애니메이션 초기화
+	}
+
+	m_iSaveAnimIndex = m_iCurrentAnimIndex;
 
 	return S_OK;
 }

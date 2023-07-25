@@ -44,12 +44,14 @@ void CAnimCharacter_Tool::Tick(_double dTimeDelta)
 	if (true == m_isDead)
 		return;
 
+	
+
 	ImGUI_Control(dTimeDelta);
 
 	KeyInput(dTimeDelta);
 
 	m_pModelCom->Play_Animation(dTimeDelta);
-
+	RootAnimation(dTimeDelta);
 
 	__super::Tick(dTimeDelta);
 }
@@ -61,6 +63,9 @@ void CAnimCharacter_Tool::LateTick(_double dTimeDelta)
 
 	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this)))
 		return;
+
+
+	
 
 #ifdef _DEBUG
 	/*if (FAILED(m_pRendererCom->Add_DebugGroup(m_pNavigationCom)))
@@ -100,41 +105,83 @@ void CAnimCharacter_Tool::ImGUI_Control(_double dTimeDelta)
 	if (m_isFirst_Name)
 	{
 		m_isFirst_Name = false;
+		_int	index = 0;
 
 		vector<CAnimation*> vecAnim = m_pModelCom->Get_vecAnimation();
 		for (auto& pAnim : vecAnim)
 		{
 			// 애니메이션 리스트 목록 index
-			char szNumberIndex[MAX_PATH] = "_";
-			char szNameCombine[MAX_PATH] = "";
+			char szFullName[MAX_PATH];
+			sprintf_s(szFullName, MAX_PATH, "%d_", index);
 
-			const char* szName = (pAnim->Get_AnimationDesc()).m_szName;
+			char szNameCombine[MAX_PATH] = "";
+			strcpy_s(szNameCombine, (pAnim->Get_AnimationDesc()).m_szName);
+			strcat_s(szFullName, szNameCombine);
+
+			const char* szName = szFullName;
 			size_t len = strlen(szName) + 1; // +1 for the null-terminator
 			char* pNewName = new char[len];
 			strcpy_s(pNewName, len, szName);
 
 			m_vecName.emplace_back(pNewName);
 
-			// isPlay 초기화 false로
+
 			CAnimation::CONTROLDESC control = pAnim->Get_ControlDesc();
-			control.m_isPlay = false;
+			// Connect 초기값 넣어주기.
+			control.m_iConnect_Anim = index;
+
 			pAnim->Set_ControlDesc(control);
+			index++;
 		}
 		m_pImGui_Anim->Set_vecName(m_vecName);
 	}
-	m_iNumAnim = m_pImGui_Anim->Get_AnimIndex();
 
-	m_pModelCom->Set_Animation(m_iNumAnim);
+	if (m_pImGui_Anim->Get_Signal_Change_Anim())
+	{
+		m_pImGui_Anim->Set_Signal_Change_Anim(false);
 
-
-
+		m_iNumAnim = m_pImGui_Anim->Get_AnimIndex();
+		m_pModelCom->Set_Animation(m_iNumAnim);
+	}
+	
+	
 	// ImGui에 현재 해당 애니메이션 데이터 넣기. 
+	m_pImGui_Anim->Set_AnimIndex(m_pModelCom->Get_iCurrentAnimIndex());
 	m_pImGui_Anim->Set_Animation(m_pModelCom->Get_Animation());
-
 
 
 	// 메인 GUI 띄우기
 	m_pImGui_Anim->Animation_ImGui_Main();
+
+	//재생기능
+	m_pModelCom->Set_isPlay(m_pImGui_Anim->Get_Play());
+}
+
+void CAnimCharacter_Tool::RootAnimation(_double dTimeDelta)
+{
+	CAnimation* pAnim = m_pModelCom->Get_Animation();
+
+	//애니메이션 시작시 첫 위치
+	if (pAnim->Get_AnimationDesc().m_dTimeAcc == 0.0)
+	{
+		XMStoreFloat4(&m_Save_RootPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
+
+	_float4 fPos;
+	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	
+	_float3 RootPosition = pAnim->Get_RootPosition();
+	_float4x4 RootWorldConvert = m_pTransformCom->Get_WorldFloat4x4();
+	_float3 FinalRootPos = { 0.0f, 0.0f, 0.0f };
+	XMStoreFloat3(&FinalRootPos, XMVector3TransformCoord(XMLoadFloat3(&RootPosition), XMLoadFloat4x4(&RootWorldConvert)));
+
+
+	_float4 Final = { -FinalRootPos.x * 0.01f, FinalRootPos.y * 0.01f , -FinalRootPos.z * 0.01f, 1.f };
+	// 플레이어의 월드 위치를 기준으로 Root bone의 위치를 변화시킴
+	_float4  SubPos = { m_Save_RootPos.x + Final.x, m_Save_RootPos.y + Final.y , m_Save_RootPos.z + Final.z , 1.f };
+	
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&SubPos));
+	
 }
 
 void CAnimCharacter_Tool::KeyInput(_double dTimeDelta)

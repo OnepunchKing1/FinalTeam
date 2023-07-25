@@ -24,9 +24,12 @@ public:
 
 	typedef struct tagAnimation_Control
 	{
-		_bool			m_isPlay = { true };
 		_float			m_fAnimationSpeed = { 1.0f };
-		_bool			m_isLoop = { false };
+
+		_int			m_iConnect_Anim = { 0 };
+
+		_bool			m_isCombo = { false };
+		_int			m_iConnect_ComboAnim = { 0 };
 	}CONTROLDESC;
 
 private:
@@ -36,21 +39,36 @@ private:
 
 public:
 	HRESULT Initialize(ifstream* pFin, class CModel* pModel);
-	void	Invalidate_TransformationMatrices(class CModel* pModel, _double dTimeDelta);
+	_int	Invalidate_TransformationMatrices(class CModel* pModel, _double dTimeDelta, _bool Play );
+	_bool	Invalidate_Linear_TransformationMatrices(class CModel* pModel, _double dTimeDelta, _bool Play);
 
 public:
 	//Get
 	ANIMATIONDESC Get_AnimationDesc() { return m_AnimationDesc; }
 	CONTROLDESC	  Get_ControlDesc() { return m_ControlDesc; }
 
+	class CChannel* Get_Channel(const char* pChannelName);
+
+	_float3		Get_RootPosition() { return m_RootPosition; }
+	
+
 	//Set
 	void	Set_AnimationDesc(ANIMATIONDESC animdesc) { m_AnimationDesc = animdesc; }
+	void	Reset_TimeAcc() { m_AnimationDesc.m_dTimeAcc = 0.0; }
+
 	void	Set_ControlDesc(CONTROLDESC control) { m_ControlDesc = control; }
+
+
 
 private:
 	ANIMATIONDESC	m_AnimationDesc;
 	CONTROLDESC		m_ControlDesc;
 	
+
+private:
+	_float3		m_RootPosition;
+	
+
 public:
 	static CAnimation* Create(ifstream* pFin, class CModel* pModel);
 	CAnimation* Clone();

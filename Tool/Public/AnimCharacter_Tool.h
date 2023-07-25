@@ -26,6 +26,8 @@ public:
 public: // ImGui
 	void	ImGUI_Control(_double dTimeDelta);
 
+	void	RootAnimation(_double dTimeDelta);
+
 public: // Å°ÀÎÇ²
 	void	KeyInput(_double dTimeDelta);
 
@@ -39,6 +41,9 @@ private: //ImGui º¯¼ö
 
 	vector<char*> m_vecName;
 	_bool	m_isFirst_Name = { true };
+
+private:
+	_float4		m_Save_RootPos = { 0.0f, 0.0f ,0.0f, 1.0f };
 
 private:
 	HRESULT Add_Components();

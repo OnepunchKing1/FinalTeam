@@ -29,6 +29,7 @@ public:
 	vector<class CAnimation*> Get_vecAnimation() { return m_Animations; }
 
 	
+	_uint Get_iCurrentAnimIndex() { return m_iCurrentAnimIndex; }
 
 public:
 	void Set_Animation(_uint iAnimIndex) { m_iCurrentAnimIndex = iAnimIndex; }
@@ -43,6 +44,16 @@ public:
 	HRESULT Bind_ShaderResource(_uint iMeshIndex, class CShader* pShader, const char* pConstantName, MESHMATERIALS::TEXTURETYPE eType);
 	HRESULT Bind_ShaderBoneMatrices(_uint iMeshIndex, class CShader* pShader, const char* pConstantName);
 
+public:// AnimTool용
+	_bool	Get_isPlay() { return m_isPlay; }
+	void	Set_isPlay(_bool Play) { m_isPlay = Play; }
+private: // AnimTool용
+	_bool	m_isPlay = { true };
+
+
+private: // 선형보간용
+	_bool	m_isLinearOn = { false };
+ 
 private:
 	_float4x4					m_PivotMatrix;
 	TYPE						m_eModelType = { TYPE_END };
@@ -60,6 +71,8 @@ private:
 
 private:
 	_uint						m_iCurrentAnimIndex = { 0 };
+	_uint						m_iSaveAnimIndex = { 0 };
+
 	_uint						m_iNumAnimations = { 0 };
 	vector<class CAnimation*>	m_Animations;
 	

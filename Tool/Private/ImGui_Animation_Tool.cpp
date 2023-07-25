@@ -15,7 +15,7 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
-    ImGui::Begin("AnimationTool");
+    ImGui::Begin("Animation_List");
 
     CAnimation::ANIMATIONDESC AnimationDesc = m_pAnimation->Get_AnimationDesc();
     CAnimation::CONTROLDESC ControlDesc = m_pAnimation->Get_ControlDesc();
@@ -24,20 +24,10 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
     // 재생기능 spacebar
     if (pGameInstance->Get_DIKeyDown(DIK_SPACE))
     {
-        if (AnimationDesc.m_dDuration == AnimationDesc.m_dTimeAcc)
-        {
-            AnimationDesc.m_dTimeAcc = 0.0;
-            m_pAnimation->Set_AnimationDesc(AnimationDesc);
-            ControlDesc.m_isPlay = true;
-        }
+        if (m_isPlay)
+            m_isPlay = false;
         else
-        {
-            if (ControlDesc.m_isPlay)
-                ControlDesc.m_isPlay = false;
-            else
-                ControlDesc.m_isPlay = true;
-        }
-        m_pAnimation->Set_ControlDesc(ControlDesc);
+            m_isPlay = true;
     }
    
 #pragma endregion
@@ -46,23 +36,70 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
 
 #pragma region Index_List  
 
-    ImGui::ListBox("Animation_List", &m_iAnimIndex, m_vecName_ForListBox.data(), (_int)(m_vecName_ForListBox.size()), 5);
 
-    ImGui::Text("Animation_Index : %d", m_iAnimIndex);
+    m_iSave_AnimIndex = m_iAnimIndex;
 
-    // 애니메이션 변경시
+    ImGui::ListBox("Animation_List", &m_iAnimIndex, m_vecName_ForListBox.data(), (_int)(m_vecName_ForListBox.size()), 6);
+
+    ImGui::Text("Current_Index : %d", m_iAnimIndex);
+    
+    // 애니메이션 목록 "클릭 변경시에만" 재생위치 초기화
     if (m_iSave_AnimIndex != m_iAnimIndex)
     {
-        AnimationDesc.m_dTimeAcc = 0.0;
-        ControlDesc.m_isPlay = false;
+        //AnimationDesc.m_dTimeAcc = 0.0;
+        m_isPlay = false;
+        m_Signal_to_Change_Anim = true;
+
+        m_iSave_AnimIndex = m_iAnimIndex;
     }
-    m_iSave_AnimIndex = m_iAnimIndex;
+    
+#pragma endregion
+
+
+    /* 설정한 index 의 애니메이션으로 연결됨. */
+#pragma region Connect_Animation
+    // Connect
+    m_iConnectIndex = ControlDesc.m_iConnect_Anim;
+    ImGui::Text("Connect to Index : %d", m_iConnectIndex);
+    ImGui::InputInt("Connect to Next Animation", &m_iConnectIndex);
+    ControlDesc.m_iConnect_Anim = m_iConnectIndex;
+    m_pAnimation->Set_ControlDesc(ControlDesc);
 
 #pragma endregion
 
 
-    ImGui::Text("");  
+    ImGui::Text("");
 
+
+    /* 체크시, 콤보용 모션을 설정함
+        콤보 모션은 애니메이션이 끝나기 전, 키가 눌리면 다음 애니메이션으로 갈 수 있으며
+        끝나기 전에 키가 안눌리면 그대로 멈춘다.*/
+#pragma region Combo_Animation
+        // Combo
+    m_isCombo = ControlDesc.m_isCombo;
+    ImGui::Checkbox("Combo_Animation", &m_isCombo);
+    ControlDesc.m_isCombo = m_isCombo;
+    m_pAnimation->Set_ControlDesc(ControlDesc);
+
+
+    /* 콤보 의 애니메이션으로 연결됨. */
+
+    if (m_isCombo)
+    {
+        // Connect
+        m_iConnect_Combo_Index = ControlDesc.m_iConnect_ComboAnim;
+        ImGui::Text("Connect to Combo Index : %d", m_iConnect_Combo_Index);
+        ImGui::InputInt("Connect to Next Combo Animation", &m_iConnect_Combo_Index);
+        ControlDesc.m_iConnect_ComboAnim = m_iConnect_Combo_Index;
+        m_pAnimation->Set_ControlDesc(ControlDesc);
+    }
+#pragma endregion
+
+
+    ImGui::End();
+
+    ImGui::Begin("Animation Control Console");
+    ImGui::Text("");
 
 #pragma region Play_Slider  
     // Sliders ui
@@ -75,7 +112,7 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
     ImGui::Text("End Time : %f", fEnd_Time);
     ImGui::SliderFloat("Play_Slider", &fCur_Time, 0.0f, fEnd_Time, "%.2f", AnimSliderflags);
 
-    //슬라이더 값을 애니메이션컴포넌트에 보내주기
+    //현재 슬라이더  위치 값을 애니메이션컴포넌트에 보내주기
     AnimationDesc.m_dTimeAcc = fCur_Time;
     m_pAnimation->Set_AnimationDesc(AnimationDesc);
 
@@ -85,6 +122,8 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
     ImGui::Text("");
 
 
+
+    /* 스피드 설정 0.1배 ~ 2.0배 까지 */
 #pragma region AnimaSpeed_Slider  
 
    _float fSpeed = ControlDesc.m_fAnimationSpeed;
@@ -98,30 +137,10 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
 #pragma endregion
 
 
-    ImGui::Text("");
 
-
-#pragma region Loop  
-    // loop, nonLoop check
-    m_isLoop_Check = ControlDesc.m_isLoop;
-    ImGui::Checkbox("Loop_Animation", &m_isLoop_Check);
-    ControlDesc.m_isLoop = m_isLoop_Check;
-    m_pAnimation->Set_ControlDesc(ControlDesc);
-
-#pragma endregion
-
-
-
-
-#pragma region Connect_Animation
-    // Connect
-    
-
-#pragma endregion
-
-
-
+   
     ImGui::End();
+
     Safe_Release(pGameInstance);
 }
 

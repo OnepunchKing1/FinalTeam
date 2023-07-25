@@ -64,7 +64,6 @@ void CChannel::Invalidate(CModel* pModel, _uint& pCurrentKeyFrame, _double Track
 		pCurrentKeyFrame = 0;
 
 	//특정 애니메이션의 시간에 따른 뼈의 상태를 갱신한다.
-
 	_float3		vScale;
 	_float4		vRotation;
 	_float3		vPosition;
@@ -141,9 +140,17 @@ void CChannel::Invalidate(CModel* pModel, _uint& pCurrentKeyFrame, _double Track
 		XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation),
 		XMLoadFloat4(&vTranslation));
 
-	pModel->Get_Bone(m_iBoneIndex)->Set_TransformationMatrix(TransformationMatrix);
-	//위에서 보간한 상태로 행렬을 만들고, 해당 행렬로 뼈를 갱신한다
-
+	// 루트 채널일 경우.
+	if (m_isRoot)
+	{
+		m_RootPosition = vPosition;
+	}
+	else
+	{
+		pModel->Get_Bone(m_iBoneIndex)->Set_TransformationMatrix(TransformationMatrix);
+		//위에서 보간한 상태로 행렬을 만들고, 해당 행렬로 뼈를 갱신한다
+	}
+	
 	//저장
 	m_dSave_TrackPosition = TrackPosition;
 }

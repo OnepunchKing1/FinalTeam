@@ -67,6 +67,15 @@ void CMainApp_Tool::Tick(_double dTimeDelta)
 	if (nullptr == m_pGameInstance)
 		return;
 
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_DIKeyDown(DIK_F7))
+		m_isRenderFPS = !m_isRenderFPS;
+
+	if (m_pGameInstance->Get_DIKeyDown(DIK_F8))
+		m_pRenderer->OnOff_RenderTarget();
+	m_TimeAcc += dTimeDelta;
+#endif
+
 	m_pUI->Tick_ImGui();
 
 	m_pGameInstance->Tick_Engine(dTimeDelta);
