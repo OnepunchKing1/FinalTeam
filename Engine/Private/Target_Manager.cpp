@@ -20,6 +20,8 @@ HRESULT CTarget_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 	Ready_LightDepthStencilRenderTargetView();
 
+
+
 	return S_OK;
 }
 
