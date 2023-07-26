@@ -64,7 +64,6 @@ void CChannel::Invalidate(CModel* pModel, _uint& pCurrentKeyFrame, _double Track
 		pCurrentKeyFrame = 0;
 
 	//특정 애니메이션의 시간에 따른 뼈의 상태를 갱신한다.
-
 	_float3		vScale;
 	_float4		vRotation;
 	_float3		vPosition;
@@ -128,6 +127,7 @@ void CChannel::Invalidate(CModel* pModel, _uint& pCurrentKeyFrame, _double Track
 		XMStoreFloat4(&vRotation, XMQuaternionSlerp(XMLoadFloat4(&vSourRotation), XMLoadFloat4(&vDestRotation), (_float)dRatio));
 		XMStoreFloat3(&vPosition, XMVectorLerp(XMLoadFloat3(&vSourPosition), XMLoadFloat3(&vDestPosition), (_float)dRatio));
 
+
 		/*한 프레임 구간의 상태를 선형보간하는 작업 - Lerp, Slerp
 		* 키프레임 시작지점 - Sour
 		* 키프레임 끝지점 - Dest
@@ -141,11 +141,110 @@ void CChannel::Invalidate(CModel* pModel, _uint& pCurrentKeyFrame, _double Track
 		XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation),
 		XMLoadFloat4(&vTranslation));
 
-	pModel->Get_Bone(m_iBoneIndex)->Set_TransformationMatrix(TransformationMatrix);
-	//위에서 보간한 상태로 행렬을 만들고, 해당 행렬로 뼈를 갱신한다
-
+	// 루트 채널일 경우.
+	if (m_isRoot)
+	{
+		m_RootPosition = vPosition;
+	}
+	else
+	{
+		pModel->Get_Bone(m_iBoneIndex)->Set_TransformationMatrix(TransformationMatrix);
+		//위에서 보간한 상태로 행렬을 만들고, 해당 행렬로 뼈를 갱신한다
+	}
+	
 	//저장
 	m_dSave_TrackPosition = TrackPosition;
+}
+
+void CChannel::Invalidate_Linear(CModel* pModel, KEYFRAME LastKeyFrame_Prev, _double TrackPosition )
+{
+	// LastKeyFrame_Prev : 이전 키프레임의 마지막이 처음이 된다.
+
+	//if (0.0 == TrackPosition)
+	//	pCurrentKeyFrame = 0;
+
+	//특정 애니메이션의 시간에 따른 뼈의 상태를 갱신한다.
+	_float3		vScale;
+	_float4		vRotation;
+	_float3		vPosition;
+
+	KEYFRAME	LastKeyFrame = m_KeyFrames.front();
+	//이 애니메이션의 마지막 키 프레임
+
+	// 보간duration
+	if (TrackPosition >= 0.15f)
+	{
+		/*간혹 전체 재생시간 이전에 키 프레임이 끝났을 경우 남은 재생시간 동안
+		* 마지막 상태를 유지시켜주기 위한 예외처리
+		*/
+		vScale = LastKeyFrame.vScale;
+		vRotation = LastKeyFrame.vRotation;
+		vPosition = LastKeyFrame.vPosition;
+	}
+	else
+	{
+		// 보간duration
+		_double dRatio = TrackPosition / 0.15f;
+		/*한 키 프레임 구간에서 현재 얼마나 재생됐는지 0 ~ 1
+		* 1보다 커지면 다음 키프레임으로 넘어간다 - 위의 if문을 들어간다
+		*/
+
+		_float3		vSourScale, vDestScale;
+		_float4		vSourRotation, vDestRotation;
+		_float3		vSourPosition, vDestPosition;
+
+		vSourScale = LastKeyFrame_Prev.vScale;
+		vDestScale = m_KeyFrames.front().vScale;
+
+		vSourRotation = LastKeyFrame_Prev.vRotation;
+		vDestRotation = m_KeyFrames.front().vRotation;
+
+		
+		vSourPosition = LastKeyFrame_Prev.vPosition;
+		vDestPosition = m_KeyFrames.front().vPosition;
+
+		XMStoreFloat3(&vScale, XMVectorLerp(XMLoadFloat3(&vSourScale), XMLoadFloat3(&vDestScale), (_float)dRatio));
+		XMStoreFloat4(&vRotation, XMQuaternionSlerp(XMLoadFloat4(&vSourRotation), XMLoadFloat4(&vDestRotation), (_float)dRatio));
+		XMStoreFloat3(&vPosition, XMVectorLerp(XMLoadFloat3(&vSourPosition), XMLoadFloat3(&vDestPosition), (_float)dRatio));
+
+		//루트채널의 위치 고정
+		if (m_isRoot)
+		{
+			vPosition = { 0.0f, 0.0f, 0.0f };
+		}
+
+		/*한 프레임 구간의 상태를 선형보간하는 작업 - Lerp, Slerp
+		* 키프레임 시작지점 - Sour
+		* 키프레임 끝지점 - Dest
+		*/
+	}
+
+	_float4 vTranslation = _float4(vPosition.x, vPosition.y, vPosition.z, 1.f);
+
+	_matrix TransformationMatrix = XMMatrixAffineTransformation(
+		XMLoadFloat3(&vScale),
+		XMVectorSet(0.f, 0.f, 0.f, 1.f), XMLoadFloat4(&vRotation),
+		XMLoadFloat4(&vTranslation));
+	
+	// 루트 채널일 경우.
+	if (m_isRoot)
+	{
+		m_RootPosition = vPosition;
+	}
+	else
+	{
+		pModel->Get_Bone(m_iBoneIndex)->Set_TransformationMatrix(TransformationMatrix);
+		//위에서 보간한 상태로 행렬을 만들고, 해당 행렬로 뼈를 갱신한다
+	}
+	
+	
+}
+
+KEYFRAME CChannel::Get_LastKeyFrame()
+{
+	KEYFRAME	LastKeyFrame = m_KeyFrames.back();
+
+	return LastKeyFrame;
 }
 
 CChannel* CChannel::Create(ifstream* pFin, const char* pName, _uint iBoneIndex)
