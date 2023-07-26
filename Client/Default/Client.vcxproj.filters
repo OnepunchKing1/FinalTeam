@@ -61,6 +61,21 @@
     <Filter Include="05. SoundManager">
       <UniqueIdentifier>{92e546b6-8735-4d8b-9fbe-42feeaf4296f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject">
+      <UniqueIdentifier>{f3d55f59-222e-4e43-9d35-288044ec02eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject\Rotation">
+      <UniqueIdentifier>{4a126142-20e6-4ae1-9581-0321a9578f5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject\Static">
+      <UniqueIdentifier>{a701ec66-f55f-4471-a504-c6bde3817942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject\Terrain">
+      <UniqueIdentifier>{be676e8a-1460-4a0f-b8b2-8b6a8944b14a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\Sky">
+      <UniqueIdentifier>{ac119d15-7984-4f75-be10-6b17bb2a1a34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -114,6 +129,21 @@
     <ClInclude Include="..\Public\ColliderManager.h">
       <Filter>04. ColliderManager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RotationMapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StaticMapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TerrainMapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sky.h">
+      <Filter>02. GameObjects\Environment\Sky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -155,6 +185,21 @@
     <ClCompile Include="..\Private\ColliderManager.cpp">
       <Filter>04. ColliderManager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotationMapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StaticMapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TerrainMapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sky.cpp">
+      <Filter>02. GameObjects\Environment\Sky</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -180,6 +225,9 @@
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTerrainModel.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
