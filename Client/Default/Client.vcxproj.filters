@@ -129,20 +129,20 @@
     <ClInclude Include="..\Public\ColliderManager.h">
       <Filter>04. ColliderManager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Sky.h">
+      <Filter>02. GameObjects\Environment\Sky</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\MapObject.h">
       <Filter>02. GameObjects\Environment\MapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\RotationMapObject.h">
-      <Filter>02. GameObjects\Environment\MapObject</Filter>
+      <Filter>02. GameObjects\Environment\MapObject\Rotation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\StaticMapObject.h">
-      <Filter>02. GameObjects\Environment\MapObject</Filter>
+      <Filter>02. GameObjects\Environment\MapObject\Static</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TerrainMapObject.h">
-      <Filter>02. GameObjects\Environment\MapObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Sky.h">
-      <Filter>02. GameObjects\Environment\Sky</Filter>
+      <Filter>02. GameObjects\Environment\MapObject\Terrain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -185,20 +185,20 @@
     <ClCompile Include="..\Private\ColliderManager.cpp">
       <Filter>04. ColliderManager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Sky.cpp">
+      <Filter>02. GameObjects\Environment\Sky</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\MapObject.cpp">
       <Filter>02. GameObjects\Environment\MapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\RotationMapObject.cpp">
-      <Filter>02. GameObjects\Environment\MapObject</Filter>
+      <Filter>02. GameObjects\Environment\MapObject\Rotation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\StaticMapObject.cpp">
-      <Filter>02. GameObjects\Environment\MapObject</Filter>
+      <Filter>02. GameObjects\Environment\MapObject\Static</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TerrainMapObject.cpp">
-      <Filter>02. GameObjects\Environment\MapObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Sky.cpp">
-      <Filter>02. GameObjects\Environment\Sky</Filter>
+      <Filter>02. GameObjects\Environment\MapObject\Terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
