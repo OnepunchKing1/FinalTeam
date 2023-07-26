@@ -93,19 +93,6 @@ void CImGui_Manager_Tool::ImGUI_ShowDemo()
 		ImGui::ShowDemoWindow(&show_deme_window);
 }
 
-void CImGui_Manager_Tool::Animation_ImGui_Set()
-{
-    CGameInstance* pGameInstance = CGameInstance::GetInstance();
-    Safe_AddRef(pGameInstance);
-    ImGui::Begin("AnimationTool");
-
-
-
-
-    ImGui::End();
-    Safe_Release(pGameInstance);
-}
-
 #pragma region Light Set
 void CImGui_Manager_Tool::Set_DefaultLight_ImGui(LIGHTDESC LightDesc)
 {
@@ -123,26 +110,42 @@ HRESULT CImGui_Manager_Tool::Initialize_ImGui(ID3D11Device* pDevice, ID3D11Devic
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+    
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
+
+    ImGuiStyle& style = ImGui::GetStyle();
+    if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.Colors[ImGuiCol_WindowBg].w = 1.f;
+    }
+
     ImGui_ImplWin32_Init(g_hWnd);
     ImGui_ImplDX11_Init(pDevice, pContext);
 
     return S_OK;
 }
-
-void CImGui_Manager_Tool::Tick_ImGui()
+void CImGui_Manager_Tool::Tick_ImGui() 
 {
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
+
 }
 
-void CImGui_Manager_Tool::Render_ImGui()
+HRESULT CImGui_Manager_Tool::Render_ImGui()
 {
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+    if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+    }
+    return S_OK;
 }
 
 void CImGui_Manager_Tool::Release_ImGui()

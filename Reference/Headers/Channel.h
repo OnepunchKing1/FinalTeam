@@ -22,6 +22,10 @@ private:
 	_uint				m_iNumKeyFrames = { 0 };
 	vector<KEYFRAME>	m_KeyFrames;
 
+	//犁积苞 开犁积 备喊
+	_double  m_dSave_TrackPosition = { 0.0 };
+	_bool	 m_isReverse = { false };
+
 public:
 	static CChannel* Create(ifstream* pFin, const char* pName, _uint iBoneIndex);
 	virtual void Free() override;

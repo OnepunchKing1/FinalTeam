@@ -5,6 +5,10 @@
 
 #include "Camera.h"
 
+BEGIN(Engine)
+class CRenderer;
+END
+
 BEGIN(Tool)
 
 class CImGui_Manager_Tool final : public CBase
@@ -17,18 +21,6 @@ private:
 public:
 	void ImGui_Set();
 	void ImGUI_ShowDemo();
-
-
-#pragma region Animation Set
-
-public:
-	void Animation_ImGui_Set();
-private:
-	
-
-#pragma endregion
-
-
 
 
 #pragma region Camera Set
@@ -56,7 +48,7 @@ private:
 public:
 	HRESULT Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	void Tick_ImGui();
-	void Render_ImGui();
+	HRESULT Render_ImGui();
 	void Release_ImGui();
 
 public:
