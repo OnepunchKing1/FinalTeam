@@ -104,6 +104,29 @@ HRESULT CTarget_Manager::Begin_MRT(const _tchar* pMRTTag)
 	return S_OK;
 }
 
+HRESULT CTarget_Manager::Begin_MRT_NoneClear(const _tchar* pMRTTag)
+{
+	list<CRenderTarget*>* pMRTList = Find_MRT(pMRTTag);
+	if (nullptr == pMRTList)
+		return E_FAIL;
+
+	m_pContext->OMGetRenderTargets(1, &m_pDefaultRTV, &m_pDSV);
+
+	_uint		iNumRenderTargets = { 0 };
+
+	ID3D11RenderTargetView* pRTVs[8] = { nullptr };
+
+	for (auto& pRenderTarget : *pMRTList)
+	{
+		//pRenderTarget->Clear();
+		pRTVs[iNumRenderTargets++] = pRenderTarget->Get_RTV();
+	}
+
+	m_pContext->OMSetRenderTargets(iNumRenderTargets, pRTVs, m_pDSV);
+
+	return S_OK;
+}
+
 HRESULT CTarget_Manager::Begin_MRT_LightDepth(ID3D11DeviceContext* pContext, const _tchar* pMRTTag)
 {
 	list<CRenderTarget*>* pMRTList = Find_MRT(pMRTTag);

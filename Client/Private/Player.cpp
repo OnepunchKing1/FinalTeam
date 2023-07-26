@@ -86,6 +86,7 @@ void CPlayer::Tick(_double dTimeDelta)
 		return;
 	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this)))
 		return;
+	
 
 }
 

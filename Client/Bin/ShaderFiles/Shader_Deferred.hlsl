@@ -7,7 +7,7 @@ vector         g_vCamPosition;
 
 vector         g_vLightDir;
 vector         g_vLightPos;
-float         g_fLightRange;
+float          g_fLightRange;
 vector         g_vLightDiffuse;
 vector         g_vLightAmbient;
 vector         g_vLightSpecular;
@@ -21,7 +21,7 @@ texture2D      g_ShadeTexture;
 texture2D      g_SpecularTexture;
 texture2D      g_DepthTexture;
 texture2D      g_ShadowDepthTexture;
-texture2D      g_BlurTex;
+texture2D      g_SSAOTexture;
 
 matrix         g_matProj;
 matrix         g_matViewInv;
@@ -31,6 +31,42 @@ matrix         g_matLightView;
 float m_TexW = 1280.f;
 float m_TexH = 720.f;
 
+//===================================================
+float g_fRadius = 0.001f;
+float g_fFar = 300.f;
+float g_fFalloff = 0.000002f;
+float g_fStrength = 0.0007f;
+float g_fTotStrength = 1.38f;
+float g_fInvSamples = 1.f / 16.f;
+
+float3 g_vRandom[16] =
+{
+   float3(0.2024537f, 0.841204f, -0.9060141f),
+   float3(-0.2200423f, 0.6282339f, -0.8275437f),
+   float3(0.3677659f, 0.1086345f, -0.4466777f),
+   float3(0.8775856f, 0.4617546f, -0.6427765f),
+   float3(0.7867433f, -0.141479f, -0.1567597f),
+   float3(0.4839356f, -0.8253108f, -0.1563844f),
+   float3(0.4401554f, -0.4228428f, -0.3300118f),
+   float3(0.0019193f, -0.8048455f, 0.0726584f),
+   float3(-0.7578573f, -0.5583301f, 0.2347527f),
+   float3(-0.4540417f, -0.252365f, 0.0694318f),
+   float3(-0.0483353f, -0.2527294f, 0.5924745f),
+   float3(-0.4192392f, 0.2084218f, -0.3672943f),
+   float3(-0.8433938f, 0.1451271f, 0.2202872f),
+   float3(-0.4037157f, -0.8263387f, 0.4698132f),
+   float3(-0.6657394f, 0.6298575f, 0.6342437f),
+   float3(-0.0001783f, 0.2834622f, 0.8343929f),
+};
+
+//외곽선 쉐이딩
+float3x3      Kx = { -1, 0, 1,
+                  -2, 0, 2,
+                  -1, 0, 1 };
+
+float3x3      Ky = { 1, 2, 1,
+                  0, 0, 0,
+                  -1, -2, -1 };
 float2         g_Pixeloffset;
 
 sampler ShadowDepthSampler = sampler_state
@@ -48,20 +84,6 @@ sampler DepthSampler = sampler_state
     AddressU = clamp;
     AddressV = clamp;
 };
-
-sampler BlurSampler = sampler_state
-{
-    texture = g_BlurTex;
-    filter = min_mag_mip_linear;
-    AddressU = clamp;
-    AddressV = clamp;
-};
-static const float Weight[] =
-{
-    0.0561, 0.1353, 0.278, 0.4868, 0.7261, 0.9231, 1,
-    0.9231,0.7261,0.4868,0.278,0.1353,0.0561
-};
-static const float Total = 6.2108;
 
 struct VS_IN
 {
@@ -210,8 +232,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector      vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexUV);
     vector      vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
     vector      vDepth = g_DepthTexture.Sample(PointSampler, In.vTexUV);
-
-    //vShade = ceil(vShade * 3) / 3.0f; // 보통 3톤 이건 근데 자유 5톤까지
+    vector      vSSAO = g_SSAOTexture.Sample(PointSampler, In.vTexUV);
 
     if (vShade.r < 0.21f)
         vShade.rgb = float3(0.2f, 0.2f, 0.2f);
@@ -220,8 +241,10 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     else if (vShade.r >= 0.41f && vShade.r <= 1.f)
         vShade.rgb = float3(0.7f, 0.7f, 0.7f);
 
-    Out.vColor = (vDiffuse) * (vShade) * 1.1f;
+    Out.vColor = (vDiffuse) * (vShade) * vSSAO;
     //Out.vColor = saturate(Out.vColor);
+
+
 
     //그림자 적용
 
@@ -249,11 +272,11 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 
     vector      vShadowDepthInfo = g_ShadowDepthTexture.Sample(ShadowDepthSampler, vNewUV);
 
-    /*if (vPosition.z - 0.1f > vShadowDepthInfo.r * 300.0f)
+    if (vPosition.z - 0.1f > vShadowDepthInfo.r * 300.0f)
     {
         vector vColor = vector(0.7f, 0.7f, 0.7f, 1.f);
         Out.vColor *= vColor;
-    }*/
+    }
 
     if (vPosition.z > vShadowDepthInfo.r * 300.0f + 0.1f)
     {
@@ -331,11 +354,73 @@ PS_OUT PS_MAIN_DEFERRED_Test(PS_IN In)
     return Out;
 }
 
+//====================================================================
+
+float3 randomNormal(float2 tex)
+{
+    float noiseX = (frac(sin(dot(tex, float2(15.8989f, 76.132f) * 1.0f)) * 46336.23745f));
+    float noiseY = (frac(sin(dot(tex, float2(11.9899f, 62.223f) * 2.0f)) * 34748.34744f));
+    float noiseZ = (frac(sin(dot(tex, float2(13.3238f, 63.122f) * 3.0f)) * 59998.47362f));
+    return normalize(float3(noiseX, noiseY, noiseZ));
+}
+
+PS_OUT PS_SSAO_Test(PS_IN _In)
+{
+    PS_OUT         Out = (PS_OUT)0;
+
+    //float4 vDepth = g_DepthTexture.Sample(LinearClampSampler, _In.vTexUV);
+
+   // half4 vNormal = g_NormalTexture.Sample(LinearClampSampler, _In.vTexUV);
+    vector      vNormalDesc = g_NormalTexture.Sample(PointSampler, _In.vTexUV);
+    half4      vNormal = normalize(float4(vNormalDesc.xyz * 2.f - 1.f, 0.f));
+    float4      vDepth = g_DepthTexture.Sample(DepthSampler, _In.vTexUV);
+    //float      fViewZ = vDepthInfo.x * 300.0f;
+
+    if (vNormal.a != 0.f)
+    {
+        Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
+        return Out;
+    }
+    vNormal = normalize(vNormalDesc * 2.f - 1.f);
+
+    float fViewZ = vDepth.r * g_fFar;
+    half3 vHNormal = vNormal.rgb;
+    
+    float fDepth = vDepth.g * g_fFar * fViewZ;
+
+    half3 vRay;
+    half3 vReflect;
+    half2 vRandomUV;
+    float fOccNorm;
+    float4 vRandomDepth;
+
+    int iColor = 0;
+
+    for (int i = 0; i < 16; ++i)
+    {
+        vRay = reflect(randomNormal(_In.vTexUV), g_vRandom[i]);
+        vReflect = normalize(reflect(vRay, vHNormal)) * g_fRadius;
+        vReflect.x *= -1.f;
+        vRandomUV = _In.vTexUV + vReflect.xy;
+        vRandomDepth = g_DepthTexture.Sample(DepthSampler, vRandomUV);
+        fOccNorm = vRandomDepth.g * g_fFar * fViewZ;
+
+        if (fOccNorm <= fDepth + 0.0003f)
+            ++iColor;
+    }
+
+    vector vAmbient = abs((iColor / 16.f) - 1);
+
+    Out.vColor = (1.f - vAmbient);
+
+    return Out;
+}
+
 
 technique11 DefaultTechnique
 {
     pass Debug
-    {
+    {//0
         SetRasterizerState(RS_Default);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
         SetDepthStencilState(DS_Default, 0);
@@ -348,7 +433,7 @@ technique11 DefaultTechnique
     }
 
     pass Light_Diretional
-    {
+    {//1
         SetRasterizerState(RS_Default);
         SetBlendState(BS_OneByOne, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
         SetDepthStencilState(DS_None_ZEnable_None_ZWrite, 0);
@@ -361,7 +446,7 @@ technique11 DefaultTechnique
     }
 
     pass Light_Point
-    {
+    {//2
         SetRasterizerState(RS_Default);
         SetBlendState(BS_OneByOne, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
         SetDepthStencilState(DS_None_ZEnable_None_ZWrite, 0);
@@ -374,7 +459,7 @@ technique11 DefaultTechnique
     }
 
     pass Deferred_Blend
-    {
+    {//3
         SetRasterizerState(RS_Default);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
         SetDepthStencilState(DS_None_ZEnable_None_ZWrite, 0);
@@ -387,7 +472,7 @@ technique11 DefaultTechnique
     }
 
     pass Deferred_Test
-    {
+    {//4
         SetRasterizerState(RS_Default);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
         SetDepthStencilState(DS_None_ZEnable_None_ZWrite, 0);
@@ -397,5 +482,18 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_DEFERRED_Test();
+    }
+
+    pass SSAO_Test
+    {//5
+        SetRasterizerState(RS_Default);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+        SetDepthStencilState(DS_Default, 0);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_SSAO_Test();
     }
 }

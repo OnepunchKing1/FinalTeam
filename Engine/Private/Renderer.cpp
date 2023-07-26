@@ -61,9 +61,11 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowDepth"), iShadowMapCX, iShadowMapCY, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_ShadowDepth)))
 		return E_FAIL;
 
-	/*_float4 vColor_SSAO = { 1.f, 1.f, 1.f, 1.f };
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAO"), iShadowMapCX, iShadowMapCY, DXGI_FORMAT_R8_UNORM, vColor_SSAO)))
-		return E_FAIL;*/
+	///* For.Target_SSAO */
+	_float4 vColor_SSAO = { 1.f, 1.f, 1.f, 1.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAO")
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R16G16B16A16_UNORM, vColor_SSAO)))
+		return E_FAIL;
 
 
 
@@ -74,8 +76,7 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Depth"))))
 		return E_FAIL;
-	/*if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_SSAO"))))
-		return E_FAIL;*/
+	
 
 	/* For.MRT_LightAcc */
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade"))))
@@ -85,6 +86,10 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	// For.MRT_ShadowDepth(Shadow)
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightDepth"), TEXT("Target_ShadowDepth"))))
+		return E_FAIL;
+
+	// For.MRT_SSAO
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_SSAO"), TEXT("Target_SSAO"))))
 		return E_FAIL;
 
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(Viewport.Width, Viewport.Height, 1.f));
@@ -112,8 +117,8 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_ShadowDepth"), 200.0f, 300.f, 100.f, 100.f)))
 		return E_FAIL;
-	/*if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_SSAO"), 100.0f, 400.f, 100.f, 100.f)))
-		return E_FAIL;*/
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_SSAO"), 100.0f, 400.f, 100.f, 100.f)))
+		return E_FAIL;
 #endif // _DEBUG
 
 	
@@ -194,11 +199,18 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT (*fp)())
 		MSG_BOX("Failed to Render_ShadowDepth");
 		return E_FAIL;
 	}
+	
 	if (FAILED(Render_NonBlend()))
 	{
 		MSG_BOX("Failed to Render_NonBlend");
 		return E_FAIL;
 	}
+	if (FAILED(Render_SSAO()))
+	{
+		MSG_BOX("Failed to Render_SSAO");
+		return E_FAIL;
+	}
+
 	if (FAILED(Render_Lights()))
 	{
 		MSG_BOX("Failed to Render_Lights");
@@ -209,6 +221,7 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT (*fp)())
 		MSG_BOX("Failed to Render_Deferred");
 		return E_FAIL;
 	}
+	
 	if (FAILED(Render_NonLight()))
 	{
 		MSG_BOX("Failed to Render_NonLight");
@@ -350,6 +363,59 @@ HRESULT CRenderer::Render_ShadowDepth()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_SSAO()
+{
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_SSAO"))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	CPipeLine* pPipeLine = CPipeLine::GetInstance();
+	Safe_AddRef(pPipeLine);
+
+	_float4x4 ViewMatrixInv = pPipeLine->Get_TransformFloat4x4_Inverse(CPipeLine::D3DTS_VIEW);
+	if (FAILED(m_pShader->SetUp_Matrix("g_ViewMatrixInv", &ViewMatrixInv)))
+		return E_FAIL;
+	_float4x4 ProjMatrixInv = pPipeLine->Get_TransformFloat4x4_Inverse(CPipeLine::D3DTS_PROJ);
+	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrixInv", &ProjMatrixInv)))
+		return E_FAIL;
+
+	_float4 vCamPosition = pPipeLine->Get_CameraPosition();
+	if (FAILED(m_pShader->SetUp_RawValue("g_vCamPosition", &vCamPosition, sizeof(_float4))))
+		return E_FAIL;
+
+	Safe_Release(pPipeLine);
+
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ShadowDepth"), m_pShader, "g_ShadowDepthTexture")))
+		return E_FAIL;
+
+
+	if (FAILED(m_pShader->Begin(5)))
+		return E_FAIL;
+	
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->End_MRT()))
+		return E_FAIL;
+
+	
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Render_NonBlend()
 {
 	if (nullptr == m_pTarget_Manager)
@@ -480,6 +546,8 @@ HRESULT CRenderer::Render_Debug()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_LightDepth"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_SSAO"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
 	
 	return S_OK;
 }
@@ -548,9 +616,8 @@ HRESULT CRenderer::Render_Deferred()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ShadowDepth"), m_pShader, "g_ShadowDepthTexture")))
 		return E_FAIL;
-	/*if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAO"), m_pShader, "g_SSAOTexture")))
-		return E_FAIL;*/
-	
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAO"), m_pShader, "g_SSAOTexture")))
+		return E_FAIL;
 
 	CPipeLine* pPipeLine = CPipeLine::GetInstance();
 	Safe_AddRef(pPipeLine);
@@ -621,6 +688,7 @@ void CRenderer::Free()
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pLight_Manager);
+	
 
 	for (auto& RenderObjects : m_RenderObjects)
 	{
