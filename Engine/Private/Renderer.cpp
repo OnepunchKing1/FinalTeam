@@ -105,19 +105,19 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 100.f, 100.f, 100.f, 100.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Diffuse"), 50.f, 100.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 100.f, 200.f, 100.f, 100.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Normal"), 50.f, 200.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 100.0f, 300.0f, 100.f, 100.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Depth"), 50.0f, 300.0f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 200.f, 100.f, 100.f, 100.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Shade"), 150.f, 100.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 200.0f, 200.f, 100.f, 100.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_Specular"), 150.0f, 200.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_ShadowDepth"), 200.0f, 300.f, 100.f, 100.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_ShadowDepth"), 150.0f, 300.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_SSAO"), 100.0f, 400.f, 100.f, 100.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_SSAO"), 150.0f, 400.f, 100.f, 100.f)))
 		return E_FAIL;
 #endif // _DEBUG
 
@@ -194,6 +194,7 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT (*fp)())
 		MSG_BOX("Failed to Render_Priority");
 		return E_FAIL;
 	}
+	
 	if (FAILED(Render_ShadowDepth()))
 	{
 		MSG_BOX("Failed to Render_ShadowDepth");
@@ -210,12 +211,13 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT (*fp)())
 		MSG_BOX("Failed to Render_SSAO");
 		return E_FAIL;
 	}
-
+		
 	if (FAILED(Render_Lights()))
 	{
 		MSG_BOX("Failed to Render_Lights");
 		return E_FAIL;
 	}
+	
 	if (FAILED(Render_Deferred()))
 	{
 		MSG_BOX("Failed to Render_Deferred");
@@ -398,8 +400,7 @@ HRESULT CRenderer::Render_SSAO()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ShadowDepth"), m_pShader, "g_ShadowDepthTexture")))
-		return E_FAIL;
+	
 
 
 	if (FAILED(m_pShader->Begin(5)))

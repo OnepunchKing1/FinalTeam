@@ -234,6 +234,9 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
     vector      vDepth = g_DepthTexture.Sample(PointSampler, In.vTexUV);
     vector      vSSAO = g_SSAOTexture.Sample(PointSampler, In.vTexUV);
 
+    if (vDiffuse.a == 0.f)
+        discard;
+
     if (vShade.r < 0.21f)
         vShade.rgb = float3(0.2f, 0.2f, 0.2f);
     else if (vShade.r >= 0.21f && vShade.r < 0.41f)
@@ -242,6 +245,8 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
         vShade.rgb = float3(0.7f, 0.7f, 0.7f);
 
     Out.vColor = (vDiffuse) * (vShade) * vSSAO;
+   /* if (Out.vColor.a == 0.f)
+        discard;*/
     //Out.vColor = saturate(Out.vColor);
 
 
@@ -329,9 +334,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
         Out.vColor *= vColor;
     }
 
-
-    if (Out.vColor.a == 0.f)
-        discard;
+    
 
     return Out;
 }
