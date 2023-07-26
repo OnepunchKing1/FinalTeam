@@ -12,6 +12,7 @@ private:
 public:
 	HRESULT Initialize(ifstream* pFin, const char* pName, _uint iBoneIndex);
 	void	Invalidate(class CModel* pModel, _uint& pCurrentKeyFrame, _double TrackPosition);
+	void	Invalidate_Linear(class CModel* pModel, KEYFRAME LastKeyFrame_Prev, _double TrackPosition  );
 	
 
 public:
@@ -21,7 +22,7 @@ public:
 	_float3 Get_RootPosition() { return m_RootPosition; }
 	
 
-	KEYFRAME Get_LastKeyFrame() { return m_KeyFrames.back(); }
+	KEYFRAME Get_LastKeyFrame();
 
 private:
 	char			m_szName[MAX_PATH] = { "" };
@@ -37,6 +38,7 @@ private://root animation 용
 private:
 	_uint				m_iNumKeyFrames = { 0 };
 	vector<KEYFRAME>	m_KeyFrames;
+	
 
 	//재생과 역재생 구별
 	_double  m_dSave_TrackPosition = { 0.0 };

@@ -28,6 +28,8 @@ public: // ImGui
 
 	void	RootAnimation(_double dTimeDelta);
 
+	void	Save_Animations();
+
 public: // Å°ÀÎÇ²
 	void	KeyInput(_double dTimeDelta);
 
@@ -44,6 +46,9 @@ private: //ImGui º¯¼ö
 
 private:
 	_float4		m_Save_RootPos = { 0.0f, 0.0f ,0.0f, 1.0f };
+
+	
+
 
 private:
 	HRESULT Add_Components();

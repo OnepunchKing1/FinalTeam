@@ -2,6 +2,7 @@
 #include "..\Public\AnimCharacter_Tool.h"
 
 #include "GameInstance.h"
+#include "Animation.h"
 
 CAnimCharacter_Tool::CAnimCharacter_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCharacter_Tool(pDevice, pContext)
@@ -35,6 +36,54 @@ HRESULT CAnimCharacter_Tool::Initialize(void* pArg)
 
 	m_pModelCom->Set_Animation(0);
 
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (!pGameInstance->Get_DIKeyDown(DIK_NUMPAD9))
+	{
+		//여기서 
+		char szFullPath[MAX_PATH] = { "" };
+		strcpy_s(szFullPath, "../Bin/Resources/AnimToolBin/Tanjiro.bin");
+
+		ifstream fin;
+		fin.open(szFullPath, ios::binary);
+		if (false == fin.is_open())
+		{
+			MSG_BOX("Faield to open : Tanjiro Anim Data");
+			//return E_FAIL;
+		}
+
+		_int AnimSize;
+		fin.read(reinterpret_cast<char*>(&AnimSize), sizeof(_int));
+
+		for (_int i = 0; i < AnimSize; i++)
+		{
+			CAnimation::CONTROLDESC ControlDesc;
+
+			fin.read(reinterpret_cast<char*>(&ControlDesc.m_fAnimationSpeed), sizeof(_float));
+			fin.read(reinterpret_cast<char*>(&ControlDesc.m_iConnect_Anim), sizeof(_int));
+			fin.read(reinterpret_cast<char*>(&ControlDesc.m_isCombo), sizeof(_bool));
+			fin.read(reinterpret_cast<char*>(&ControlDesc.m_iConnect_ComboAnim), sizeof(_int));
+			fin.read(reinterpret_cast<char*>(&ControlDesc.m_isRootAnimation), sizeof(_bool));
+
+			_int isizeEvent;
+			fin.read(reinterpret_cast<char*>(&isizeEvent), sizeof(_int));
+
+			for (_int i = 0; i < isizeEvent; i++)
+			{
+				CAnimation::EVENTDESC EventDesc;
+				fin.read(reinterpret_cast<char*>(&EventDesc.m_dTime), sizeof(_double));
+				fin.read(reinterpret_cast<char*>(&EventDesc.m_isFirst), sizeof(_bool));
+
+				ControlDesc.m_vecTime_Event.emplace_back(EventDesc);
+			}
+
+			m_pModelCom->Set_Animation_Control(i, ControlDesc);
+		}
+
+		fin.close();
+	}
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
@@ -44,14 +93,14 @@ void CAnimCharacter_Tool::Tick(_double dTimeDelta)
 	if (true == m_isDead)
 		return;
 
-	
-
 	ImGUI_Control(dTimeDelta);
 
 	KeyInput(dTimeDelta);
 
 	m_pModelCom->Play_Animation(dTimeDelta);
 	RootAnimation(dTimeDelta);
+
+	
 
 	__super::Tick(dTimeDelta);
 }
@@ -125,12 +174,13 @@ void CAnimCharacter_Tool::ImGUI_Control(_double dTimeDelta)
 
 			m_vecName.emplace_back(pNewName);
 
-
-			CAnimation::CONTROLDESC control = pAnim->Get_ControlDesc();
+			// Imgui 초기값 넣어주기.
+			
+			//CAnimation::CONTROLDESC control = pAnim->Get_ControlDesc();
 			// Connect 초기값 넣어주기.
-			control.m_iConnect_Anim = index;
+			//control.m_iConnect_Anim = index;
 
-			pAnim->Set_ControlDesc(control);
+			//pAnim->Set_ControlDesc(control);
 			index++;
 		}
 		m_pImGui_Anim->Set_vecName(m_vecName);
@@ -155,33 +205,107 @@ void CAnimCharacter_Tool::ImGUI_Control(_double dTimeDelta)
 
 	//재생기능
 	m_pModelCom->Set_isPlay(m_pImGui_Anim->Get_Play());
+
+
+	//세이브
+	if (m_pImGui_Anim->Get_Save())
+	{
+		m_pImGui_Anim->Set_Save(false);
+		Save_Animations();
+	}
 }
 
 void CAnimCharacter_Tool::RootAnimation(_double dTimeDelta)
 {
 	CAnimation* pAnim = m_pModelCom->Get_Animation();
 
-	//애니메이션 시작시 첫 위치
-	if (pAnim->Get_AnimationDesc().m_dTimeAcc == 0.0)
+	if (pAnim->Get_ControlDesc().m_isRootAnimation)
 	{
-		XMStoreFloat4(&m_Save_RootPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		//애니메이션 시작시 첫 위치
+		if (pAnim->Get_AnimationDesc().m_dTimeAcc == 0.0)
+		{
+			XMStoreFloat4(&m_Save_RootPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_Save_RootPos));
+		}
+		else
+		{
+			_float4 fPos;
+			XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+			_float3 RootPosition = pAnim->Get_RootPosition();
+			_float4x4 RootWorldConvert = m_pTransformCom->Get_WorldFloat4x4();
+			_float3 FinalRootPos = { 0.0f, 0.0f, 0.0f };
+			XMStoreFloat3(&FinalRootPos, XMVector3TransformCoord(XMLoadFloat3(&RootPosition), XMLoadFloat4x4(&RootWorldConvert)));
+
+			_float4 Final = { -FinalRootPos.x * 0.01f, FinalRootPos.y * 0.01f , -FinalRootPos.z * 0.01f, 1.f };
+
+			// 플레이어의 월드 위치를 기준으로 Root bone의 위치를 변화시킴
+			_float4  SubPos = { m_Save_RootPos.x + Final.x, m_Save_RootPos.y + Final.y , m_Save_RootPos.z + Final.z , 1.f };
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&SubPos));
+		}
+	}
+}
+
+void CAnimCharacter_Tool::Save_Animations()
+{
+	//FileFind
+	char FindFile[MAX_PATH] = { "" };
+	WIN32_FIND_DATAA fdFind;
+	HANDLE hFindOut = ::FindFirstFileA("../Bin/Resources/Models/AnimTool/*.bin", &fdFind);
+	if (hFindOut != INVALID_HANDLE_VALUE)
+	{
+		do
+		{
+			if (!(fdFind.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+			{
+				char* filename = fdFind.cFileName;
+				strcpy_s(FindFile, filename);
+			}
+		} while (::FindNextFileA(hFindOut, &fdFind));
+		::FindClose(hFindOut);
 	}
 
-	_float4 fPos;
-	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	
-	_float3 RootPosition = pAnim->Get_RootPosition();
-	_float4x4 RootWorldConvert = m_pTransformCom->Get_WorldFloat4x4();
-	_float3 FinalRootPos = { 0.0f, 0.0f, 0.0f };
-	XMStoreFloat3(&FinalRootPos, XMVector3TransformCoord(XMLoadFloat3(&RootPosition), XMLoadFloat4x4(&RootWorldConvert)));
+	char szFullPath[MAX_PATH] = { "" };
+
+	strcpy_s(szFullPath, "../Bin/Resources/AnimToolBin/");
+	strcat_s(szFullPath, FindFile);
+
+	ofstream fout;
+	fout.open(szFullPath, ios::binary);
+	if (!fout.is_open())
+	{
+		MSG_BOX("Failed File Open");
+	}
 
 
-	_float4 Final = { -FinalRootPos.x * 0.01f, FinalRootPos.y * 0.01f , -FinalRootPos.z * 0.01f, 1.f };
-	// 플레이어의 월드 위치를 기준으로 Root bone의 위치를 변화시킴
-	_float4  SubPos = { m_Save_RootPos.x + Final.x, m_Save_RootPos.y + Final.y , m_Save_RootPos.z + Final.z , 1.f };
-	
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&SubPos));
-	
+	vector<CAnimation*> pAnims = m_pModelCom->Get_vecAnimation();
+
+	_int ModelAnimsSize = pAnims.size();
+	fout.write(reinterpret_cast<const char*>(&ModelAnimsSize), sizeof(_int));
+
+	for (auto& pAnim : pAnims)
+	{
+		CAnimation::CONTROLDESC ControlDesc = pAnim->Get_ControlDesc();
+
+		fout.write(reinterpret_cast<const char*>(&ControlDesc.m_fAnimationSpeed), sizeof(_float));
+		fout.write(reinterpret_cast<const char*>(&ControlDesc.m_iConnect_Anim), sizeof(_int));
+		fout.write(reinterpret_cast<const char*>(&ControlDesc.m_isCombo), sizeof(_bool));
+		fout.write(reinterpret_cast<const char*>(&ControlDesc.m_iConnect_ComboAnim), sizeof(_int));
+		fout.write(reinterpret_cast<const char*>(&ControlDesc.m_isRootAnimation), sizeof(_bool));
+
+		_int isizeEvent = ControlDesc.m_vecTime_Event.size();
+		fout.write(reinterpret_cast<const char*>(&isizeEvent), sizeof(_int));
+
+		for (auto& event : ControlDesc.m_vecTime_Event)
+		{
+			fout.write(reinterpret_cast<const char*>(&event.m_dTime), sizeof(_double));
+			fout.write(reinterpret_cast<const char*>(&event.m_isFirst), sizeof(_bool));
+		}
+	}
+
+	fout.close();
 }
 
 void CAnimCharacter_Tool::KeyInput(_double dTimeDelta)
@@ -204,6 +328,41 @@ void CAnimCharacter_Tool::KeyInput(_double dTimeDelta)
 			m_iNumAnim = 0;
 		m_pModelCom->Set_Animation(m_iNumAnim);
 	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_NUMPAD8))
+	{
+		m_pTransformCom->Go_Straight(dTimeDelta);
+	}
+	else if (pGameInstance->Get_DIKeyState(DIK_NUMPAD5))
+	{
+		m_pTransformCom->Go_Backward(dTimeDelta);
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_NUMPAD4))
+	{
+		m_pTransformCom->Go_Left(dTimeDelta);
+	}
+	else if (pGameInstance->Get_DIKeyState(DIK_NUMPAD6))
+	{
+		m_pTransformCom->Go_Right(dTimeDelta);
+	}
+
+
+	//콤보공격 테스트
+	if (pGameInstance->Get_DIKeyDown(DIK_NUMPAD7))
+	{
+		//첫 애니메이션 설정
+		if (m_pModelCom->Get_Combo_Doing() == false)
+		{
+			m_pModelCom->Set_Combo_Doing(true);
+			m_pModelCom->Set_Animation(1);
+		}
+		//아닐경우, 다음 콤보로 진행
+		else
+			m_pModelCom->Set_Combo_Trigger(true);
+	}
+	
+
 
 	Safe_Release(pGameInstance);
 }

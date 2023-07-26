@@ -22,6 +22,8 @@ private:
 public: // 함수
 	void Animation_ImGui_Main();
 
+	
+
 
 public: // GetSet
 	_bool	Get_Play() { return m_isPlay; }
@@ -36,12 +38,19 @@ public: // GetSet
 	_bool Get_Signal_Change_Anim() { return m_Signal_to_Change_Anim; }
 	void  Set_Signal_Change_Anim(_bool bchange) { m_Signal_to_Change_Anim = bchange; }
 
+
+	_bool	Get_Save() { return m_isSave; }
+	void	Set_Save(_bool bSave) { m_isSave = bSave; }
+
 private: 
 	// 재생 play
 	_bool	m_isPlay = { false };
 
 	// 애니메이션 변화 신호주기
 	_bool	m_Signal_to_Change_Anim = { false };
+
+	//root
+	_bool	m_isRootAnimation = { false };
 
 	// 변수
 	CAnimation*		m_pAnimation = { nullptr };
@@ -60,10 +69,15 @@ private:
 	_int	m_iConnect_Combo_Index = { 0 };
 
 	// Connect index
+	_bool	m_isFirst_ConnectIndex = { true };
 	_int	m_iConnectIndex = { 0 };
 	
-	
+	//eventcall
+	_int	m_iTest = { 0 };
 
+
+	//Save
+	_bool	m_isSave = { false };
 
 public:
 	virtual void Free() override;

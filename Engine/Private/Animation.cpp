@@ -54,10 +54,11 @@ HRESULT CAnimation::Initialize(ifstream* pFin, CModel* pModel)
 		m_AnimationDesc.m_Channels.emplace_back(pChannel);
 	}
 
+
 	return S_OK;
 }
 
-_int CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTimeDelta, _bool Play)
+_int CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTimeDelta, _bool Play, _bool Combo)
 {
 	m_AnimationDesc.m_isFinish = false;
 
@@ -65,14 +66,6 @@ _int CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTime
 	if(Play)
 		m_AnimationDesc.m_dTimeAcc += m_AnimationDesc.m_dTickPerSecond * dTimeDelta * m_ControlDesc.m_fAnimationSpeed;
 
-	
-	if (m_AnimationDesc.m_dDuration <= m_AnimationDesc.m_dTimeAcc)
-	{
-		// 전체 재생시간보다 누적시간이 커졌다 == 애니메이션이 끝났다
-		m_AnimationDesc.m_isFinish = true;
-		m_AnimationDesc.m_dTimeAcc = 0.0;
-	}
-	
 
 	// RootAnimation 용
 	CChannel* pRoot = Get_Channel("Root");
@@ -81,21 +74,46 @@ _int CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTime
 	_uint	iIndex = { 0 };
 	for (auto& pChannel : m_AnimationDesc.m_Channels)
 	{
-
-		//if(m_AnimationDesc.m_isFinish = true);
 		//이 애니메이션에서 움직이는 뼈들의 상태를 시간에 맞게 갱신한다.
 		pChannel->Invalidate(pModel, m_AnimationDesc.m_iCurrentKeyFrames[iIndex++], m_AnimationDesc.m_dTimeAcc);
 	}
 
+
 	m_RootPosition = pRoot->Get_RootPosition();
 	
 
+	if (m_AnimationDesc.m_dDuration <= m_AnimationDesc.m_dTimeAcc)
+	{
+		// 전체 재생시간보다 누적시간이 커졌다 == 애니메이션이 끝났다
+		m_AnimationDesc.m_isFinish = true;
+		m_AnimationDesc.m_dTimeAcc = 0.0;
+	}
+
+	_uint	index = 0;
+	// EventCall 발동 관련
+	for (auto& event : m_ControlDesc.m_vecTime_Event)
+	{
+		if (event.m_isFirst && event.m_dTime <= m_AnimationDesc.m_dTimeAcc)
+		{
+			event.m_isFirst = false;
+
+			//아래에 이벤트 콜 함수 코드를 작성
+			m_ControlDesc.m_iTest++;
+		}
+		index++;
+	}
 
 
 	// 애니메이션이 끝날 때, 루프애님이 아니면,  다음 애니메이션 인덱스를 return
 	if (m_AnimationDesc.m_isFinish)
 	{
-		if(m_ControlDesc.m_isCombo)
+		// EventCall 초기화
+		for (auto& event : m_ControlDesc.m_vecTime_Event)
+		{
+			event.m_isFirst = true;
+		}
+
+		if(m_ControlDesc.m_isCombo && Combo)
 			return m_ControlDesc.m_iConnect_ComboAnim;
 		else
 			return m_ControlDesc.m_iConnect_Anim;
@@ -105,15 +123,72 @@ _int CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTime
 	return -1;
 }
 
-_bool CAnimation::Invalidate_Linear_TransformationMatrices(CModel* pModel, _double dTimeDelta, _bool Play)
+_bool CAnimation::Invalidate_Linear_TransformationMatrices(CModel* pModel, _double dTimeDelta, _bool Play, vector<KEYFRAME> vecLastKey )
 {
+	m_AnimationDesc.m_isFinish = false;
+
+	/* 현재 재생되는 애니메이션 */
+	if (Play)
+		m_AnimationDesc.m_dTimeAcc += m_AnimationDesc.m_dTickPerSecond * dTimeDelta * m_ControlDesc.m_fAnimationSpeed;
+
+
+	// RootAnimation 용
+	CChannel* pRoot = Get_Channel("Root");
+	pRoot->Set_Root(true);
 
 
 
+	_uint	iIndex = { 0 };
+	for (auto& pChannel : m_AnimationDesc.m_Channels)
+	{
+		//이 애니메이션에서 움직이는 뼈들의 상태를 시간에 맞게 갱신한다.
+		pChannel->Invalidate_Linear(pModel, vecLastKey[iIndex++], m_AnimationDesc.m_dTimeAcc);
+	}
 
+	m_RootPosition = pRoot->Get_RootPosition();
+
+
+	// 보간duration
+	if (0.15f <= m_AnimationDesc.m_dTimeAcc)
+	{
+		// 전체 재생시간보다 누적시간이 커졌다 == 애니메이션이 끝났다
+		m_AnimationDesc.m_isFinish = true;
+		m_AnimationDesc.m_dTimeAcc = 0.0;
+	}
+
+
+	// 애니메이션이 끝날 때, 선형보간 끝. false 리턴
+	if (m_AnimationDesc.m_isFinish)
+	{
+		return false;
+	}
 	// 선형보간 계속 진행 true 리턴
 	return true;
 }
+/*
+_float4 CAnimation::Get_Pos_RootAnimation(CTransform* pTransformCom)
+{
+	if (m_AnimationDesc.m_dTimeAcc == 0.0)
+	{
+		XMStoreFloat4(&m_Save_RootPos, pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
+
+	_float4 fPos;
+	XMStoreFloat4(&fPos, pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	_float3 RootPosition = m_RootPosition;
+	_float4x4 RootWorldConvert = pTransformCom->Get_WorldFloat4x4();
+	_float3 FinalRootPos = { 0.0f, 0.0f, 0.0f };
+	XMStoreFloat3(&FinalRootPos, XMVector3TransformCoord(XMLoadFloat3(&RootPosition), XMLoadFloat4x4(&RootWorldConvert)));
+
+	_float4 Final = { -FinalRootPos.x * 0.01f, FinalRootPos.y * 0.01f , -FinalRootPos.z * 0.01f, 1.f };
+	// 플레이어의 월드 위치를 기준으로 Root bone의 위치를 변화시킴
+	_float4  SubPos = { m_Save_RootPos.x + Final.x, m_Save_RootPos.y + Final.y , m_Save_RootPos.z + Final.z , 1.f };
+
+	pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&SubPos));
+
+	return _float4();
+}*/
 
 CChannel* CAnimation::Get_Channel(const char* pChannelName)
 {
@@ -130,6 +205,21 @@ CChannel* CAnimation::Get_Channel(const char* pChannelName)
 		return nullptr;
 
 	return *iter;
+}
+
+vector<KEYFRAME> CAnimation::Get_LastKeys()
+{
+	vector<KEYFRAME> LastKeys;
+
+	for (auto& pChannel : m_AnimationDesc.m_Channels)
+	{
+		//이 애니메이션에서 움직이는 뼈들의 상태를 시간에 맞게 갱신한다.
+		//pChannel->Invalidate(pModel, m_AnimationDesc.m_iCurrentKeyFrames[iIndex++], m_AnimationDesc.m_dTimeAcc);
+		KEYFRAME ChannelLastKeyFrame = pChannel->Get_LastKeyFrame();
+		LastKeys.emplace_back(ChannelLastKeyFrame);
+	}
+
+	return LastKeys;
 }
 
 CAnimation* CAnimation::Create(ifstream* pFin, class CModel* pModel)

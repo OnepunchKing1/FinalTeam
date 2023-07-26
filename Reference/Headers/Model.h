@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 
+#include "Animation.h"
 
 BEGIN(Engine)
 
@@ -13,7 +14,9 @@ private:
 	CModel(const CModel& rhs);
 	virtual ~CModel() = default;
 
-public:
+
+
+public://Get
 	_uint Get_NumMeshes() const	{ return m_iNumMeshes; }
 	
 	_uint Get_NumAnims() const	{ return m_iNumAnimations; }
@@ -25,14 +28,23 @@ public:
 
 	_int Get_BoneIndex(const char* pBoneName);
 
+	_int	Get_Animation_Size() { return m_Animations.size(); }
 	class CAnimation* Get_Animation() { return m_Animations[m_iCurrentAnimIndex]; }
+	class CAnimation* Get_Animation(_int index) { return m_Animations[index]; }
 	vector<class CAnimation*> Get_vecAnimation() { return m_Animations; }
 
-	
 	_uint Get_iCurrentAnimIndex() { return m_iCurrentAnimIndex; }
 
-public:
+
+
+public://Set
 	void Set_Animation(_uint iAnimIndex) { m_iCurrentAnimIndex = iAnimIndex; }
+
+	
+	void Set_Animation_Control(_int index, CAnimation::CONTROLDESC ControlDesc) {
+		m_Animations[index]->Set_ControlDesc(ControlDesc);
+	}
+
 
 public:
 	HRESULT Initialize_Prototype(TYPE eModelType, const char* pModelFilePath, _fmatrix PivotMatrix);
@@ -47,13 +59,26 @@ public:
 public:// AnimTool용
 	_bool	Get_isPlay() { return m_isPlay; }
 	void	Set_isPlay(_bool Play) { m_isPlay = Play; }
+
+	_bool	Get_Combo_Trigger() { return m_isCombo_Trigger; }
+	void	Set_Combo_Trigger(_bool combo) { m_isCombo_Trigger = combo; }
+	_bool	Get_Combo_Doing() { return m_isCombo_Doing; }
+	void	Set_Combo_Doing(_bool bComboDo) { m_isCombo_Doing = bComboDo; }
+
+	
+
 private: // AnimTool용
 	_bool	m_isPlay = { true };
+	// 콤보공격용
+	_bool	m_isCombo_Trigger = { false };
+	_bool	m_isCombo_Doing = { false };
 
 
 private: // 선형보간용
 	_bool	m_isLinearOn = { false };
- 
+	vector<KEYFRAME> m_LastKeys;
+
+
 private:
 	_float4x4					m_PivotMatrix;
 	TYPE						m_eModelType = { TYPE_END };

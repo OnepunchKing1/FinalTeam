@@ -60,13 +60,23 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
 #pragma region Connect_Animation
     // Connect
     m_iConnectIndex = ControlDesc.m_iConnect_Anim;
+
     ImGui::Text("Connect to Index : %d", m_iConnectIndex);
     ImGui::InputInt("Connect to Next Animation", &m_iConnectIndex);
+    
     ControlDesc.m_iConnect_Anim = m_iConnectIndex;
     m_pAnimation->Set_ControlDesc(ControlDesc);
 
 #pragma endregion
 
+#pragma region Root
+    // Root
+    m_isRootAnimation = ControlDesc.m_isRootAnimation;
+    ImGui::Checkbox("Root Anim", &m_isRootAnimation);
+    ControlDesc.m_isRootAnimation = m_isRootAnimation;
+    m_pAnimation->Set_ControlDesc(ControlDesc);
+
+#pragma endregion
 
     ImGui::Text("");
 
@@ -95,12 +105,11 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
     }
 #pragma endregion
 
+/*    ImGui::End();
 
-    ImGui::End();
-
-    ImGui::Begin("Animation Control Console");
+    ImGui::Begin("Animation Control Console");*/
     ImGui::Text("");
-
+   
 #pragma region Play_Slider  
     // Sliders ui
     static ImGuiSliderFlags AnimSliderflags = ImGuiSliderFlags_None;
@@ -115,6 +124,41 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
     //현재 슬라이더  위치 값을 애니메이션컴포넌트에 보내주기
     AnimationDesc.m_dTimeAcc = fCur_Time;
     m_pAnimation->Set_AnimationDesc(AnimationDesc);
+
+#pragma endregion
+
+#pragma region Add_Event
+
+    static int Button_Event_Add = 0;
+    if (ImGui::Button("Event_Add"))
+        Button_Event_Add++;
+    if (Button_Event_Add & 1)
+    {
+        Button_Event_Add--;
+       
+        CAnimation::EVENTDESC EventDesc;
+        EventDesc.m_dTime = AnimationDesc.m_dTimeAcc;
+        ControlDesc.m_vecTime_Event.emplace_back(EventDesc);
+        m_pAnimation->Set_ControlDesc(ControlDesc);
+    }
+
+    static int Button_Event_Delete = 0;
+    if (ImGui::Button("Event_Delete"))
+        Button_Event_Delete++;
+    if (Button_Event_Delete & 1)
+    {
+        Button_Event_Delete--;
+
+        if (ControlDesc.m_vecTime_Event.size() > 0)
+        {
+            ControlDesc.m_vecTime_Event.pop_back();
+            m_pAnimation->Set_ControlDesc(ControlDesc);
+        }
+    }
+
+
+
+    ImGui::Text("Event Test int : %d", ControlDesc.m_iTest);
 
 #pragma endregion
 
@@ -136,13 +180,44 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
     
 #pragma endregion
 
+    ImGui::Text("");
+    ImGui::Text("");
+
+#pragma region Save_Load  
+
+    static int Button_Save = 0;
+    if (ImGui::Button("Save_Animation"))
+        Button_Save++;
+    if (Button_Save & 1)
+    {
+        Button_Save--;
+
+        m_isSave = true;
+       
+        MSG_BOX("Save_Complete");
+    }
+
+#pragma endregion
 
 
-   
     ImGui::End();
+
+
+#pragma region Event_Time_List  
+    ImGui::Begin("Event_Time_List");
+    
+    // EventCall 발동 관련
+    for (auto& event : ControlDesc.m_vecTime_Event)
+    {
+        _float fEventTime = (_float)event.m_dTime;
+        ImGui::SliderFloat("Event", &fEventTime, 0.0f, fEnd_Time, "%.3f", AnimSliderflags);
+    }
+    ImGui::End();
+#pragma endregion
 
     Safe_Release(pGameInstance);
 }
+
 
 void CImGui_Animation_Tool::Set_vecName(vector<char*> vecName)
 {
