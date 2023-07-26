@@ -469,7 +469,7 @@ HRESULT CLoader_Tool::Load_MapObjectModel()
 	/* For.Prototype_Component_Model_AllWoodWall*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_AllWoodWall"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/AllWoodWall.bin", PivotMatrix))))
-		return E_FAIL;
+		return E_FAIL; 
 
 	Safe_Release(pGameInstance);
 

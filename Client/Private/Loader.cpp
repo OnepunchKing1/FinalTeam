@@ -9,6 +9,11 @@
 #include "Camera_Free.h"
 #include "Player.h"
 
+#include "StaticMapObject.h"
+#include "TerrainMapObject.h"
+#include "RotationMapObject.h"
+#include "Sky.h"
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{pContext}
@@ -158,6 +163,17 @@ HRESULT CLoader::LoadingForGamePlay()
 		MSG_BOX("Failed to Add_Prototype_Component_Texture_Mask");
 		return E_FAIL;
 	}
+
+	/* For.Prototype_Component_Texture_TerrainMask*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_TerrainMask"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Environments/Map/Acaza_vs/Filter.bmp")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Splating*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Splating"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Environments/Map/Acaza_vs/T_d_114_RiceField_01a_BC.dds")))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma region RampTexture
@@ -176,6 +192,8 @@ HRESULT CLoader::LoadingForGamePlay()
 
 	SetWindowText(g_hWnd, TEXT("Loading Model..."));
 #pragma region Model
+
+	Load_MapObjectModel();	// 맵 오브젝트 로드(안원 전용)
 
 #pragma region Buffer
 	/* Prototype_Component_VIBuffer_Terrain */
@@ -250,6 +268,14 @@ HRESULT CLoader::LoadingForGamePlay()
 		MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxAnimModel");
 		return E_FAIL;
 	}
+
+	/* Prototype_Component_Shader_VtxTerrainModel */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxTerrainModel"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTerrainModel.hlsl"), VTXMODEL_DECL::Elements, VTXMODEL_DECL::iNumElements))))
+	{
+		MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxTerrainModel");
+		return E_FAIL;
+	}
 #pragma endregion
 
 	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
@@ -313,6 +339,39 @@ HRESULT CLoader::LoadingForGamePlay()
 		MSG_BOX("Failed to Add_Prototype_GameObject_Terrain");
 		return E_FAIL;
 	}
+
+	/* For.Prototype_GameObject_StaticMapObject */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticMapObject"),
+		CStaticMapObject::Create(m_pDevice, m_pContext))))
+	{
+		MSG_BOX("Failed to Add_Prototype_GameObject_StaticMapObject");
+		return E_FAIL;
+	}
+
+	/* For.Prototype_GameObject_TerrainMapObject */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TerrainMapObject"),
+		CTerrainMapObject::Create(m_pDevice, m_pContext))))
+	{
+		MSG_BOX("Failed to Add_Prototype_GameObject_TerrainMapObject");
+		return E_FAIL;
+	}
+
+	/* For.Prototype_GameObject_RotationMapObject */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RotationMapObject"),
+		CRotationMapObject::Create(m_pDevice, m_pContext))))
+	{
+		MSG_BOX("Failed to Add_Prototype_GameObject_RotationMapObject");
+		return E_FAIL;
+	}
+
+	/* For.Prototype_GameObject_Sky */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sky"),
+		CSky::Create(m_pDevice, m_pContext))))
+	{
+		MSG_BOX("Failed to Add_Prototype_GameObject_Sky");
+		return E_FAIL;
+	}
+
 #pragma endregion
 
 #pragma region UI
@@ -333,6 +392,56 @@ HRESULT CLoader::LoadingForGamePlay()
 
 	SetWindowText(g_hWnd, TEXT("Loading Finished!!!"));
 	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Load_MapObjectModel()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+	_matrix			PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
+
+	// ===============BattleMap Acaza======================
+
+	/* For.Prototype_Component_Model_BattleMap_Acaza*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BattleMap_Acaza"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/Acaza_vs/BattleMap_Acaza.bin", PivotMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_BrokenLocomotive_01*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BrokenLocomotive_01"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/Acaza_vs/BrokenLocomotive_01.bin", PivotMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_BrokenLocomotive_01c*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BrokenLocomotive_01c"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/Acaza_vs/BrokenLocomotive_01c.bin", PivotMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_Sky*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sky"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/Acaza_vs/Sky.bin", PivotMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_Far_01a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Far_01a"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/Acaza_vs/Far_01a.bin", PivotMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_Far_02a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Far_02a"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/Acaza_vs/Far_02a.bin", PivotMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_Far_04a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Far_04a"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/Acaza_vs/Far_04a.bin", PivotMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_far_hill_01a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_far_hill_01a"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/Acaza_vs/far_hill_01a.bin", PivotMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_far_hill_02a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_far_hill_02a"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/Acaza_vs/far_hill_02a.bin", PivotMatrix))))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
