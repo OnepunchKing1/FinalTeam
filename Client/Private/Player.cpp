@@ -86,6 +86,7 @@ void CPlayer::Tick(_double dTimeDelta)
 		return;
 	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this)))
 		return;
+	
 
 }
 
@@ -158,7 +159,7 @@ HRESULT CPlayer::Render_ShadowDepth()
 	_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	_vector	vLightEye = XMVectorSet(-5.f, 10.f, -5.f, 1.f);
-	_vector	vLightAt = XMVectorSet(30.f, 0.f, 30.f, 1.f);
+	_vector	vLightAt = XMVectorSet(60.f, 0.f, 60.f, 1.f);
 	_vector	vLightUp = XMVectorSet(0.f, 1.f, 0.f, 1.f);
 
 

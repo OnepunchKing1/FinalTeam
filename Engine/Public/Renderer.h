@@ -7,7 +7,7 @@ BEGIN(Engine)
 class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
-	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOWDEPTH, RENDER_NONBLEND, RENDER_NONLIGHT, RENDER_BLEND, RENDER_UI, RENDER_EFFECT, RENDER_END };
+	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOWDEPTH, RENDER_SSAO, RENDER_NONBLEND, RENDER_NONLIGHT, RENDER_BLEND, RENDER_UI, RENDER_EFFECT, RENDER_END };
 private:
 	CRenderer(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	virtual ~CRenderer() = default;
@@ -63,6 +63,7 @@ private:
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_ShadowDepth(); // Shadow
+	HRESULT Render_SSAO();
 	HRESULT Render_NonBlend();
 	HRESULT Render_NonLight();
 	HRESULT Render_Blend();

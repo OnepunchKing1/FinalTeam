@@ -109,11 +109,19 @@ HRESULT CMainApp::Render()
 			return E_FAIL;
 	}
 
+	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("Num0 To OnOff StaticCam"), _float2(0.f, 640.f), _float2(0.5f, 0.5f))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("Num9 To OnOff LockMouse"), _float2(0.f, 660.f), _float2(0.5f, 0.5f))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F7 To OnOff FPS"), _float2(0.f, 680.f), _float2(0.5f, 0.5f))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F8 To OnOff RenderDebug"), _float2(0.f, 700.f), _float2(0.5f, 0.5f))))
 		return E_FAIL;
+
+	
 	
 #endif // _DEBUG
 
