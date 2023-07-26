@@ -92,7 +92,7 @@ private:
 
 
 private:
-	_float3		m_RootPosition;
+	_float3		m_RootPosition ;
 
 	_float4		m_Save_RootPos = { 0.0f, 0.0f ,0.0f, 1.0f };
 	

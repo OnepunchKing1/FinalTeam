@@ -28,7 +28,7 @@ public://Get
 
 	_int Get_BoneIndex(const char* pBoneName);
 
-	_int	Get_Animation_Size() { return m_Animations.size(); }
+	_int	Get_Animation_Size() { return (_int)m_Animations.size(); }
 	class CAnimation* Get_Animation() { return m_Animations[m_iCurrentAnimIndex]; }
 	class CAnimation* Get_Animation(_int index) { return m_Animations[index]; }
 	vector<class CAnimation*> Get_vecAnimation() { return m_Animations; }

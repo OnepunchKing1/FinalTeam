@@ -282,7 +282,7 @@ void CAnimCharacter_Tool::Save_Animations()
 
 	vector<CAnimation*> pAnims = m_pModelCom->Get_vecAnimation();
 
-	_int ModelAnimsSize = pAnims.size();
+	_int ModelAnimsSize = (_int)pAnims.size();
 	fout.write(reinterpret_cast<const char*>(&ModelAnimsSize), sizeof(_int));
 
 	for (auto& pAnim : pAnims)
@@ -295,7 +295,7 @@ void CAnimCharacter_Tool::Save_Animations()
 		fout.write(reinterpret_cast<const char*>(&ControlDesc.m_iConnect_ComboAnim), sizeof(_int));
 		fout.write(reinterpret_cast<const char*>(&ControlDesc.m_isRootAnimation), sizeof(_bool));
 
-		_int isizeEvent = ControlDesc.m_vecTime_Event.size();
+		_int isizeEvent = (_int)ControlDesc.m_vecTime_Event.size();
 		fout.write(reinterpret_cast<const char*>(&isizeEvent), sizeof(_int));
 
 		for (auto& event : ControlDesc.m_vecTime_Event)
