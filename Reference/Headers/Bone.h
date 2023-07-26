@@ -10,17 +10,11 @@ private:
 	virtual ~CBone() = default;
 
 public:
-	const char* Get_Name() const {
-		return m_szName;
-	}
+	const char* Get_Name() const { return m_szName; }
 
-	_matrix Get_OffsetMatrix() const {
-		return XMLoadFloat4x4(&m_OffsetMatrix);
-	}
+	_matrix Get_OffsetMatrix() const { return XMLoadFloat4x4(&m_OffsetMatrix); }
 
-	_matrix Get_CombinedTransformationMatrix() const {
-		return XMLoadFloat4x4(&m_CombinedTransformationMatrix);
-	}
+	_matrix Get_CombinedTransformationMatrix() const { return XMLoadFloat4x4(&m_CombinedTransformationMatrix); }
 
 	void Set_TransformationMatrix(_fmatrix TransformationMatrix) {
 		XMStoreFloat4x4(&m_TransformationMatrix, TransformationMatrix);
