@@ -491,6 +491,32 @@ technique11 DefaultTechnique
     {//5
         SetRasterizerState(RS_Default);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+        SetDepthStencilState(DS_None_ZEnable, 0);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_SSAO_Test();
+    }
+
+    pass BlurX
+    {//6
+        SetRasterizerState(RS_Default);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
+        SetDepthStencilState(DS_Default, 0);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_SSAO_Test();
+    }
+
+    pass BlurY
+    {//7
+        SetRasterizerState(RS_Default);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 1.f), 0xffffffff);
         SetDepthStencilState(DS_Default, 0);
 
         VertexShader = compile vs_5_0 VS_MAIN();
