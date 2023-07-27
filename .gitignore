@@ -439,15 +439,13 @@ Client/Bin/*
 !Client/Bin/DataFiles
 !Client/Bin/Resources
 !Client/Bin/ShaderFiles
+!Client/Bin/Sound
 !Engine/Bin
 Engine/Bin/*
 !Engine/Bin/ShaderFiles
 !Engine/ThirdPartyLib/*
 !Tool/Bin
 Tool/Bin/*
-!Tool/Bin/DataFiles
-!Tool/Bin/Resources
-!Tool/Bin/ShaderFiles
 
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio

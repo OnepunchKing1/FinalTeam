@@ -39,7 +39,6 @@ void CLevel_Logo::Tick(_double dTimeDelta)
 
         if (FAILED(hr))
             return;
-
     }
 }
 

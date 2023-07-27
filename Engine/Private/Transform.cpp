@@ -272,12 +272,12 @@ void CTransform::Chase_Target(_fvector vTargetPos, _double dTimeDelta, _double C
 	_double		Speed = m_TransformDesc.dSpeedPerSec * ChaseSpeed * dTimeDelta;
 
 
-	if (XMVectorGetX(XMVector3Length(vDir)) <= Speed)
+	if (XMVectorGetX(XMVector3Length(vDir)) <= (_float)Speed)
 	{
 		vPosition += vDir;
 	}
 	else
-		vPosition += XMVector3Normalize(vDir) * Speed;
+		vPosition += XMVector3Normalize(vDir) * (_float)Speed;
 
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }

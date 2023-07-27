@@ -2,7 +2,12 @@
 #include "..\Public\Level_Loading_Tool.h"
 
 #include "Loader_Tool.h"
+#include "Level_Logo_Tool.h"
 #include "Level_Tool.h"
+#include "Level_Village_Tool.h"
+#include "Level_House_Tool.h"
+#include "Level_Train_Tool.h"
+#include "Level_FinalBoss_Tool.h"
 
 #include "GameInstance.h"
 
@@ -31,33 +36,42 @@ void CLevel_Loading_Tool::Tick(_double dTimeDelta)
 	__super::Tick(dTimeDelta);
 
 	if (true == m_pLoader->Get_Finished())
-	{      
-		if (GetKeyState(VK_SPACE) & 0x8000)
+	{   
+		CLevel* pLevel = { nullptr };
+
+		switch (m_eNextLevelID)
 		{
-			CLevel* pLevel = { nullptr };
-
-			switch (m_eNextLevelID)
-			{
-			case LEVEL_TOOL:
-				pLevel = CLevel_Tool::Create(m_pDevice, m_pContext);
-				break;
-			}
-
-			if (nullptr == pLevel)
-				return;
-			
-			HRESULT hr = 0;
-
-			CGameInstance* pGameInstance = CGameInstance::GetInstance();
-			Safe_AddRef(pGameInstance);
-
-			hr = pGameInstance->Open_Level(m_eNextLevelID, pLevel);
-
-			Safe_Release(pGameInstance);
-
-			if (FAILED(hr))
-				return;
+		case LEVEL_TOOL:
+			pLevel = CLevel_Tool::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_VILLAGE:
+			pLevel = CLevel_Village_Tool::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_HOUSE:
+			pLevel = CLevel_House_Tool::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_TRAIN:
+			pLevel = CLevel_Train_Tool::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_FINALBOSS:
+			pLevel = CLevel_FinalBoss_Tool::Create(m_pDevice, m_pContext);
+			break;
 		}
+
+		if (nullptr == pLevel)
+			return;
+
+		HRESULT hr = 0;
+
+		CGameInstance* pGameInstance = CGameInstance::GetInstance();
+		Safe_AddRef(pGameInstance);
+
+		hr = pGameInstance->Open_Level(m_eNextLevelID, pLevel, true);
+
+		Safe_Release(pGameInstance);
+
+		if (FAILED(hr))
+			return;
 	}
 }
 

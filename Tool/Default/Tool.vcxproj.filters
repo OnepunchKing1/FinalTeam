@@ -10,20 +10,8 @@
     <Filter Include="98. Default">
       <UniqueIdentifier>{4cc8e033-5360-4113-ac96-056f122349d8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97. ShderFiles">
-      <UniqueIdentifier>{8c272283-34ca-4f90-9168-ad49a70ce1bd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01. Levels">
       <UniqueIdentifier>{faa445ff-3c43-4834-953f-34dd358a1783}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Levels\99.Loading">
-      <UniqueIdentifier>{ae32f236-6c55-4660-ad48-972c0f28862c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Levels\99.Loading\Loader">
-      <UniqueIdentifier>{a4e87e3f-2278-4bd3-846d-67905aa9fb51}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Levels\00.Tool">
-      <UniqueIdentifier>{fbea4d1e-796c-4d41-b7c4-2b1f35c8aeab}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObjects">
       <UniqueIdentifier>{59f6681f-1c75-4fc7-b6da-6ba3a7472a93}</UniqueIdentifier>
@@ -73,6 +61,30 @@
     <Filter Include="02. GameObjects\Environment\MapObject\Rotation">
       <UniqueIdentifier>{d2805afa-dbf5-4b18-865d-615809121805}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Levels\00. Logo">
+      <UniqueIdentifier>{09ff60d7-3e7a-44bd-b4d9-7378ec23e856}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\02. Village">
+      <UniqueIdentifier>{f14eda82-c024-4a9e-81b1-875f86dd4b69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\03. House">
+      <UniqueIdentifier>{4ef2bfc9-788a-428d-addd-064a4318761f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\04. Train">
+      <UniqueIdentifier>{32bec064-339e-4cfb-bb4a-ec92a47d938a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\05. FinalBoss">
+      <UniqueIdentifier>{a0e213d4-7b96-40d3-b738-e2f3ef3126ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\01.Tool">
+      <UniqueIdentifier>{fbea4d1e-796c-4d41-b7c4-2b1f35c8aeab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\99.Loading">
+      <UniqueIdentifier>{ae32f236-6c55-4660-ad48-972c0f28862c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\99.Loading\Loader">
+      <UniqueIdentifier>{a4e87e3f-2278-4bd3-846d-67905aa9fb51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -103,7 +115,7 @@
       <Filter>01. Levels\99.Loading\Loader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Tool.h">
-      <Filter>01. Levels\00.Tool</Filter>
+      <Filter>01. Levels\01.Tool</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Camera_Tool.h">
       <Filter>02. GameObjects\Camera\Tool</Filter>
@@ -162,6 +174,21 @@
     <ClInclude Include="..\Public\StaticMapObject.h">
       <Filter>02. GameObjects\Environment\MapObject\Static</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_Logo_Tool.h">
+      <Filter>01. Levels\00. Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_FinalBoss_Tool.h">
+      <Filter>01. Levels\05. FinalBoss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_House_Tool.h">
+      <Filter>01. Levels\03. House</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Train_Tool.h">
+      <Filter>01. Levels\04. Train</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Village_Tool.h">
+      <Filter>01. Levels\02. Village</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -183,7 +210,7 @@
       <Filter>01. Levels\99.Loading\Loader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Tool.cpp">
-      <Filter>01. Levels\00.Tool</Filter>
+      <Filter>01. Levels\01.Tool</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Tool.cpp">
       <Filter>02. GameObjects\Camera\Tool</Filter>
@@ -236,6 +263,21 @@
     <ClCompile Include="..\Private\StaticMapObject.cpp">
       <Filter>02. GameObjects\Environment\MapObject\Static</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Level_Logo_Tool.cpp">
+      <Filter>01. Levels\00. Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_FinalBoss_Tool.cpp">
+      <Filter>01. Levels\05. FinalBoss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_House_Tool.cpp">
+      <Filter>01. Levels\03. House</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Train_Tool.cpp">
+      <Filter>01. Levels\04. Train</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Village_Tool.cpp">
+      <Filter>01. Levels\02. Village</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -249,19 +291,5 @@
     <ResourceCompile Include="Tool.rc">
       <Filter>98. Default</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
-      <Filter>97. ShderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl">
-      <Filter>97. ShderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl">
-      <Filter>97. ShderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
-      <Filter>97. ShderFiles</Filter>
-    </FxCompile>
   </ItemGroup>
 </Project>

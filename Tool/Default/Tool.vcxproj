@@ -177,8 +177,13 @@
     <ClInclude Include="..\Public\Camera_Tool.h" />
     <ClInclude Include="..\Public\Character_Tool.h" />
     <ClInclude Include="..\Public\ImGui_Animation_Tool.h" />
+    <ClInclude Include="..\Public\Level_FinalBoss_Tool.h" />
+    <ClInclude Include="..\Public\Level_House_Tool.h" />
     <ClInclude Include="..\Public\Level_Loading_Tool.h" />
+    <ClInclude Include="..\Public\Level_Logo_Tool.h" />
     <ClInclude Include="..\Public\Level_Tool.h" />
+    <ClInclude Include="..\Public\Level_Train_Tool.h" />
+    <ClInclude Include="..\Public\Level_Village_Tool.h" />
     <ClInclude Include="..\Public\Loader_Tool.h" />
     <ClInclude Include="..\Public\MainApp_Tool.h" />
     <ClInclude Include="..\Public\MapObject.h" />
@@ -207,8 +212,13 @@
     <ClCompile Include="..\Private\Camera_Tool.cpp" />
     <ClCompile Include="..\Private\Character_Tool.cpp" />
     <ClCompile Include="..\Private\ImGui_Animation_Tool.cpp" />
+    <ClCompile Include="..\Private\Level_FinalBoss_Tool.cpp" />
+    <ClCompile Include="..\Private\Level_House_Tool.cpp" />
     <ClCompile Include="..\Private\Level_Loading_Tool.cpp" />
+    <ClCompile Include="..\Private\Level_Logo_Tool.cpp" />
     <ClCompile Include="..\Private\Level_Tool.cpp" />
+    <ClCompile Include="..\Private\Level_Train_Tool.cpp" />
+    <ClCompile Include="..\Private\Level_Village_Tool.cpp" />
     <ClCompile Include="..\Private\Loader_Tool.cpp" />
     <ClCompile Include="..\Private\MainApp_Tool.cpp" />
     <ClCompile Include="..\Private\MapObject.cpp" />
@@ -232,12 +242,6 @@
   <ItemGroup>
     <Image Include="small.ico" />
     <Image Include="Tool.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimModel.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModel.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,6 +2,8 @@
 #include "..\Public\Loader_Tool.h"
 
 #include "GameInstance.h"
+#include "ImGui_Manager_Tool.h"
+
 #include "Camera_Tool.h"
 #include "Player_Tool.h"
 #include "Terrain_Tool.h"
@@ -27,7 +29,7 @@ unsigned int APIENTRY Loading_Main(void* pArg)
 	CLoader_Tool* pLoader = (CLoader_Tool*)pArg;
 
 	CoInitializeEx(nullptr, 0);
-
+	 
 	EnterCriticalSection(pLoader->Get_CS());
 
 	HRESULT hr = 0;
@@ -35,7 +37,24 @@ unsigned int APIENTRY Loading_Main(void* pArg)
 	switch (pLoader->Get_LevelID())
 	{
 	case LEVEL_TOOL:
-		hr = pLoader->LoadingForTool();
+		if (false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_TOOL))
+			hr = pLoader->LoadingForTool();
+		break;
+	case LEVEL_VILLAGE:
+		if (false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_VILLAGE))
+			hr = pLoader->LoadingForVillage();
+		break;
+	case LEVEL_HOUSE:
+		if (false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_HOUSE))
+			hr = pLoader->LoadingForHouse();
+		break;
+	case LEVEL_TRAIN:
+		if (false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_TRAIN))
+			hr = pLoader->LoadingForTrain();
+		break;
+	case LEVEL_FINALBOSS:
+		if (false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_FINALBOSS))
+			hr = pLoader->LoadingForFinalBoss();
 		break;
 	}
 
@@ -63,6 +82,11 @@ HRESULT CLoader_Tool::Initialize(LEVELID eLevelID)
 	return S_OK;
 }
 
+HRESULT CLoader_Tool::LoadingForLogo()
+{
+	return S_OK;
+}
+
 HRESULT CLoader_Tool::LoadingForTool()
 {
 	SetWindowText(g_hWnd, TEXT("LoadingForTool"));
@@ -76,21 +100,7 @@ HRESULT CLoader_Tool::LoadingForTool()
 #pragma region Texture
 
 #pragma region EnvironmentTexture
-	/* Prototype_Component_Texture_Mask */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Texture_Mask"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Mask%d.png")))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Texture_Mask");
-		return E_FAIL;
-	}
-
-	/* Prototype_Component_Texture_Terrain */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Ground%d_bc.dds"), 2))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Texture_Terrain");
-		return E_FAIL;
-	}
+	
 #pragma endregion
 
 #pragma region RampTexture
@@ -112,13 +122,7 @@ HRESULT CLoader_Tool::LoadingForTool()
 #pragma region Model
 	
 #pragma region Buffer
-	/* Prototype_Component_VIBuffer_Terrain */	
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_VIBuffer_Terrain"),
-		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Heightmap.bmp")))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_VIBuffer_Terrain");
-		return E_FAIL;
-	}
+
 #pragma endregion
 	_matrix		PivotMatrix = XMMatrixIdentity();
 
@@ -130,7 +134,7 @@ HRESULT CLoader_Tool::LoadingForTool()
 	/* Prototype_Component_Model_AnimToolCharacter */
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Tanjiro"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/AnimTool/Tanjiro.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Tanjiro/Tanjiro.bin", PivotMatrix))))
 	{
 		MSG_BOX("Failed to Add_Prototype_Model_Tanjiro");
 		return E_FAIL;
@@ -139,33 +143,17 @@ HRESULT CLoader_Tool::LoadingForTool()
 #pragma endregion
 
 #pragma region NonCharacter
-	/* Prototype_Component_Model_TestBox */
-	PivotMatrix = XMMatrixTranslation(-21.9f, 215.2f, -158.6f);
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_TestBox"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/TestBox/mdlChest2.bin", PivotMatrix))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Model_TestBox");
-		return E_FAIL;
-	}
 
-	Load_MapObjectModel();	// 맵 오브젝트 로드(안원 전용)
-
-
+	
 #pragma endregion
 
 #pragma region Terrain
-	/* Prototype_Component_Model_Terrain */
-	PivotMatrix = XMMatrixIdentity();
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Terrain"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Terrain/Terrain.bin", PivotMatrix))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Model_Terrain");
-		return E_FAIL;
-	}
+
+	Load_MapObjectModel();	// 맵 오브젝트 로드(안원 전용)
 
 	/* Prototype_Component_Navigation */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navigation.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Data/Navigation.dat")))))
 	{
 		MSG_BOX("Failed to Add_Prototype_Component_Navigation");
 		return E_FAIL;
@@ -179,7 +167,7 @@ HRESULT CLoader_Tool::LoadingForTool()
 #pragma region Shader
 	/* Prototype_Component_Shader_VtxNorTex */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxNorTex"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX_DECL::Elements, VTXNORTEX_DECL::iNumElements))))
+		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX_DECL::Elements, VTXNORTEX_DECL::iNumElements))))
 	{
 		MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxNorTex");
 		return E_FAIL;
@@ -187,7 +175,7 @@ HRESULT CLoader_Tool::LoadingForTool()
 
 	/* Prototype_Component_Shader_VtxModel */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxModel"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECL::Elements, VTXMODEL_DECL::iNumElements))))
+		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECL::Elements, VTXMODEL_DECL::iNumElements))))
 	{
 		MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxModel");
 		return E_FAIL;
@@ -195,7 +183,7 @@ HRESULT CLoader_Tool::LoadingForTool()
 
 	/* Prototype_Component_Shader_VtxAnimModel */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxAnimModel"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECL::Elements, VTXANIMMODEL_DECL::iNumElements))))
+		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECL::Elements, VTXANIMMODEL_DECL::iNumElements))))
 	{
 		MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxAnimModel");
 		return E_FAIL;
@@ -323,6 +311,417 @@ HRESULT CLoader_Tool::LoadingForTool()
 	SetWindowText(g_hWnd, TEXT("Loading Finished!!"));
 	m_isFinished = true;
 
+	CImGui_Manager_Tool::GetInstance()->Set_IsLoad(LEVEL_TOOL);
+
+	return S_OK;
+}
+
+HRESULT CLoader_Tool::LoadingForVillage()
+{
+	SetWindowText(g_hWnd, TEXT("LoadingForVillage"));
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+#pragma region COMPONENTS
+
+	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+#pragma region Texture
+
+#pragma region EnvironmentTexture
+
+#pragma endregion
+
+#pragma region RampTexture
+
+#pragma endregion
+
+#pragma region EffectTexture
+
+#pragma endregion
+
+#pragma region UITexture
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+#pragma region Model
+
+#pragma region Buffer
+
+#pragma endregion
+	_matrix		PivotMatrix = XMMatrixIdentity();
+#pragma region Effect
+
+#pragma endregion
+
+#pragma region Character
+
+#pragma endregion
+
+#pragma region NonCharacter
+
+#pragma endregion
+
+#pragma region Terrain
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+#pragma region Shader
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+#pragma region Etc
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region GAMEOBJECTS
+
+	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+#pragma region Object
+
+#pragma endregion
+
+#pragma region Environment
+
+#pragma endregion
+
+#pragma region UI
+
+#pragma endregion
+
+#pragma region Particale
+
+#pragma endregion
+
+#pragma region Effect
+
+#pragma endregion
+
+#pragma endregion
+
+	Safe_Release(pGameInstance);
+
+	SetWindowText(g_hWnd, TEXT("Loading Finished!!!"));
+	m_isFinished = true;
+
+	CImGui_Manager_Tool::GetInstance()->Set_IsLoad(LEVEL_VILLAGE);
+
+	return S_OK;
+}
+
+HRESULT CLoader_Tool::LoadingForHouse()
+{
+	SetWindowText(g_hWnd, TEXT("LoadingForHouse"));
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+#pragma region COMPONENTS
+
+	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+#pragma region Texture
+
+#pragma region EnvironmentTexture
+
+#pragma endregion
+
+#pragma region RampTexture
+
+#pragma endregion
+
+#pragma region EffectTexture
+
+#pragma endregion
+
+#pragma region UITexture
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+#pragma region Model
+
+#pragma region Buffer
+
+#pragma endregion
+	_matrix		PivotMatrix = XMMatrixIdentity();
+#pragma region Effect
+
+#pragma endregion
+
+#pragma region Character
+
+#pragma endregion
+
+#pragma region NonCharacter
+
+#pragma endregion
+
+#pragma region Terrain
+
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+#pragma region Shader
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+#pragma region Etc
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region GAMEOBJECTS
+
+	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+#pragma region Object
+
+#pragma endregion
+
+#pragma region Environment
+
+#pragma endregion
+
+#pragma region UI
+
+#pragma endregion
+
+#pragma region Particale
+
+#pragma endregion
+
+#pragma region Effect
+
+#pragma endregion
+
+#pragma endregion
+
+	Safe_Release(pGameInstance);
+
+	SetWindowText(g_hWnd, TEXT("Loading Finished!!!"));
+	m_isFinished = true;
+
+	CImGui_Manager_Tool::GetInstance()->Set_IsLoad(LEVEL_HOUSE);
+
+	return S_OK;
+}
+
+HRESULT CLoader_Tool::LoadingForTrain()
+{
+	SetWindowText(g_hWnd, TEXT("LoadingForTrain"));
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+#pragma region COMPONENTS
+
+	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+#pragma region Texture
+
+#pragma region EnvironmentTexture
+
+#pragma endregion
+
+#pragma region RampTexture
+
+#pragma endregion
+
+#pragma region EffectTexture
+
+#pragma endregion
+
+#pragma region UITexture
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+#pragma region Model
+
+#pragma region Buffer
+
+#pragma endregion
+	_matrix		PivotMatrix = XMMatrixIdentity();
+#pragma region Effect
+
+#pragma endregion
+
+#pragma region Character
+
+#pragma endregion
+
+#pragma region NonCharacter
+
+#pragma endregion
+
+#pragma region Terrain
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+#pragma region Shader
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+#pragma region Etc
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region GAMEOBJECTS
+
+	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+#pragma region Object
+
+#pragma endregion
+
+#pragma region Environment
+
+#pragma endregion
+
+#pragma region UI
+
+#pragma endregion
+
+#pragma region Particale
+
+#pragma endregion
+
+#pragma region Effect
+
+#pragma endregion
+
+#pragma endregion
+
+	Safe_Release(pGameInstance);
+
+	SetWindowText(g_hWnd, TEXT("Loading Finished!!!"));
+	m_isFinished = true;
+
+	CImGui_Manager_Tool::GetInstance()->Set_IsLoad(LEVEL_TRAIN);
+
+	return S_OK;
+}
+
+HRESULT CLoader_Tool::LoadingForFinalBoss()
+{
+	SetWindowText(g_hWnd, TEXT("LoadingForFinalBoss"));
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+#pragma region COMPONENTS
+
+	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+#pragma region Texture
+
+#pragma region EnvironmentTexture
+
+#pragma endregion
+
+#pragma region RampTexture
+
+#pragma endregion
+
+#pragma region EffectTexture
+
+#pragma endregion
+
+#pragma region UITexture
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+#pragma region Model
+
+#pragma region Buffer
+
+#pragma endregion
+	_matrix		PivotMatrix = XMMatrixIdentity();
+#pragma region Effect
+
+#pragma endregion
+
+#pragma region Character
+
+#pragma endregion
+
+#pragma region NonCharacter
+
+#pragma endregion
+
+#pragma region Terrain
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+#pragma region Shader
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+#pragma region Etc
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region GAMEOBJECTS
+
+	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+#pragma region Object
+
+#pragma endregion
+
+#pragma region Environment
+
+#pragma endregion
+
+#pragma region UI
+
+#pragma endregion
+
+#pragma region Particale
+
+#pragma endregion
+
+#pragma region Effect
+
+#pragma endregion
+
+#pragma endregion
+
+	Safe_Release(pGameInstance);
+
+	SetWindowText(g_hWnd, TEXT("Loading Finished!!!"));
+	m_isFinished = true;
+
+	CImGui_Manager_Tool::GetInstance()->Set_IsLoad(LEVEL_FINALBOSS);
+
 	return S_OK;
 }
 
@@ -336,139 +735,139 @@ HRESULT CLoader_Tool::Load_MapObjectModel()
 
 	/* For.Prototype_Component_Model_CorridorWood_02b*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_CorridorWood_02b"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/CorridorWood_02b.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/CorridorWood_02b.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_CorridorWood_06a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_CorridorWood_06a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/CorridorWood_06a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/CorridorWood_06a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Room_S_01*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Room_S_01"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/Room_S_01.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/Room_S_01.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Room_S_02*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Room_S_02"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/Room_S_02.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/Room_S_02.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Room_S_06*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Room_S_06"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/Room_S_06.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/Room_S_06.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_DoorShoji_01a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_DoorShoji_01a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/DoorShoji_01a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/DoorShoji_01a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_DoorShoji_02a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_DoorShoji_02a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/DoorShoji_02a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/DoorShoji_02a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_DoorShoji_03a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_DoorShoji_03a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/DoorShoji_03a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/DoorShoji_03a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_DoorEntrance_01a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_DoorEntrance_01a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/DoorEntrance_01a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/DoorEntrance_01a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_DoorFusuma_01a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_DoorFusuma_01a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/DoorFusuma_01a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/DoorFusuma_01a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_DoorFusuma_01d*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_DoorFusuma_01d"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/DoorFusuma_01d.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/DoorFusuma_01d.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_DoorFusuma_01g*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_DoorFusuma_01g"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/DoorFusuma_01g.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/DoorFusuma_01g.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_DoorFusuma_02a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_DoorFusuma_02a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/DoorFusuma_02a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/DoorFusuma_02a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_DoorFusuma_02d*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_DoorFusuma_02d"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/DoorFusuma_02d.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/DoorFusuma_02d.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_DoorFusuma_02g*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_DoorFusuma_02g"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/DoorFusuma_02g.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/DoorFusuma_02g.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Paper_01a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Paper_01a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/Paper_01a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/Paper_01a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Chest_02a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Chest_02a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/Chest_02a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/Chest_02a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Hibachi_01a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Hibachi_01a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/Hibachi_01a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/Hibachi_01a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_RoomLight_01a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_RoomLight_01a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/RoomLight_01a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/RoomLight_01a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Lantern_01a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Lantern_01a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/Lantern_01a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/Lantern_01a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	// ===============Environments/Map/RoomMap BossRoom======================
 	/* For.Prototype_Component_Model_BossRoomBase*/
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_BossRoomBase"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/BossRoomBase.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/BossRoomBase.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_107_DoorWood_01a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_107_DoorWood_01a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/107_DoorWood_01a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/107_DoorWood_01a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_107_DoorWood_02a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_107_DoorWood_02a"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/107_DoorWood_02a.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/107_DoorWood_02a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_WindowDoor*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_WindowDoor"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/WindowDoor.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/WindowDoor.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_WindowDoor_Small*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_WindowDoor_Small"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/WindowDoor_Small.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/WindowDoor_Small.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_WoodWall*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_WoodWall"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/WoodWall.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/WoodWall.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_AllWoodWall*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_AllWoodWall"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Environments/Map/RoomMap/AllWoodWall.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/RoomMap/AllWoodWall.bin", PivotMatrix))))
 		return E_FAIL; 
 
 	Safe_Release(pGameInstance);

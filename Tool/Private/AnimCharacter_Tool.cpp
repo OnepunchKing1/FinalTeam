@@ -43,7 +43,8 @@ HRESULT CAnimCharacter_Tool::Initialize(void* pArg)
 	{
 		//여기서 
 		char szFullPath[MAX_PATH] = { "" };
-		strcpy_s(szFullPath, "../Bin/Resources/AnimToolBin/Tanjiro.bin");
+		// 수정 필요
+		strcpy_s(szFullPath, "../../Client/Bin/Resources/AnimToolBin/Tanjiro.bin");
 
 		ifstream fin;
 		fin.open(szFullPath, ios::binary);

@@ -22,7 +22,6 @@ private:
 	HRESULT	Ready_Layer_BackGround(const _tchar* pLayerTag);
 	HRESULT	Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT	Ready_Layer_Player(const _tchar* pLayerTag);
-	HRESULT	Ready_Layer_Environments(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MapObject(const _tchar* pLayerTag);
 
 	HRESULT	Load_MapObject_Info(const _tchar* pPath, const _tchar* pLayerTag);

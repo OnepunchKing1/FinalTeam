@@ -3,6 +3,10 @@
 #include "Loader.h"
 #include "Level_Logo.h"
 #include "Level_GamePlay.h"
+#include "Level_Village.h"
+#include "Level_House.h"
+#include "Level_Train.h"
+#include "Level_FinalBoss.h"
 #include "GameInstance.h"
 #include "BackGround.h"
 
@@ -55,6 +59,18 @@ void CLevel_Loading::Tick(_double dTimeDelta)
                 break;
             case LEVEL_GAMEPLAY:
                 pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+                break;
+            case LEVEL_VILLAGE:
+                pLevel = CLevel_Village::Create(m_pDevice, m_pContext);
+                break;
+            case LEVEL_HOUSE:
+                pLevel = CLevel_House::Create(m_pDevice, m_pContext);
+                break;
+            case LEVEL_TRAIN:
+                pLevel = CLevel_Train::Create(m_pDevice, m_pContext);
+                break;
+            case LEVEL_FINALBOSS:
+                pLevel = CLevel_FinalBoss::Create(m_pDevice, m_pContext);
                 break;
             }
 
