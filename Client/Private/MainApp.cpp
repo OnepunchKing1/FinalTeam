@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 
+#include "SoundMgr.h"
+
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
 {
@@ -11,6 +13,8 @@ CMainApp::CMainApp()
 
 HRESULT CMainApp::Initialize()
 {
+	CSoundMgr::Get_Instance()->Initialize();
+
 	GRAPHICDESC		GraphicDesc;
 	ZeroMemory(&GraphicDesc, sizeof GraphicDesc);
 
@@ -48,6 +52,9 @@ HRESULT CMainApp::Initialize()
 		MSG_BOX("Failed to SetUp_StartLevel");
 		return E_FAIL;
 	}
+
+	_tchar szBgm[MAX_PATH] = TEXT("BGM_Gurenge.mp3");
+	CSoundMgr::Get_Instance()->PlayBGM(szBgm, 0.3f);
 
 	return S_OK;
 }
@@ -227,5 +234,8 @@ void CMainApp::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
 
+	CSoundMgr::Get_Instance()->StopAll();
+
+	CSoundMgr::Get_Instance()->Destroy_Instance();
 	CGameInstance::Release_Engine();
 }

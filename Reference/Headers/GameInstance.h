@@ -38,7 +38,8 @@ public: /*for Input_Device*/
     _bool		Get_AnyKeyPressing();
 
 public: /*for Level_Manager*/
-    HRESULT     Open_Level(_uint iLevelIndex, class CLevel* pNextLevel);
+    _bool       Get_IsStage() const;
+    HRESULT     Open_Level(_uint iLevelIndex, class CLevel* pNextLevel, _bool isStage = false);
 
 public: /*for Object_Manager*/
     class CComponent*           Get_Component(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pComponentTag);

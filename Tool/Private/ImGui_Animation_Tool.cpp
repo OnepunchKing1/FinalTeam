@@ -15,7 +15,12 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
-    ImGui::Begin("Animation_List");
+    ImGui::SetNextWindowPos(ImVec2(g_iGUI_LeftX, g_iGUI_LeftY), ImGuiCond_FirstUseEver);
+    ImGui::SetWindowSize(ImVec2(300, -1));
+    ImGuiWindowFlags iWindow_Flags = { 0 };
+    if (m_isGUINoMove[0])            iWindow_Flags |= ImGuiWindowFlags_NoMove;
+    if (m_isGUINoResize[0])            iWindow_Flags |= ImGuiWindowFlags_NoResize;
+    ImGui::Begin("Animation_List", nullptr, iWindow_Flags);
 
     CAnimation::ANIMATIONDESC AnimationDesc = m_pAnimation->Get_AnimationDesc();
     CAnimation::CONTROLDESC ControlDesc = m_pAnimation->Get_ControlDesc();
@@ -199,12 +204,20 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
 
 #pragma endregion
 
+    ImGui::SeparatorText("WindowSet");
+    ImGui::Checkbox("No Move", &m_isGUINoMove[1]);
+    ImGui::Checkbox("No Resize", &m_isGUINoResize[1]);
 
     ImGui::End();
 
 
 #pragma region Event_Time_List  
-    ImGui::Begin("Event_Time_List");
+    ImGui::SetNextWindowPos(ImVec2(g_iGUI_LeftX * 2 + 300, g_iGUI_LeftY), ImGuiCond_FirstUseEver);
+    ImGui::SetWindowSize(ImVec2(200, -1));
+    iWindow_Flags = { 0 };
+    if (m_isGUINoMove[1])            iWindow_Flags |= ImGuiWindowFlags_NoMove;
+    if (m_isGUINoResize[1])            iWindow_Flags |= ImGuiWindowFlags_NoResize;
+    ImGui::Begin("Event_Time_List", nullptr, iWindow_Flags);
     
     // EventCall 발동 관련
     for (auto& event : ControlDesc.m_vecTime_Event)
@@ -212,6 +225,11 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
         _float fEventTime = (_float)event.m_dTime;
         ImGui::SliderFloat("Event", &fEventTime, 0.0f, fEnd_Time, "%.3f", AnimSliderflags);
     }
+
+    ImGui::SeparatorText("WindowSet");
+    ImGui::Checkbox("No Move", &m_isGUINoMove[1]);
+    ImGui::Checkbox("No Resize", &m_isGUINoResize[1]);
+
     ImGui::End();
 #pragma endregion
 

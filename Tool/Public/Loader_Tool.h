@@ -20,7 +20,12 @@ public:
 public:
     HRESULT Initialize(LEVELID eLevelID);
 
+    HRESULT LoadingForLogo();
     HRESULT LoadingForTool();
+    HRESULT LoadingForVillage();
+    HRESULT LoadingForHouse();
+    HRESULT LoadingForTrain();
+    HRESULT LoadingForFinalBoss();
 
 private:
     HRESULT Load_MapObjectModel();      // ¸Ê ¿ÀºêÁ§Æ® ¸ðµ¨ (¿ø)

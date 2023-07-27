@@ -24,6 +24,10 @@ public:
 
     HRESULT LoadingForLogo();
     HRESULT LoadingForGamePlay();
+    HRESULT LoadingForVillage();
+    HRESULT LoadingForHouse();
+    HRESULT LoadingForTrain();
+    HRESULT LoadingForFinalBoss();
 
 private:
     HRESULT Load_MapObjectModel();      // ¸Ê ¿ÀºêÁ§Æ® ¸ðµ¨ (¿ø)

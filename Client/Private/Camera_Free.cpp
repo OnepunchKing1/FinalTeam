@@ -73,11 +73,11 @@ void CCamera_Free::Tick(_double dTimeDelta)
 		if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
 			m_pTransformCom->Go_Right(dTimeDelta);
 
-		if (pGameInstance->Get_DIKeyState(DIK_F7) & 0x80)
+		/*if (pGameInstance->Get_DIKeyState(DIK_F7) & 0x80)
 			Set_Fov(0.1f);
 
 		if (pGameInstance->Get_DIKeyState(DIK_F8) & 0x80)
-			Set_Fov(-0.1f);
+			Set_Fov(-0.1f);*/
 
 		// Camera_Shake
 		if (pGameInstance->Get_DIKeyDown(DIK_LCONTROL))

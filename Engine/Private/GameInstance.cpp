@@ -187,12 +187,20 @@ _bool CGameInstance::Get_AnyKeyPressing()
 	return m_pInput_Device->Get_AnyKeyPressing();
 }
 
-HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel* pNextLevel)
+_bool CGameInstance::Get_IsStage() const
+{
+	if (nullptr == m_pLevel_Manager)
+		return false;
+
+	return m_pLevel_Manager->Get_IsStage();
+}
+
+HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel* pNextLevel, _bool isStage)
 {
 	if (nullptr == m_pLevel_Manager)
 		return E_FAIL;
 
-	return m_pLevel_Manager->Open_Level(iLevelIndex, pNextLevel);
+	return m_pLevel_Manager->Open_Level(iLevelIndex, pNextLevel, isStage);
 }
 
 CComponent* CGameInstance::Get_Component(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pComponentTag)

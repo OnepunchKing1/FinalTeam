@@ -1,7 +1,6 @@
 #include "..\Public\Level_Manager.h"
 
 #include "GameInstance.h"
-#include "Level.h"
 
 IMPLEMENT_SINGLETON(CLevel_Manager)
 
@@ -9,7 +8,7 @@ CLevel_Manager::CLevel_Manager()
 {
 }
 
-HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel* pNextLevel)
+HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel* pNextLevel, _bool isStage)
 {
 	if (nullptr == pNextLevel)
 		return E_FAIL;
@@ -24,6 +23,11 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel* pNextLevel)
 	Safe_Release(m_pCurrentLevel);
 		
 	m_pCurrentLevel = pNextLevel;
+	
+	if (isStage)
+	{
+		m_pCurrentLevel->Set_IsSatge(true);
+	}
 
 	m_iLevelIndex = iLevelIndex;
 

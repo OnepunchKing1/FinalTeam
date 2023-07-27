@@ -79,6 +79,9 @@ private:
 	//Save
 	_bool	m_isSave = { false };
 
+	_bool	m_isGUINoMove[2] = { true, true };
+	_bool	m_isGUINoResize[2] = { true, true };
+
 public:
 	virtual void Free() override;
 };
