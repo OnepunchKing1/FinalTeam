@@ -18,12 +18,16 @@ public:
 	HRESULT Add_RenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _tchar* pTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT eFormat, const _float4& vClearColor);
 	HRESULT Add_MRT(const _tchar* pMRTTag, const _tchar* pTargetTag);
 
-	HRESULT Begin_MRT(ID3D11DeviceContext* pContext, const _tchar* pMRTTag);
+	HRESULT Begin_DefaultRT();
+	HRESULT Begin_MRT(const _tchar* pMRTTag);
+	HRESULT Begin_MRT_NoneClear(const _tchar* pMRTTag);
 	HRESULT Begin_MRT_LightDepth(ID3D11DeviceContext* pContext, const _tchar* pMRTTag); // Shadow
-	HRESULT End_MRT(ID3D11DeviceContext* pContext);
+	HRESULT End_DefaultRT();
+	HRESULT End_MRT();
 
 	HRESULT Bind_ShaderResourceView(const _tchar* pTargetTag, class CShader* pShader, const char* pConstantName);
 
+	HRESULT Ready_DefaultRenderTarget();
 	HRESULT Ready_LightDepthStencilRenderTargetView(); // Shadow
 
 #ifdef _DEBUG
@@ -42,12 +46,15 @@ private:
 
 private:
 	ID3D11RenderTargetView*		m_pOldRTV = { nullptr };
+	ID3D11RenderTargetView*		m_pDefaultRTV = { nullptr };
 	ID3D11DepthStencilView*		m_pDSV = { nullptr };
+
+	_float4					m_vColor_Default = { 0.8f, 0.5f, 0.5f, 0.f };
 
 	// Shadow
 	ID3D11DepthStencilView* m_pShadowDSV = { nullptr };
-	ID3D11Device* m_pDevice = { nullptr };
-	ID3D11DeviceContext* m_pContext = { nullptr };
+	ID3D11Device*			m_pDevice = { nullptr };
+	ID3D11DeviceContext*	m_pContext = { nullptr };
 
 private:
 	class CRenderTarget* Find_RenderTarget(const _tchar* pTargetTag);

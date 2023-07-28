@@ -40,6 +40,8 @@ void CCharacter_Tool::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
+
+
 	for (_uint i = 0; i < COLL_END; i++)
 		m_pColliderCom[i]->Tick(m_pTransformCom->Get_WorldMatrix(), dTimeDelta);
 }

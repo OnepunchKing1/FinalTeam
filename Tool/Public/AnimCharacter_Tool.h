@@ -26,19 +26,34 @@ public:
 public: // ImGui
 	void	ImGUI_Control(_double dTimeDelta);
 
+	void	RootAnimation(_double dTimeDelta);
+
+	void	Save_Animations();
+
 public: // 키인풋
 	void	KeyInput(_double dTimeDelta);
+
+	//사운드 재생용 함수
+	_bool	EventCallProcess( );
+	void	Event_Call(_double dTimeDelta);
 
 private:
 	// 임시 코드 
 	_uint	m_iNumAnim = { 0 };
 
+	_int m_iTest = { 0 };
 
 private: //ImGui 변수
 	CImGui_Animation_Tool* m_pImGui_Anim = { nullptr };
 
 	vector<char*> m_vecName;
 	_bool	m_isFirst_Name = { true };
+
+private:
+	_float4		m_Save_RootPos = { 0.0f, 0.0f ,0.0f, 1.0f };
+
+	
+
 
 private:
 	HRESULT Add_Components();

@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 
+#include "SoundMgr.h"
+
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
 {
@@ -11,6 +13,8 @@ CMainApp::CMainApp()
 
 HRESULT CMainApp::Initialize()
 {
+	CSoundMgr::Get_Instance()->Initialize();
+
 	GRAPHICDESC		GraphicDesc;
 	ZeroMemory(&GraphicDesc, sizeof GraphicDesc);
 
@@ -49,6 +53,9 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 	}
 
+	_tchar szBgm[MAX_PATH] = TEXT("BGM_Gurenge.mp3");
+	CSoundMgr::Get_Instance()->PlayBGM(szBgm, 0.3f);
+
 	return S_OK;
 }
 
@@ -60,11 +67,8 @@ void CMainApp::Tick(_double dTimeDelta)
 	m_pGameInstance->Tick_Engine(dTimeDelta);
 
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_DIKeyDown(DIK_F7))
-		m_isRenderFPS = !m_isRenderFPS;
+	Key_Input(dTimeDelta);
 
-	if (m_pGameInstance->Get_DIKeyDown(DIK_F8))
-		m_pRenderer->OnOff_RenderTarget();
 	m_TimeAcc += dTimeDelta;
 #endif
 }
@@ -109,11 +113,19 @@ HRESULT CMainApp::Render()
 			return E_FAIL;
 	}
 
+	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("Num0 To OnOff StaticCam"), _float2(0.f, 640.f), _float2(0.5f, 0.5f))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("Num9 To OnOff LockMouse"), _float2(0.f, 660.f), _float2(0.5f, 0.5f))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F7 To OnOff FPS"), _float2(0.f, 680.f), _float2(0.5f, 0.5f))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F8 To OnOff RenderDebug"), _float2(0.f, 700.f), _float2(0.5f, 0.5f))))
 		return E_FAIL;
+
+	
 	
 #endif // _DEBUG
 
@@ -125,6 +137,74 @@ HRESULT CMainApp::Render()
 
 	return S_OK;
 }
+
+
+#ifdef _DEBUG
+void CMainApp::Key_Input(_double dTimeDelta)
+{
+	HRESULT hr = 0;
+	if (true == m_pGameInstance->Get_IsStage())
+	{
+		if (m_pGameInstance->Get_DIKeyDown(DIK_F1))
+		{
+			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_LOGO))
+				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_LOGO), false, false);
+			else
+				hr = m_pGameInstance->Swap_Level(LEVEL_LOGO);
+		}
+
+		if (m_pGameInstance->Get_DIKeyDown(DIK_F2))
+		{
+			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_GAMEPLAY))
+				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY), false, false);
+			else
+				hr = m_pGameInstance->Swap_Level(LEVEL_GAMEPLAY);
+		}
+
+		if (m_pGameInstance->Get_DIKeyDown(DIK_F3))
+		{
+			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_VILLAGE))
+				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_VILLAGE), false, false);
+			else
+				hr = m_pGameInstance->Swap_Level(LEVEL_VILLAGE);
+		}
+
+		if (m_pGameInstance->Get_DIKeyDown(DIK_F4))
+		{
+			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_HOUSE))
+				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_HOUSE), false, false);
+			else
+				hr = m_pGameInstance->Swap_Level(LEVEL_HOUSE);
+		}
+
+		if (m_pGameInstance->Get_DIKeyDown(DIK_F5))
+		{
+			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_TRAIN))
+				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TRAIN), false, false);
+			else
+				hr = m_pGameInstance->Swap_Level(LEVEL_TRAIN);
+		}
+
+		if (m_pGameInstance->Get_DIKeyDown(DIK_F6))
+		{
+			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_FINALBOSS))
+				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FINALBOSS), false, false);
+			else
+				hr = m_pGameInstance->Swap_Level(LEVEL_FINALBOSS);
+		}
+	}
+
+	if (m_pGameInstance->Get_DIKeyDown(DIK_F7))
+		m_isRenderFPS = !m_isRenderFPS;
+
+	if (m_pGameInstance->Get_DIKeyDown(DIK_F8))
+		m_pRenderer->OnOff_RenderTarget();
+	
+	
+
+}
+#endif // _DEBUG
+
 
 HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 {
@@ -219,5 +299,8 @@ void CMainApp::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
 
+	CSoundMgr::Get_Instance()->StopAll();
+
+	CSoundMgr::Get_Instance()->Destroy_Instance();
 	CGameInstance::Release_Engine();
 }

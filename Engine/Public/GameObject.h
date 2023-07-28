@@ -35,6 +35,7 @@ public:
 	virtual void	LateTick(_double dTimeDelta);
 	virtual HRESULT Render();
 	virtual HRESULT Render_ShadowDepth(); // Shadow
+
 public:
 	class CComponent*	Get_Component(const _tchar * pComponentTag);
 

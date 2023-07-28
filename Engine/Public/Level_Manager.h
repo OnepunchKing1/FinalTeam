@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "Level.h"
 
 BEGIN(Engine)
 
@@ -11,12 +12,26 @@ private:
     virtual ~CLevel_Manager() = default;
 
 public:
-    HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNextLevel);   //레벨 이동 시 사용할 것
+    CLevel* Get_LoadedStage(_uint iLevelIndex) const {
+        return m_pLoadedLevels[iLevelIndex];
+    }
+
+    _bool   Get_IsStage() const {
+        return m_pCurrentLevel->Get_IsStage();
+    }
+
+public:
+    HRESULT Reserve_Containers(_uint iNumLevels);
+    HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNextLevel, _bool isStage, _bool isRelease);   //레벨 이동 시 사용할 것
+    HRESULT Swap_Level(_uint iLevelIndex);
     void    Tick_Level(_double dTimeDelta);
 
 private:
-    class CLevel*   m_pCurrentLevel = { nullptr };  //현재 레벨
-    _uint           m_iLevelIndex = { 0 };
+    vector<CLevel*> m_pLoadedLevels;
+    _uint           m_iNumLevels;
+
+    CLevel*     m_pCurrentLevel = { nullptr };  //현재 레벨
+    _uint       m_iLevelIndex = { 0 };
 
 public:
     virtual void Free() override;

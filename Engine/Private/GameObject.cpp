@@ -51,6 +51,7 @@ HRESULT CGameObject::Render_ShadowDepth()
 	return S_OK;
 }
 
+
 CComponent* CGameObject::Get_Component(const _tchar* pComponentTag)
 {
 	CComponent* pComponent = Find_Component(pComponentTag);

@@ -43,6 +43,8 @@ void CCamera::Tick(_double dTimeDelta)
 {
 	if (nullptr == m_pPipeLine)
 		return;
+	// Camera_Shake
+	Tick_Shake(dTimeDelta);
 
 	m_pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransformCom->Get_WorldFloat4x4_Inverse());
 
@@ -60,6 +62,56 @@ void CCamera::LateTick(_double dTimeDelta)
 HRESULT CCamera::Render()
 {
 	return S_OK;
+}
+
+void CCamera::Tick_Shake(_double TimeDelta)
+{
+	if (true == m_bShake)
+	{
+		m_Time += TimeDelta;
+
+		if (m_ShakeTime > m_Time)
+		{
+			float fX = (float)Random::Generate_Int(-m_iShakePower, m_iShakePower) / 1000.0f;
+			float fY = (float)Random::Generate_Int(-m_iShakePower, m_iShakePower) / 1000.0f;
+			float fZ = (float)Random::Generate_Int(-m_iShakePower, m_iShakePower) / 1000.0f;
+			_vector vShake = { fX, fY, fZ, 0.f };
+
+			_vector vCamPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_vector vCamLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+			_vector vEye = vCamPos + vShake; // ½¦ÀÌÅ·
+			
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vEye);
+
+		}
+		else
+		{
+			m_Time = 0.0f;
+			m_bShake = false;
+		}
+	}
+}
+
+void CCamera::Shake(const _double& ShakeTime, const _int& iShakePower)
+{
+	if (m_bShake == true)
+	{
+		if (m_ShakeTime - m_Time < ShakeTime)
+		{
+			m_ShakeTime = ShakeTime;
+			m_iShakePower = iShakePower;
+
+			m_bShake = true;
+		}
+	}
+	else
+	{
+		m_ShakeTime = ShakeTime;
+		m_iShakePower = iShakePower;
+
+		m_bShake = true;
+	}
 }
 
 void CCamera::Free()

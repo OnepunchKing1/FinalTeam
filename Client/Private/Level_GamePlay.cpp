@@ -2,8 +2,11 @@
 #include "..\Public\Level_GamePlay.h"
 
 #include "GameInstance.h"
+#include "Level_Loading.h"
+
 #include "Camera.h"
 #include "Player.h"
+#include "MapObject.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel(pDevice, pContext)
@@ -40,13 +43,35 @@ HRESULT CLevel_GamePlay::Initialize()
         return E_FAIL;
     }
 
+    if (FAILED(Ready_Layer_MapObject(TEXT("Layer_MapObject"))))
+    {
+        MSG_BOX("Failed to Ready_Layer_MapObject : CLevel_GamePlay");
+        return E_FAIL;
+    }
+
     return S_OK;
 }
 
 void CLevel_GamePlay::Tick(_double dTimeDelta)
 {
     __super::Tick(dTimeDelta);
-    SetWindowText(g_hWnd, TEXT("GamePlay"));
+
+    SetWindowText(g_hWnd, TEXT("Tuto"));
+
+    if (GetKeyState(VK_RETURN) & 0x8000)
+    {
+        HRESULT hr = 0;
+
+        CGameInstance* pGameInstance = CGameInstance::GetInstance();
+        Safe_AddRef(pGameInstance);
+
+        hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_VILLAGE), false, false);
+
+        Safe_Release(pGameInstance);
+
+        if (FAILED(hr))
+            return;
+    }
 }
 
 HRESULT CLevel_GamePlay::Render()
@@ -87,9 +112,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
-    if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
+    /* For.Sky */
+    if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag,
+        TEXT("Prototype_GameObject_Sky"))))
     {
-        MSG_BOX("Failed to Add_GameObject : Terrain");
+        MSG_BOX("Failed to Add_GameObject : Sky");
         return E_FAIL;
     }
 
@@ -113,7 +140,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar* pLayerTag)
     CameraDesc.fFovY = XMConvertToRadians(60.f);
     CameraDesc.fAspect = (_float)g_iWinSizeX / g_iWinSizeY;
     CameraDesc.fNearZ = 0.3f;
-    CameraDesc.fFarZ = 300.f;
+    CameraDesc.fFarZ = 400.f;
 
     CameraDesc.TransformDesc.dSpeedPerSec = 10.0;
     CameraDesc.TransformDesc.dRadianRotationPerSec = XMConvertToRadians(90.f);
@@ -141,7 +168,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar* pLayerTag)
 
     CharacterDesc.WorldInfo.vScale = _float3(1.f, 1.f, 1.f);
     CharacterDesc.WorldInfo.fDegree = 0.f;
-    CharacterDesc.WorldInfo.vPosition = _float4(0.f, 0.f, 0.f, 1.f);
+    CharacterDesc.WorldInfo.vPosition = _float4(130.f, 0.f, 140.f, 1.f);
 
     CharacterDesc.TransformDesc.dSpeedPerSec = 5.0;
     CharacterDesc.TransformDesc.dRadianRotationPerSec = (_double)XMConvertToRadians(90.f);
@@ -157,14 +184,83 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar* pLayerTag)
     CharacterDesc.ColliderDesc[CCharacter::COLL_SPHERE].vPosition = _float3(0.f, CharacterDesc.ColliderDesc[CCharacter::COLL_SPHERE].vSize.x, 0.f);
 
     CharacterDesc.NaviDesc.iCurrentIndex = 0;
-    CharacterDesc.NaviDesc.vStartPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+    CharacterDesc.NaviDesc.vStartPosition = XMVectorSet(130.f, 0.f, 140.f, 1.f);
 
     if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, 
-        TEXT("Prototype_GameObject_Player"), &CharacterDesc)))
+        TEXT("Prototype_GameObject_Player_Tanjiro"), &CharacterDesc)))
     {
         MSG_BOX("Failed to Add_GameObject : CLevel_GamePlay");
         return E_FAIL;
     }
+
+    Safe_Release(pGameInstance);
+
+    return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_MapObject(const _tchar* pLayerTag)
+{
+    Load_MapObject_Info(TEXT("../../Data/Object/Acaza_Battle/Acaza_Battle.dat"), pLayerTag);
+
+    return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Load_MapObject_Info(const _tchar* pPath, const _tchar* pLayerTag)
+{
+    CGameInstance* pGameInstance = CGameInstance::GetInstance();
+    Safe_AddRef(pGameInstance);
+
+    HANDLE hFile = CreateFile(pPath, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+    if (INVALID_HANDLE_VALUE == hFile)
+        return E_FAIL;
+
+    _ulong			dwByte = 0;
+    _ulong			dwStrByte = 0;
+    _uint			iSize = 0;
+
+    CGameObject* pGameObject = { nullptr };
+
+    ReadFile(hFile, &iSize, sizeof(_uint), &dwByte, nullptr);
+
+    for (_uint i = 0; i < iSize; ++i)
+    {
+        CMapObject::MAPOBJECT_INFO tMapObject_Info;
+        ZeroMemory(&tMapObject_Info, sizeof tMapObject_Info);
+
+        ReadFile(hFile, &tMapObject_Info.vPos, sizeof(_float4), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.vRotAngle, sizeof(_float3), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.vScale, sizeof(_float3), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.iMapObjectType, sizeof(_uint), &dwByte, nullptr);
+
+        ReadFile(hFile, &dwStrByte, sizeof(_ulong), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.szMeshName, dwStrByte, &dwByte, nullptr);
+
+        const _tchar* pMapObjectTypeTag = TEXT("");
+
+        switch (tMapObject_Info.iMapObjectType)
+        {
+        case CMapObject::MAPOBJECT_STATIC:
+            if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_MapObject"),
+                TEXT("Prototype_GameObject_StaticMapObject"), &tMapObject_Info)))
+                return E_FAIL;
+            break;
+        case CMapObject::MAPOBJECT_TERRAIN:
+            if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_MapObject"),
+                TEXT("Prototype_GameObject_TerrainMapObject"), &tMapObject_Info)))
+                return E_FAIL;
+            break;
+        case CMapObject::MAPOBJECT_ROTATION:
+            if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_MapObject"),
+                TEXT("Prototype_GameObject_RotationMapObject"), &tMapObject_Info)))
+                return E_FAIL;
+            break;
+        default:
+            break;
+        }
+    }
+
+    CloseHandle(hFile);
 
     Safe_Release(pGameInstance);
 

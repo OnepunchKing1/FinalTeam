@@ -19,11 +19,22 @@ public:
 
     _bool               Get_Finished() const { return m_isFinished; }
 
+    _bool               Get_Loaded() const { return m_isLoaded; }
+
+    void                Set_Finished() { m_isFinished = true; }
+
 public:
     HRESULT Initialize(LEVELID eLevelID);
 
     HRESULT LoadingForLogo();
     HRESULT LoadingForGamePlay();
+    HRESULT LoadingForVillage();
+    HRESULT LoadingForHouse();
+    HRESULT LoadingForTrain();
+    HRESULT LoadingForFinalBoss();
+
+private:
+    HRESULT Load_MapObjectModel();      // ¸Ê ¿ÀºêÁ§Æ® ¸ðµ¨ (¿ø)
 
 private:
     ID3D11Device*           m_pDevice = { nullptr };
@@ -35,6 +46,7 @@ private:
     CRITICAL_SECTION    m_CS;
     _tchar              m_szLoadingText[MAX_PATH] = TEXT("");
     _bool               m_isFinished = { false };
+    _bool               m_isLoaded = { false };
 
 public:
     static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVELID eLevelID);

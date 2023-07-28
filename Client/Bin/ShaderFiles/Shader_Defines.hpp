@@ -38,6 +38,7 @@ sampler PointClampSampler = sampler_state
 	AddressV = CLAMP;
 };
 
+
 /* For.RasterizerState */
 RasterizerState		RS_Default
 {
@@ -79,6 +80,16 @@ BlendState	 BS_AlphaBlending
 BlendState	 BS_OneByOne
 {
 	BlendEnable[0] = true;
+	SrcBlend = ONE;
+	DestBlend = ONE;
+	BlendOp = Add;
+};
+
+
+BlendState    BS_OneByOne_Engine
+{
+	BlendEnable[0] = true;
+	BlendEnable[1] = true;
 	SrcBlend = ONE;
 	DestBlend = ONE;
 	BlendOp = Add;

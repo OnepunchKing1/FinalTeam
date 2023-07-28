@@ -5,6 +5,10 @@
 
 #include "Camera.h"
 
+BEGIN(Engine)
+class CRenderer;
+END
+
 BEGIN(Tool)
 
 class CImGui_Manager_Tool final : public CBase
@@ -27,6 +31,24 @@ private:
 	CCamera::CAMERADESC		m_CameraDesc;
 #pragma endregion
 
+#pragma region StageSet
+public:
+	_bool	Get_IsLoad(_uint iStageNum) const {
+		return m_isLoad[iStageNum - 2];
+	}
+	void	Set_IsLoad(_uint iStageNum) {
+		m_isLoad[iStageNum - 2] = true;
+	}
+
+private:
+	void	GoToStage(_int iSelected);
+
+private:
+	_int	m_iSelectedStage = { 0 };
+	_bool	m_isLoad[6] = {};
+
+#pragma endregion
+
 #pragma region Light Set
 
 public:
@@ -41,10 +63,17 @@ private:
 
 #pragma endregion
 
+private:
+	ID3D11Device*			m_pDevice = { nullptr };
+	ID3D11DeviceContext*	m_pContext = { nullptr };
+
+	_bool	m_isGUINoMove = { true };
+	_bool	m_isGUINoResize = { true };
+
 public:
 	HRESULT Initialize_ImGui(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	void Tick_ImGui();
-	void Render_ImGui();
+	HRESULT Render_ImGui();
 	void Release_ImGui();
 
 public:
