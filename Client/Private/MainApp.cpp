@@ -14,6 +14,22 @@ HRESULT CMainApp::Initialize()
 	GRAPHICDESC		GraphicDesc;
 	ZeroMemory(&GraphicDesc, sizeof GraphicDesc);
 
+	// D3D11_BLEND_DESC
+	// D3D11_RASTERIZER_DESC
+	// D3D11_DEPTH_STENCIL_DESC
+	// D3D11_RASTERIZER_DESC
+
+	//ID3D11BlendState*		pBlendState = { nullptr };
+
+	//D3D11_BLEND_DESC		BlendDesc;
+
+	//m_pDevice->CreateBlendState(&BlendDesc, &pBlendState);
+
+	///* RenderState*/ 
+	//m_pContext->OMSetBlendState(pBlendState);
+	//m_pContext->OMSetDepthStencilState();
+	//m_pContext->RSSetState();
+
 	GraphicDesc.hWnd = g_hWnd;
 	GraphicDesc.eWinMode = GRAPHICDESC::MODE_WIN;
 	GraphicDesc.iWinSizeX = g_iWinSizeX;

@@ -68,7 +68,7 @@ public:// AnimTool용
 	
 
 private: // AnimTool용
-	_bool	m_isPlay = { true };
+	_bool	m_isPlay = { false };
 	// 콤보공격용
 	_bool	m_isCombo_Trigger = { false };
 	_bool	m_isCombo_Doing = { false };
