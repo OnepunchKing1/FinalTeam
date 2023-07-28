@@ -31,6 +31,11 @@ public:
 		_bool	m_Down_Battle_Combo_Down = { false };
 		_bool	m_isPressing_While_Combo = { false };
 
+		//스킬공격 키인풋
+		_bool	m_Down_Skill_Normal = { false };
+		_bool	m_Down_Skill_Move = { false };
+		_bool	m_Down_Skill_Guard = { false };
+
 
 	}PLAYERMOVESET;
 
@@ -52,7 +57,7 @@ protected: //애니메이션 제어용 함수들
 	void	Key_Input(_double dTimeDelta);
 	void	Key_Input_Battle_Move(_double dTimeDelta);
 	void	Key_Input_Battle_Attack(_double dTimeDelta);
-	
+	void	Key_Input_Battle_Skill(_double dTimeDelta);
 
 protected: // 애니메이션 제어용 변수들
 	PLAYERMOVESET  m_Moveset;
@@ -75,8 +80,8 @@ protected:
 	_float	m_fOutlineThickness = 0.9f;
 	// Outline Face
 	_float	m_fOutlineFaceThickness = 0.3f;
-	
-	
+
+
 
 protected:
 	HRESULT Add_Components();

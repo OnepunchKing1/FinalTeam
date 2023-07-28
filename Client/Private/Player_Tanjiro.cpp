@@ -45,7 +45,7 @@ HRESULT CPlayer_Tanjiro::Initialize(void* pArg)
 void CPlayer_Tanjiro::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
-	
+
 	if (true == m_isDead)
 		return;
 
@@ -54,7 +54,7 @@ void CPlayer_Tanjiro::Tick(_double dTimeDelta)
 	//애니메이션 처리
 	m_pModelCom->Play_Animation(dTimeDelta);
 	RootAnimation(dTimeDelta);
-	
+
 	//이벤트 콜
 	EventCall_Control(dTimeDelta);
 
@@ -68,7 +68,7 @@ void CPlayer_Tanjiro::LateTick(_double dTimeDelta)
 {
 	__super::LateTick(dTimeDelta);
 
-	
+
 
 #ifdef _DEBUG
 	/*if (FAILED(m_pRendererCom->Add_DebugGroup(m_pNavigationCom)))
@@ -165,8 +165,8 @@ HRESULT CPlayer_Tanjiro::Render_ShadowDepth()
 			return E_FAIL;
 
 
- 
- 		m_pShaderCom->Begin(3);
+
+		m_pShaderCom->Begin(3);
 
 		m_pModelCom->Render(i);
 	}
@@ -214,6 +214,7 @@ void CPlayer_Tanjiro::Animation_Control(_double dTimeDelta)
 
 	Animation_Control_Battle_Move(dTimeDelta);
 	Animation_Control_Battle_Attack(dTimeDelta);
+	Animation_Control_Battle_Skill(dTimeDelta);
 }
 
 void CPlayer_Tanjiro::Animation_Control_Battle_Move(_double dTimeDelta)
@@ -267,8 +268,8 @@ void CPlayer_Tanjiro::Animation_Control_Battle_Attack(_double dTimeDelta)
 	//공격시 무빙제한
 	_int iCurAnimIndex = m_pModelCom->Get_iCurrentAnimIndex();
 	if (ANIM_ATK_COMBO == iCurAnimIndex
-		|| 22 == iCurAnimIndex || 23 == iCurAnimIndex 
-		|| 24 == iCurAnimIndex || 25 == iCurAnimIndex || 26 == iCurAnimIndex 
+		|| 22 == iCurAnimIndex || 23 == iCurAnimIndex
+		|| 24 == iCurAnimIndex || 25 == iCurAnimIndex || 26 == iCurAnimIndex
 		|| 27 == iCurAnimIndex || 28 == iCurAnimIndex)
 	{
 		m_Moveset.m_isRestrict_Move = true;
@@ -311,15 +312,52 @@ void CPlayer_Tanjiro::Animation_Control_Battle_Attack(_double dTimeDelta)
 		}
 	}
 
-
-	//콤보 도중의 Transform 이동
-	if (ANIM_ATK_COMBO == iCurAnimIndex)
-	{
-		m_pTransformCom->Go_Straight(dTimeDelta );
-	}
+	// 공격 모션별 전진이동 제어 (Timedelta, 애니메이션인덱스,  초기화속도,  감속도)
+	Go_Straight_Deceleration(dTimeDelta, ANIM_ATK_COMBO, 3.0f, 0.3f);
+	Go_Straight_Deceleration(dTimeDelta, 22, 3.0f, 0.16f);
+	Go_Straight_Deceleration(dTimeDelta, 23, 4.0f, 0.11f);
+	//분기
+	Go_Straight_Deceleration(dTimeDelta, 24, 4.0f, 0.10f); // Down
+	Go_Straight_Deceleration(dTimeDelta, 25, 5.0f, 0.35f); // Normal
+	Go_Straight_Deceleration(dTimeDelta, 26, 3.0f, 0.29f); // Up
 
 
 	Safe_Release(pGameInstance);
+}
+
+void CPlayer_Tanjiro::Animation_Control_Battle_Skill(_double dTimeDelta)
+{
+	_int AnimIndex = m_pModelCom->Get_iCurrentAnimIndex();
+
+	//스킬_0
+	if (m_Moveset.m_Down_Skill_Normal)
+	{
+		m_Moveset.m_Down_Skill_Normal = false;
+
+		m_pModelCom->Set_Animation(ANIM_ATK_SKILL_NORMAL);
+	}
+	//움직임.
+	if (ANIM_ATK_SKILL_NORMAL == AnimIndex)
+	{
+
+	}
+
+
+	//스킬_1 : 이동키 + I키
+	if (m_Moveset.m_Down_Skill_Move)
+	{
+		m_Moveset.m_Down_Skill_Move = false;
+
+		m_pModelCom->Set_Animation(ANIM_ATK_SKILL_MOVE);
+	}
+
+	//스킬_2 : 가드키 + I키
+	if (m_Moveset.m_Down_Skill_Guard)
+	{
+		m_Moveset.m_Down_Skill_Guard = false;
+
+		m_pModelCom->Set_Animation(ANIM_ATK_SKILL_GUARD);
+	}
 }
 
 HRESULT CPlayer_Tanjiro::Add_Components()

@@ -163,6 +163,38 @@ _bool CCharacter::EventCallProcess( )
 	return false;
 }
 
+
+void CCharacter::Reset_Decleration(_float fResetSpeed)
+{
+	CAnimation* pAnim = m_pModelCom->Get_Animation();
+
+	if (pAnim->Get_AnimationDesc().m_dTimeAcc == 0)
+	{
+		m_isReset_Atk_MoveControl = true;
+	}
+	if (m_isReset_Atk_MoveControl)
+	{
+		m_isReset_Atk_MoveControl = false;
+		m_fAtk_MoveControl = fResetSpeed;
+	}
+}
+
+void CCharacter::Go_Straight_Deceleration(_double dTimeDelta, _int AnimIndex, _float ResetSpeed, _float fDecrease)
+{
+	//콤보 도중의 Transform 이동
+	if (AnimIndex == m_pModelCom->Get_iCurrentAnimIndex())
+	{
+		Reset_Decleration(ResetSpeed);
+
+		m_pTransformCom->Go_Straight(dTimeDelta * m_fAtk_MoveControl);
+		m_fAtk_MoveControl -= fDecrease;
+		if (m_fAtk_MoveControl <= 0.0f)
+		{
+			m_fAtk_MoveControl = 0.0f;
+		}
+	}
+}
+
 HRESULT CCharacter::Add_Components()
 {
 	/* for.Com_Renderer */

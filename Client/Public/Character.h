@@ -42,6 +42,9 @@ protected:
 	HRESULT	Read_Animation_Control_File(const char* szBinfilename);
 	void	RootAnimation(_double dTimeDelta);
 	_bool	EventCallProcess( );
+	void	Reset_Decleration(_float fResetSpeed);
+	void	Go_Straight_Deceleration(_double dTimeDelta, _int AnimIndex, _float ResetSpeed, _float fDecrease);
+
 
 protected:
 	CHARACTERDESC	m_CharacterDesc;
@@ -55,6 +58,11 @@ protected:
 
 protected:
 	_float4		m_Save_RootPos = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+
+	//Attack MoveControl
+	_float	m_fAtk_MoveControl = { 0.0f };
+	_bool	m_isReset_Atk_MoveControl = { false };
 
 protected:
 	HRESULT Add_Components();
