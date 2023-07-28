@@ -51,6 +51,11 @@ HRESULT CGameObject::Render_ShadowDepth()
 	return S_OK;
 }
 
+HRESULT CGameObject::Render_SSAO()
+{
+	return S_OK;
+}
+
 
 CComponent* CGameObject::Get_Component(const _tchar* pComponentTag)
 {

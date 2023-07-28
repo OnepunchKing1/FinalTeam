@@ -55,6 +55,8 @@ void CCamera_Free::Tick(_double dTimeDelta)
 		else if (true == m_bLockMouse)
 			m_bLockMouse = false;
 	}
+	if (pGameInstance->Get_DIKeyDown(DIK_LCONTROL))
+		Shake(1.f, 100);
 
 	if(true == m_bLockMouse)
 	LockMouse();
@@ -80,8 +82,7 @@ void CCamera_Free::Tick(_double dTimeDelta)
 			Set_Fov(-0.1f);*/
 
 		// Camera_Shake
-		if (pGameInstance->Get_DIKeyDown(DIK_LCONTROL))
-			Shake(1.f, 500);
+		
 
 		_long MouseMove = { 0 };
 
@@ -132,7 +133,7 @@ void CCamera_Free::TargetCamera(_double dTimeDelta)
 	_double ChaseSpeed;
 
 	vCamLook *= m_fDistance;
-	_vector vTest = { 0.f, 3.f, 0.f, 0.f };
+	_vector vTest = { 0.f, 1.f, 0.f, 0.f };
 	vTargetPos += vTest;
 	vTargetPos -= vCamLook;
 
