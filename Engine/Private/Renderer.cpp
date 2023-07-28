@@ -64,9 +64,44 @@ HRESULT CRenderer::Initialize_Prototype()
 	///* For.Target_SSAO */
 	_float4 vColor_SSAO = { 1.f, 1.f, 1.f, 1.f };
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAO")
-		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R16G16B16A16_UNORM, vColor_SSAO)))
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, vColor_SSAO)))
 		return E_FAIL;
 
+	///* For.Target_BlurX */
+	_float4 vColor_BlurX = { 1.f, 1.f, 1.f, 0.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurX")
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_BlurX)))
+		return E_FAIL;
+
+	///* For.Target_BlurY */
+	_float4 vColor_BlurY = { 1.f, 1.f, 1.f, 0.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_BlurY")
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_BlurY)))
+		return E_FAIL;
+
+	///* For.Target_CombineBlur */
+	_float4 vColor_Blur = { 1.f, 1.f, 1.f, 1.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_CombineBlur")
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_BlurY)))
+		return E_FAIL;
+
+	///* For.Target_BlurX */
+	//_float4 vColor_BlurX = { 1.f, 1.f, 1.f, 0.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAOBlurX")
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_BlurX)))
+		return E_FAIL;
+
+	///* For.Target_BlurY */
+	//_float4 vColor_BlurY = { 1.f, 1.f, 1.f, 0.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAOBlurY")
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_BlurY)))
+		return E_FAIL;
+
+	///* For.Target_CombineBlur */
+	_float4 vColor_SSAOBlur = { 1.f, 1.f, 1.f, 1.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_SSAOBlur")
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_SSAOBlur)))
+		return E_FAIL;
 
 
 	/* For.MRT_GameObject */
@@ -76,7 +111,7 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Depth"))))
 		return E_FAIL;
-	
+
 
 	/* For.MRT_LightAcc */
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade"))))
@@ -90,6 +125,20 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	// For.MRT_SSAO
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_SSAO"), TEXT("Target_SSAO"))))
+		return E_FAIL;
+
+	// For.MRT_Blur
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_BlurX"), TEXT("Target_BlurX"))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_BlurY"), TEXT("Target_BlurY"))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_CombineBlur"), TEXT("Target_CombineBlur"))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_SSAOBlurX"), TEXT("Target_BlurX"))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_SSAOBlurY"), TEXT("Target_BlurY"))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_SSAOBlur"), TEXT("Target_SSAOBlur"))))
 		return E_FAIL;
 
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(Viewport.Width, Viewport.Height, 1.f));
@@ -117,15 +166,21 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_ShadowDepth"), 150.0f, 300.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_SSAO"), 150.0f, 400.f, 100.f, 100.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_SSAO"), 50.0f, 400.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_BlurX"), 150.0f, 400.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_BlurY"), 50.0f, 500.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_CombineBlur"), 150.0f, 500.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_SSAOBlur"), 50.0f, 600.f, 100.f, 100.f)))
 		return E_FAIL;
 #endif // _DEBUG
 
-	
-
 	_uint      iNumViewport = 1;
 	m_pContext->RSGetViewports(&iNumViewport, &m_VP);
-		
+
 	return S_OK;
 }
 
@@ -181,7 +236,7 @@ HRESULT CRenderer::Add_DebugGroup(CComponent* pComponent)
 }
 #endif // _DEBUG
 
-HRESULT CRenderer::Draw_RenderObjects(HRESULT (*fp)())
+HRESULT CRenderer::Draw_RenderObjects(HRESULT(*fp)())
 {
 	if (FAILED(Begin_DefaultRT()))
 	{
@@ -194,13 +249,12 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT (*fp)())
 		MSG_BOX("Failed to Render_Priority");
 		return E_FAIL;
 	}
-	
 	if (FAILED(Render_ShadowDepth()))
 	{
 		MSG_BOX("Failed to Render_ShadowDepth");
 		return E_FAIL;
 	}
-	
+
 	if (FAILED(Render_NonBlend()))
 	{
 		MSG_BOX("Failed to Render_NonBlend");
@@ -211,19 +265,49 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT (*fp)())
 		MSG_BOX("Failed to Render_SSAO");
 		return E_FAIL;
 	}
-		
+	if (FAILED(Render_SSAOBlurX()))
+	{
+		MSG_BOX("Failed to Render_SSAOBlurX");
+		return E_FAIL;
+	}
+	if (FAILED(Render_SSAOBlurY()))
+	{
+		MSG_BOX("Failed to Render_SSAOBlurY");
+		return E_FAIL;
+	}
+	if (FAILED(Render_SSAOFinal()))
+	{
+		MSG_BOX("Failed to Render_SSAOFinalBlur");
+		return E_FAIL;
+	}
 	if (FAILED(Render_Lights()))
 	{
 		MSG_BOX("Failed to Render_Lights");
 		return E_FAIL;
 	}
-	
+
 	if (FAILED(Render_Deferred()))
 	{
 		MSG_BOX("Failed to Render_Deferred");
 		return E_FAIL;
 	}
-	
+
+	if (FAILED(Render_BlurX()))
+	{
+		MSG_BOX("Failed to Render_BlurX");
+		return E_FAIL;
+	}
+	if (FAILED(Render_BlurY()))
+	{
+		MSG_BOX("Failed to Render_BlurY");
+		return E_FAIL;
+	}
+	if (FAILED(Render_CombineBlur())) // 최종적으로 그려짐
+	{
+		MSG_BOX("Failed to Render_CombineBlur");
+		return E_FAIL;
+	}
+
 	if (FAILED(Render_NonLight()))
 	{
 		MSG_BOX("Failed to Render_NonLight");
@@ -305,7 +389,7 @@ HRESULT CRenderer::End_DefaultRT()
 	m_pShader->Begin(0);
 
 	m_pVIBuffer->Render();
-	
+
 	return S_OK;
 }
 
@@ -380,6 +464,12 @@ HRESULT CRenderer::Render_SSAO()
 	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
+
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+		return E_FAIL;
+
 	CPipeLine* pPipeLine = CPipeLine::GetInstance();
 	Safe_AddRef(pPipeLine);
 
@@ -396,23 +486,211 @@ HRESULT CRenderer::Render_SSAO()
 
 	Safe_Release(pPipeLine);
 
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
-		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
-		return E_FAIL;
-	
-
-
 	if (FAILED(m_pShader->Begin(5)))
 		return E_FAIL;
-	
+
 	if (FAILED(m_pVIBuffer->Render()))
 		return E_FAIL;
 
 	if (FAILED(m_pTarget_Manager->End_MRT()))
 		return E_FAIL;
 
-	
+
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_SSAOBlurX()
+{
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_SSAOBlurX"))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAO"), m_pShader, "g_BlurTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Begin(6)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+
+
+	if (FAILED(m_pTarget_Manager->End_MRT()))
+		return E_FAIL;
+
+
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_SSAOBlurY()
+{
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_SSAOBlurY"))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAO"), m_pShader, "g_BlurXTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Begin(7)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->End_MRT()))
+		return E_FAIL;
+
+
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_SSAOFinal()
+{
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_SSAOBlur"))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAOBlurX"), m_pShader, "g_BlurXTexture")))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAOBlurY"), m_pShader, "g_BlurYTexture")))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAO"), m_pShader, "g_Texture")))
+		return E_FAIL;
+
+	/*if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAO"), m_pShader, "g_SSAOTexture")))
+		return E_FAIL;*/
+
+
+	if (FAILED(m_pShader->Begin(9)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->End_MRT()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_BlurX()
+{
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_BlurX"))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_CombineBlur"), m_pShader, "g_BlurTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Begin(6)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+
+
+	if (FAILED(m_pTarget_Manager->End_MRT()))
+		return E_FAIL;
+
+
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_BlurY()
+{
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_BlurY"))))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_CombineBlur"), m_pShader, "g_BlurXTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Begin(7)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->End_MRT()))
+		return E_FAIL;
+
+
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_CombineBlur()
+{
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+
+	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_BlurX"), m_pShader, "g_BlurXTexture")))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_BlurY"), m_pShader, "g_BlurYTexture")))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_CombineBlur"), m_pShader, "g_Texture")))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAOBlur"), m_pShader, "g_SSAOTexture")))
+		return E_FAIL;
+
+
+	if (FAILED(m_pShader->Begin(8)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -426,7 +704,7 @@ HRESULT CRenderer::Render_NonBlend()
 	/* Diffuse + Normal */
 	if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_GameObject"))))
 		return E_FAIL;
-	
+
 	m_pContext->RSSetViewports(1, &m_VP);
 	for (auto& pGameObject : m_RenderObjects[RENDER_NONBLEND])
 	{
@@ -549,7 +827,15 @@ HRESULT CRenderer::Render_Debug()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_SSAO"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
-	
+	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_BlurX"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_CombineBlur"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_SSAOBlur"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+
 	return S_OK;
 }
 #endif // _DEBUG
@@ -589,6 +875,8 @@ HRESULT CRenderer::Render_Lights()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
 		return E_FAIL;
+	/*if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAO"), m_pShader, "g_SSAOTexture")))
+		return E_FAIL;*/
 
 	m_pLight_Manager->Render(m_pShader, m_pVIBuffer);
 
@@ -599,6 +887,10 @@ HRESULT CRenderer::Render_Lights()
 
 HRESULT CRenderer::Render_Deferred()
 {
+
+	if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_CombineBlur"))))
+		return E_FAIL;
+
 	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShader->SetUp_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -617,23 +909,24 @@ HRESULT CRenderer::Render_Deferred()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ShadowDepth"), m_pShader, "g_ShadowDepthTexture")))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAO"), m_pShader, "g_SSAOTexture")))
-		return E_FAIL;
+	/*if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAO"), m_pShader, "g_SSAOTexture")))
+		return E_FAIL;*/
+
 
 	CPipeLine* pPipeLine = CPipeLine::GetInstance();
 	Safe_AddRef(pPipeLine);
 
 	_float4x4 matViewInv = pPipeLine->Get_TransformFloat4x4_Inverse(CPipeLine::D3DTS_VIEW);
-	if (FAILED(m_pShader->SetUp_Matrix("g_matViewInv",&matViewInv)))
+	if (FAILED(m_pShader->SetUp_Matrix("g_matViewInv", &matViewInv)))
 		return E_FAIL;
 	_float4x4 matProjInv = pPipeLine->Get_TransformFloat4x4_Inverse(CPipeLine::D3DTS_PROJ);
-	if (FAILED(m_pShader->SetUp_Matrix("g_matProjInv",&matProjInv)))
+	if (FAILED(m_pShader->SetUp_Matrix("g_matProjInv", &matProjInv)))
 		return E_FAIL;
 
 	Safe_Release(pPipeLine);
 
 	//_vector	vPlayerPos = XMVectorSet(0.f, 1.f, 0.f, 1.f);
-	_vector	vLightEye = XMVectorSet(-5.f, 10.f, -5.f, 1.f);
+	_vector	vLightEye = XMVectorSet(130.f, 10.f, 130.f, 1.f);
 	_vector	vLightAt = XMVectorSet(60.f, 0.f, 60.f, 1.f);
 	_vector	vLightUp = XMVectorSet(0.f, 1.f, 0.f, 1.f);
 
@@ -641,7 +934,7 @@ HRESULT CRenderer::Render_Deferred()
 	_float4x4	FloatLightViewMatrix;
 	XMStoreFloat4x4(&FloatLightViewMatrix, LightViewMatrix);
 
-	if (FAILED(m_pShader->SetUp_Matrix("g_matLightView",&FloatLightViewMatrix)))
+	if (FAILED(m_pShader->SetUp_Matrix("g_matLightView", &FloatLightViewMatrix)))
 		return E_FAIL;
 
 	_matrix		LightProjMatrix;
@@ -654,12 +947,16 @@ HRESULT CRenderer::Render_Deferred()
 		return E_FAIL;
 
 
+
 	m_pShader->Begin(3);
 
 	m_pVIBuffer->Render();
-	
+	m_pTarget_Manager->End_MRT();
+
+
 	return S_OK;
 }
+
 
 CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -689,7 +986,7 @@ void CRenderer::Free()
 	Safe_Release(m_pVIBuffer);
 	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pLight_Manager);
-	
+
 
 	for (auto& RenderObjects : m_RenderObjects)
 	{

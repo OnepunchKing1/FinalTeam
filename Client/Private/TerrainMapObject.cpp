@@ -64,7 +64,7 @@ HRESULT CTerrainMapObject::Render()
 		if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
 			return E_FAIL;
 
-		/*if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_NormalTexture", aiTextureType_NORMALS)))
+		/*if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_NormalTexture", MESHMATERIALS::TextureType_NORMALS)))
 			return E_FAIL;*/
 
 		m_pShaderCom->Begin(0);
