@@ -20,12 +20,12 @@ public:
 public:
     HRESULT Initialize(LEVELID eLevelID);
 
-    HRESULT LoadingForLogo();
-    HRESULT LoadingForTool();
-    HRESULT LoadingForVillage();
-    HRESULT LoadingForHouse();
-    HRESULT LoadingForTrain();
-    HRESULT LoadingForFinalBoss();
+    HRESULT LoadingForLogo(_bool isLoad);
+    HRESULT LoadingForTool(_bool isLoad);
+    HRESULT LoadingForVillage(_bool isLoad);
+    HRESULT LoadingForHouse(_bool isLoad);
+    HRESULT LoadingForTrain(_bool isLoad);
+    HRESULT LoadingForFinalBoss(_bool isLoad);
 
 private:
     HRESULT Load_MapObjectModel();      // ¸Ê ¿ÀºêÁ§Æ® ¸ðµ¨ (¿ø)

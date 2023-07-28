@@ -37,7 +37,7 @@ HRESULT CLevel_Village::Initialize()
         return E_FAIL;
     }
 
-    if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+    /*if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
     {
         MSG_BOX("Failed to Ready_Layer_Camera : CLevel_Village");
         return E_FAIL;
@@ -47,7 +47,7 @@ HRESULT CLevel_Village::Initialize()
     {
         MSG_BOX("Failed to Ready_Layer_MapObject : CLevel_Village");
         return E_FAIL;
-    }
+    }*/
 
     return S_OK;
 }
@@ -65,7 +65,7 @@ void CLevel_Village::Tick(_double dTimeDelta)
         CGameInstance* pGameInstance = CGameInstance::GetInstance();
         Safe_AddRef(pGameInstance);
 
-        hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_HOUSE));
+        hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_HOUSE), false, false);
 
         Safe_Release(pGameInstance);
 

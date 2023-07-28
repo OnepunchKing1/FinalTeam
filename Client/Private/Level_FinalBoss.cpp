@@ -23,11 +23,11 @@ HRESULT CLevel_FinalBoss::Initialize()
         return E_FAIL;
     }
 
-    if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+    /*if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
     {
         MSG_BOX("Failed to Ready_Layer_BackGround : CLevel_FinalBoss");
         return E_FAIL;
-    }
+    }*/
 
     if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
     {

@@ -184,36 +184,37 @@ void CAnimCharacter_Tool::ImGUI_Control(_double dTimeDelta)
 			//pAnim->Set_ControlDesc(control);
 			index++;
 		}
-		m_pImGui_Anim->Set_vecName(m_vecName);
+		//m_pImGui_Anim->Set_vecName(m_vecName);
 	}
 
-	if (m_pImGui_Anim->Get_Signal_Change_Anim())
+	/*if (m_pImGui_Anim->Get_Signal_Change_Anim())
 	{
 		m_pImGui_Anim->Set_Signal_Change_Anim(false);
 
 		m_iNumAnim = m_pImGui_Anim->Get_AnimIndex();
 		m_pModelCom->Set_Animation(m_iNumAnim);
-	}
+	}*/
 	
 	
 	// ImGui에 현재 해당 애니메이션 데이터 넣기. 
-	m_pImGui_Anim->Set_AnimIndex(m_pModelCom->Get_iCurrentAnimIndex());
-	m_pImGui_Anim->Set_Animation(m_pModelCom->Get_Animation());
+	//m_pImGui_Anim->Set_AnimIndex(m_pModelCom->Get_iCurrentAnimIndex());
+	//m_pImGui_Anim->Set_Animation(m_pModelCom->Get_Animation());
 
 
 	// 메인 GUI 띄우기
-	m_pImGui_Anim->Animation_ImGui_Main();
+	//m_pImGui_Anim->Animation_ImGui_Main();
+
 
 	//재생기능
-	m_pModelCom->Set_isPlay(m_pImGui_Anim->Get_Play());
+	//m_pModelCom->Set_isPlay(m_pImGui_Anim->Get_Play());
 
 
 	//세이브
-	if (m_pImGui_Anim->Get_Save())
+	/*if (m_pImGui_Anim->Get_Save())
 	{
 		m_pImGui_Anim->Set_Save(false);
 		Save_Animations();
-	}
+	}*/
 }
 
 void CAnimCharacter_Tool::RootAnimation(_double dTimeDelta)

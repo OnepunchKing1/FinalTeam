@@ -37,7 +37,7 @@ HRESULT CLevel_Train_Tool::Initialize()
         return E_FAIL;
     }
 
-    if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+    /*if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
     {
         MSG_BOX("Failed to Ready_Layer_Camera : CLevel_Train_Tool");
         return E_FAIL;
@@ -47,7 +47,7 @@ HRESULT CLevel_Train_Tool::Initialize()
     {
         MSG_BOX("Failed to Ready_Layer_MapObject : CLevel_Train_Tool");
         return E_FAIL;
-    }
+    }*/
 
     return S_OK;
 }

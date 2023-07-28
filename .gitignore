@@ -433,13 +433,14 @@ FodyWeavers.xsd
 *.sln.iml
 
 Reference/Header/Engine
-
+!Reference/Librarys/fmodex64_vc.lib
 !Client/Bin
 Client/Bin/*
 !Client/Bin/DataFiles
 !Client/Bin/Resources
 !Client/Bin/ShaderFiles
 !Client/Bin/Sound
+!Client/Bin/fmodex64.dll
 !Engine/Bin
 Engine/Bin/*
 !Engine/Bin/ShaderFiles

@@ -25,11 +25,11 @@ HRESULT CLevel_Train::Initialize()
         return E_FAIL;
     }
 
-    if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+    /*if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
     {
         MSG_BOX("Failed to Ready_Layer_BackGround : CLevel_Train");
         return E_FAIL;
-    }
+    }*/
 
     if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
     {
@@ -37,11 +37,11 @@ HRESULT CLevel_Train::Initialize()
         return E_FAIL;
     }
 
-    if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+    /*if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
     {
         MSG_BOX("Failed to Ready_Layer_Camera : CLevel_Train");
         return E_FAIL;
-    }
+    }*/
 
     if (FAILED(Ready_Layer_MapObject(TEXT("Layer_MapObject"))))
     {
@@ -64,7 +64,7 @@ void CLevel_Train::Tick(_double dTimeDelta)
         CGameInstance* pGameInstance = CGameInstance::GetInstance();
         Safe_AddRef(pGameInstance);
 
-        hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FINALBOSS));
+        hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FINALBOSS), false, false);
 
         Safe_Release(pGameInstance);
 
