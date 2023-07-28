@@ -40,7 +40,7 @@ void CLevel_Loading::Tick(_double dTimeDelta)
 {
     __super::Tick(dTimeDelta);
 
-    m_pBackGround->Set_TextureIndex(iLoadingTextureIndex % 3);
+    m_pBackGround->Set_TextureIndex(g_iLoadingTextureIndex % 3);
   
     m_pBackGround->Tick(dTimeDelta);
 
@@ -77,14 +77,14 @@ void CLevel_Loading::Tick(_double dTimeDelta)
             if (nullptr == pLevel)
                 return;
 
-            iLoadingTextureIndex += 2;
+            g_iLoadingTextureIndex += 2;
 
             HRESULT hr = 0;
 
             CGameInstance* pGameInstance = CGameInstance::GetInstance();
             Safe_AddRef(pGameInstance);
 
-            hr = pGameInstance->Open_Level(m_eNextLevelID, pLevel);
+            hr = pGameInstance->Open_Level(m_eNextLevelID, pLevel, true);
             Safe_Release(pGameInstance);
 
             if (FAILED(hr))

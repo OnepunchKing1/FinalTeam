@@ -92,7 +92,7 @@ void CPlayer::Key_Input(_double dTimeDelta)
 	Key_Input_Battle_Move(dTimeDelta);
 
 	Key_Input_Battle_Attack(dTimeDelta);
-	
+
 
 	Safe_Release(pGameInstance);
 }
@@ -110,7 +110,7 @@ void CPlayer::Key_Input_Battle_Move(_double dTimeDelta)
 	_vector vLook = XMVector4Normalize(XMLoadFloat4(&CameraLook));
 	_vector	vUp = { 0.0f, 1.0f, 0.0f , 0.0f };
 	_vector crossLeft = XMVector3Cross(vLook, vUp);
-
+	
 	//45degree look
 	_vector quaternionRotation = XMQuaternionRotationAxis(vUp, XMConvertToRadians(45.0f));
 	_vector v45Rotate = XMVector3Rotate(vLook, quaternionRotation);
@@ -127,7 +127,7 @@ void CPlayer::Key_Input_Battle_Move(_double dTimeDelta)
 		m_Moveset.m_State_Battle_Run = true;
 		m_dTime_MoveKey = 0.0;
 	}
-	else
+		else
 	{
 		m_Moveset.m_State_Battle_Run = false;
 	}
@@ -158,27 +158,27 @@ void CPlayer::Key_Input_Battle_Move(_double dTimeDelta)
 		if (pGameInstance->Get_DIKeyState(DIK_W))
 		{
 			XMStoreFloat4(&m_Moveset.m_Input_Dir, vLook);
-		}
+	}
 		else if (pGameInstance->Get_DIKeyState(DIK_S))
 		{
 			XMStoreFloat4(&m_Moveset.m_Input_Dir, -vLook);
-		}
+}
 		else if (pGameInstance->Get_DIKeyState(DIK_A))
-		{
+{
 			XMStoreFloat4(&m_Moveset.m_Input_Dir, crossLeft);
 		}
 		else if (pGameInstance->Get_DIKeyState(DIK_D))
-		{
+	{
 			XMStoreFloat4(&m_Moveset.m_Input_Dir, -crossLeft);
-		}
 	}
+}
 
 	//키를 누를 시
 	if (!m_isCool_MoveKey)
-	{
+{
 		if (pGameInstance->Get_DIKeyDown(DIK_W) || pGameInstance->Get_DIKeyDown(DIK_S)
 			|| pGameInstance->Get_DIKeyDown(DIK_A) || pGameInstance->Get_DIKeyDown(DIK_D))
-		{
+	{
 			m_Moveset.m_Down_Battle_Run = true;
 		}
 	}
@@ -196,12 +196,12 @@ void CPlayer::Key_Input_Battle_Move(_double dTimeDelta)
 	{
 		m_isCool_MoveKey = false;
 		m_Moveset.m_Up_Battle_Run = true;
-	}
+}
 
 
 	//무빙제한 상태에서 누르고 있을 시
 	if (m_Moveset.m_isRestrict_Move)
-	{
+{
 		if (pGameInstance->Get_DIKeyState(DIK_W) || pGameInstance->Get_DIKeyState(DIK_S) || pGameInstance->Get_DIKeyState(DIK_A) || pGameInstance->Get_DIKeyState(DIK_D))
 			m_Moveset.m_isPressing_While_Combo = true;
 		else
@@ -244,13 +244,13 @@ void CPlayer::Key_Input_Battle_Attack(_double dTimeDelta)
 
 HRESULT CPlayer::Add_Components()
 {
-	
+
 	return S_OK;
 }
 
 HRESULT CPlayer::SetUp_ShaderResources()
 {
-	
+
 	return S_OK;
 }
 

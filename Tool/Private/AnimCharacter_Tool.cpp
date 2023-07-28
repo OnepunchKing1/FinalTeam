@@ -88,7 +88,7 @@ HRESULT CAnimCharacter_Tool::Initialize(void* pArg)
 		fin.close();
 	
 	Safe_Release(pGameInstance);
-	
+
 	return S_OK;
 }
 
@@ -107,7 +107,7 @@ void CAnimCharacter_Tool::Tick(_double dTimeDelta)
 	RootAnimation(dTimeDelta);
 
 	Event_Call(dTimeDelta);
-
+	
 }
 
 void CAnimCharacter_Tool::LateTick(_double dTimeDelta)
@@ -366,10 +366,10 @@ void CAnimCharacter_Tool::KeyInput(_double dTimeDelta)
 		//아닐경우, 다음 콤보로 진행
 		else
 			m_pModelCom->Set_Combo_Trigger(true);*/
-		m_pModelCom->Set_Combo_Trigger(true);
+			m_pModelCom->Set_Combo_Trigger(true);
 	}
 	
-	
+
 
 
 	Safe_Release(pGameInstance);

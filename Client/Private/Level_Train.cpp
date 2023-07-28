@@ -64,7 +64,7 @@ void CLevel_Train::Tick(_double dTimeDelta)
         CGameInstance* pGameInstance = CGameInstance::GetInstance();
         Safe_AddRef(pGameInstance);
 
-        hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FINALBOSS));
+        hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FINALBOSS), false, false);
 
         Safe_Release(pGameInstance);
 

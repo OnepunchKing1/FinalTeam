@@ -115,7 +115,7 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
         m_pAnimation->Set_ControlDesc(ControlDesc);
     }
 #pragma endregion
-   
+
 /*    ImGui::End();
 
     ImGui::Begin("Animation Control Console");*/

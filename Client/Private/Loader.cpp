@@ -35,22 +35,64 @@ unsigned int APIENTRY Loading_Main(void* pArg)
 	switch (pLoader->Get_LevelID())
 	{
 	case LEVEL_LOGO:
-		hr = pLoader->LoadingForLogo();
+		if (false == pLoader->Get_Loaded())
+		{
+			hr = pLoader->LoadingForLogo();
+		}
+		else
+		{
+			pLoader->Set_Finished();
+		}
 		break;
 	case LEVEL_GAMEPLAY:
-		hr = pLoader->LoadingForGamePlay();
+		if (false == pLoader->Get_Loaded())
+		{
+			hr = pLoader->LoadingForGamePlay();
+		}
+		else
+		{
+			pLoader->Set_Finished();
+		}
 		break;
 	case LEVEL_VILLAGE:
-		hr = pLoader->LoadingForVillage();
+		if (false == pLoader->Get_Loaded())
+		{
+			hr = pLoader->LoadingForVillage();
+		}
+		else
+		{
+			pLoader->Set_Finished();
+		}
 		break;
 	case LEVEL_HOUSE:
-		hr = pLoader->LoadingForHouse();
+		if (false == pLoader->Get_Loaded())
+		{
+			hr = pLoader->LoadingForHouse();
+		}
+		else
+		{
+			pLoader->Set_Finished();
+		}
 		break;
 	case LEVEL_TRAIN:
-		hr = pLoader->LoadingForTrain();
+		if (false == pLoader->Get_Loaded())
+		{
+			hr = pLoader->LoadingForTrain();
+		}
+		else
+		{
+			pLoader->Set_Finished();
+		}
 		break;
 	case LEVEL_FINALBOSS:
-		hr = pLoader->LoadingForFinalBoss();
+		if (false == pLoader->Get_Loaded())
+		{
+			hr = pLoader->LoadingForFinalBoss();
+		}
+		else
+		{
+			pLoader->Set_Finished();
+		}
 		break;
 	}
 
@@ -65,6 +107,14 @@ unsigned int APIENTRY Loading_Main(void* pArg)
 HRESULT CLoader::Initialize(LEVELID eLevelID)
 {
 	m_eLevelID = eLevelID;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (nullptr != pGameInstance->Get_LoadedStage(m_eLevelID))
+		m_isLoaded = true;
+
+	Safe_Release(pGameInstance);
 
 	InitializeCriticalSection(&m_CS);
 
@@ -143,7 +193,7 @@ HRESULT CLoader::LoadingForLogo()
 
 	SetWindowText(g_hWnd, TEXT("Loading Finished!!!"));
 	m_isFinished = true;
-
+	
 	return S_OK;
 }
 

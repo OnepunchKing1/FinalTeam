@@ -167,7 +167,7 @@ HRESULT CModel::Play_Animation(_double dTimeDelta)
 	{
 		NextAnim = m_Animations[m_iCurrentAnimIndex]->Invalidate_TransformationMatrices(this, dTimeDelta, m_isPlay, m_isCombo_Trigger);
 	}
-	
+
 	/* 현재 재생해야할 애니메이션 번호 n == m_iCurrentAnimIndex
 	*  n번의 애니메이션의 행렬 상태로 Trans행렬을 갱신한다.
 	*/
