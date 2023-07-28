@@ -29,13 +29,13 @@ HRESULT CMainApp_Tool::Initialize()
 		return E_FAIL;
 	}
 
-	if (FAILED(m_pGameInstance->Add_Font(m_pDevice, m_pContext, TEXT("Font_Default"), TEXT("../Bin/Resources/Fonts/Bombardier.spritefont"))))
+	if (FAILED(m_pGameInstance->Add_Font(m_pDevice, m_pContext, TEXT("Font_Default"), TEXT("../../Client/Bin/Resources/Fonts/Bombardier.spritefont"))))
 	{
 		MSG_BOX("Failed to Add_Font");
 		return E_FAIL;
 	}
 
-	if (FAILED(m_pGameInstance->Add_Font(m_pDevice, m_pContext, TEXT("Font_KR"), TEXT("../Bin/Resources/Fonts/Mabi.spritefont"))))
+	if (FAILED(m_pGameInstance->Add_Font(m_pDevice, m_pContext, TEXT("Font_KR"), TEXT("../../Client/Bin/Resources/Fonts/Mabi.spritefont"))))
 	{
 		MSG_BOX("Failed to Add_Font");
 		return E_FAIL;

@@ -2,6 +2,8 @@
 #include "..\Public\Player.h"
 
 #include "GameInstance.h"
+#include "SoundMgr.h"
+#include "Camera_Free.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCharacter(pDevice, pContext)
@@ -29,19 +31,45 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pModelCom->Set_Animation(7);
-
 	return S_OK;
 }
 
 void CPlayer::Tick(_double dTimeDelta)
 {
+	__super::Tick(dTimeDelta);
+
 	if (true == m_isDead)
 		return;
 
+	Key_Input(dTimeDelta);
+
+}
+
+void CPlayer::LateTick(_double dTimeDelta)
+{
+	__super::LateTick(dTimeDelta);
+
+	
+}
+
+HRESULT CPlayer::Render()
+{
+	
+	return S_OK;
+}
+
+HRESULT CPlayer::Render_ShadowDepth()
+{
+	
+	return S_OK;
+}
+
+void CPlayer::Key_Input(_double dTimeDelta)
+{
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
+#pragma region Test
 	if (pGameInstance->Get_DIKeyState(DIK_HOME) & 0x80)
 	{
 		++m_iNumAnim;
@@ -58,205 +86,170 @@ void CPlayer::Tick(_double dTimeDelta)
 			m_iNumAnim = 0;
 		m_pModelCom->Set_Animation(m_iNumAnim);
 	}
-	if (pGameInstance->Get_DIKeyState(DIK_UP))
-	{
-		m_pTransformCom->Go_Straight(dTimeDelta);
-	}
-	if (pGameInstance->Get_DIKeyState(DIK_DOWN))
-	{
-		m_pTransformCom->Go_Backward(dTimeDelta);
-	}
-	if (pGameInstance->Get_DIKeyState(DIK_LEFT))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f,1.f,0.f,0.f),-dTimeDelta);
-	}
-	if (pGameInstance->Get_DIKeyState(DIK_RIGHT))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta);
-	}
+
+#pragma endregion
+
+	Key_Input_Battle_Move(dTimeDelta);
+
+	Key_Input_Battle_Attack(dTimeDelta);
 
 
 	Safe_Release(pGameInstance);
-
-	m_pModelCom->Play_Animation(dTimeDelta);
-
-	__super::Tick(dTimeDelta);
-
-
-	
-	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this)))
-		return;
-	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this)))
-		return;
-	
-
 }
 
-void CPlayer::LateTick(_double dTimeDelta)
+void CPlayer::Key_Input_Battle_Move(_double dTimeDelta)
 {
-	__super::LateTick(dTimeDelta);
-
-	
-
-#ifdef _DEBUG
-	/*if (FAILED(m_pRendererCom->Add_DebugGroup(m_pNavigationCom)))
-		return;*/
-#endif // _DEBUG
-}
-
-HRESULT CPlayer::Render()
-{
-	if (FAILED(__super::Render()))
-		return E_FAIL;
-
-	if (FAILED(SetUp_ShaderResources()))
-		return E_FAIL;
-
-	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	//Outline Render
-	for (m_iMeshNum = 0; m_iMeshNum < iNumMeshes; m_iMeshNum++)
-	{
-
-
-		if (FAILED(m_pModelCom->Bind_ShaderResource(m_iMeshNum, m_pShaderCom, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
-			return E_FAIL;
-
-		if (FAILED(m_pModelCom->Bind_ShaderBoneMatrices(m_iMeshNum, m_pShaderCom, "g_BoneMatrices")))
-			return E_FAIL;
-
-		if (m_iMeshNum == 2)
-			m_pShaderCom->Begin(2);
-		else
-			m_pShaderCom->Begin(1);
-
-		m_pModelCom->Render(m_iMeshNum);
-	}
-
-	// Default Render
-	for (_uint i = 0; i < iNumMeshes; i++)
-	{
-		if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
-			return E_FAIL;
-
-		if (FAILED(m_pModelCom->Bind_ShaderBoneMatrices(i, m_pShaderCom, "g_BoneMatrices")))
-			return E_FAIL;
-
-		m_pShaderCom->Begin(0);
-
-		m_pModelCom->Render(i);
-	}
-
-	return S_OK;
-}
-
-HRESULT CPlayer::Render_ShadowDepth()
-{
-	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
-
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	//카메라 방향 구해놓기
+	CCamera_Free* pCamera = dynamic_cast<CCamera_Free*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"), 0));
+	_float4 CameraLook = pCamera->Get_CameraLook();
+	CameraLook.y = 0.0f;
+	CameraLook.w = 0.0f;
+	_vector vLook = XMVector4Normalize(XMLoadFloat4(&CameraLook));
+	_vector	vUp = { 0.0f, 1.0f, 0.0f , 0.0f };
+	_vector crossLeft = XMVector3Cross(vLook, vUp);
+	
+	//45degree look
+	_vector quaternionRotation = XMQuaternionRotationAxis(vUp, XMConvertToRadians(45.0f));
+	_vector v45Rotate = XMVector3Rotate(vLook, quaternionRotation);
+
+	//135degree look
+	_vector quaternionRotation2 = XMQuaternionRotationAxis(vUp, XMConvertToRadians(135.0f));
+	_vector v135Rotate = XMVector3Rotate(vLook, quaternionRotation2);
 
 
-	_vector vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-	_vector	vLightEye = XMVectorSet(130.f, 10.f, 130.f, 1.f);
-	_vector	vLightAt = XMVectorSet(60.f, 0.f, 60.f, 1.f);
-	_vector	vLightUp = XMVectorSet(0.f, 1.f, 0.f, 1.f);
-
-
-	_matrix      LightViewMatrix = XMMatrixLookAtLH(vLightEye, vLightAt, vLightUp);
-	_float4x4   FloatLightViewMatrix;
-	XMStoreFloat4x4(&FloatLightViewMatrix, LightViewMatrix);
-
-	if (FAILED(m_pShaderCom->SetUp_Matrix("g_ViewMatrix",
-		&FloatLightViewMatrix)))
-		return E_FAIL;
-
-	_matrix      LightProjMatrix;
-	_float4x4   FloatLightProjMatrix;
-
-	LightProjMatrix = XMMatrixPerspectiveFovLH(XMConvertToRadians(120.f), _float(1280) / _float(720), 0.2f, 300.f);
-	XMStoreFloat4x4(&FloatLightProjMatrix, LightProjMatrix);
-
-	if (FAILED(m_pShaderCom->SetUp_Matrix("g_ProjMatrix",
-		&FloatLightProjMatrix)))
-		return E_FAIL;
-
-
-	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (_uint i = 0; i < iNumMeshes; i++)
+	//무브키를 누르고 있는 상태
+	if(pGameInstance->Get_DIKeyState(DIK_W) || pGameInstance->Get_DIKeyState(DIK_S)
+		|| pGameInstance->Get_DIKeyState(DIK_A) || pGameInstance->Get_DIKeyState(DIK_D))
 	{
-		if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
-			return E_FAIL;
-
-		if (FAILED(m_pModelCom->Bind_ShaderBoneMatrices(i, m_pShaderCom, "g_BoneMatrices")))
-			return E_FAIL;
-
-
- 
- 		m_pShaderCom->Begin(3);
-
-		m_pModelCom->Render(i);
+		m_Moveset.m_State_Battle_Run = true;
+		m_dTime_MoveKey = 0.0;
+	}
+		else
+	{
+		m_Moveset.m_State_Battle_Run = false;
 	}
 
-	return S_OK;
+	//Dir설정
+	if (pGameInstance->Get_DIKeyState(DIK_W) && pGameInstance->Get_DIKeyState(DIK_A))
+	{
+		XMStoreFloat4(&m_Moveset.m_Input_Dir, -v135Rotate);
+		XMStoreFloat4(&m_Moveset.m_Input_Dir, XMVector4Normalize(XMLoadFloat4(& m_Moveset.m_Input_Dir)));
+	}
+	else if (pGameInstance->Get_DIKeyState(DIK_W) && pGameInstance->Get_DIKeyState(DIK_D))
+	{
+		XMStoreFloat4(&m_Moveset.m_Input_Dir, v45Rotate);
+		XMStoreFloat4(&m_Moveset.m_Input_Dir, XMVector4Normalize(XMLoadFloat4(&m_Moveset.m_Input_Dir)));
+	}
+	else if (pGameInstance->Get_DIKeyState(DIK_S) && pGameInstance->Get_DIKeyState(DIK_A))
+	{
+		XMStoreFloat4(&m_Moveset.m_Input_Dir, -v45Rotate);
+		XMStoreFloat4(&m_Moveset.m_Input_Dir, XMVector4Normalize(XMLoadFloat4(&m_Moveset.m_Input_Dir)));
+	}
+	else if (pGameInstance->Get_DIKeyState(DIK_S) && pGameInstance->Get_DIKeyState(DIK_D))
+	{
+		XMStoreFloat4(&m_Moveset.m_Input_Dir, v135Rotate);
+		XMStoreFloat4(&m_Moveset.m_Input_Dir, XMVector4Normalize(XMLoadFloat4(&m_Moveset.m_Input_Dir)));
+	}
+	else
+	{
+		if (pGameInstance->Get_DIKeyState(DIK_W))
+		{
+			XMStoreFloat4(&m_Moveset.m_Input_Dir, vLook);
+	}
+		else if (pGameInstance->Get_DIKeyState(DIK_S))
+		{
+			XMStoreFloat4(&m_Moveset.m_Input_Dir, -vLook);
+}
+		else if (pGameInstance->Get_DIKeyState(DIK_A))
+{
+			XMStoreFloat4(&m_Moveset.m_Input_Dir, crossLeft);
+		}
+		else if (pGameInstance->Get_DIKeyState(DIK_D))
+	{
+			XMStoreFloat4(&m_Moveset.m_Input_Dir, -crossLeft);
+	}
+}
+
+	//키를 누를 시
+	if (!m_isCool_MoveKey)
+{
+		if (pGameInstance->Get_DIKeyDown(DIK_W) || pGameInstance->Get_DIKeyDown(DIK_S)
+			|| pGameInstance->Get_DIKeyDown(DIK_A) || pGameInstance->Get_DIKeyDown(DIK_D))
+	{
+			m_Moveset.m_Down_Battle_Run = true;
+		}
+	}
+
+	// 키를 뗄 시
+	if (pGameInstance->Get_DIKeyUp(DIK_W) || pGameInstance->Get_DIKeyUp(DIK_S)
+		|| pGameInstance->Get_DIKeyUp(DIK_A) || pGameInstance->Get_DIKeyUp(DIK_D))
+	{
+		m_isCool_MoveKey = true;
+	}
+
+	// 키를 뗄 시 자연스러움 추가
+	m_dTime_MoveKey += dTimeDelta;
+	if (0.1f < m_dTime_MoveKey && m_isCool_MoveKey)
+	{
+		m_isCool_MoveKey = false;
+		m_Moveset.m_Up_Battle_Run = true;
+}
+
+
+	//무빙제한 상태에서 누르고 있을 시
+	if (m_Moveset.m_isRestrict_Move)
+{
+		if (pGameInstance->Get_DIKeyState(DIK_W) || pGameInstance->Get_DIKeyState(DIK_S) || pGameInstance->Get_DIKeyState(DIK_A) || pGameInstance->Get_DIKeyState(DIK_D))
+			m_Moveset.m_isPressing_While_Combo = true;
+		else
+			m_Moveset.m_isPressing_While_Combo = false;
+	}
+
+	Safe_Release(pGameInstance);
+}
+
+void CPlayer::Key_Input_Battle_Attack(_double dTimeDelta)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	// 콤보공격
+	if (pGameInstance->Get_DIKeyDown(DIK_J))
+	{
+		m_Moveset.m_Down_Battle_Combo = true;
+
+		//콤보 분기용
+		if (pGameInstance->Get_DIKeyState(DIK_W))
+		{
+			m_Moveset.m_Down_Battle_Combo_Up = true;
+			m_Moveset.m_Down_Battle_Combo_Down = false;
+		}
+		else if (pGameInstance->Get_DIKeyState(DIK_S))
+		{
+			m_Moveset.m_Down_Battle_Combo_Up = false;
+			m_Moveset.m_Down_Battle_Combo_Down = true;
+		}
+		else
+		{
+			m_Moveset.m_Down_Battle_Combo_Up = false;
+			m_Moveset.m_Down_Battle_Combo_Down = false;
+		}
+	}
+
+	Safe_Release(pGameInstance);
 }
 
 HRESULT CPlayer::Add_Components()
 {
-	/* for.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tanjiro"),
-		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
-	{
-		MSG_BOX("Failed to Add_Com_Model : CPlayer");
-		return E_FAIL;
-	}
-
-	/* for.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimModel"),
-		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
-	{
-		MSG_BOX("Failed to Add_Com_Shader : CPlayer");
-		return E_FAIL;
-	}
 
 	return S_OK;
 }
 
 HRESULT CPlayer::SetUp_ShaderResources()
 {
-	if (nullptr == m_pShaderCom)
-		return E_FAIL;
-
-	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
-
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	_float4x4 ViewMatrix = pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW);
-	if (FAILED(m_pShaderCom->SetUp_Matrix("g_ViewMatrix", &ViewMatrix)))
-		return E_FAIL;
-
-	_float4x4 ProjMatrix = pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ);
-	if (FAILED(m_pShaderCom->SetUp_Matrix("g_ProjMatrix", &ProjMatrix)))
-		return E_FAIL;
-
-
-	// OutlineThickness
-	if (FAILED(m_pShaderCom->SetUp_RawValue("g_OutlineThickness", &m_fOutlineThickness, sizeof(_float))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->SetUp_RawValue("g_OutlineFaceThickness", &m_fOutlineFaceThickness, sizeof(_float))))
-		return E_FAIL;
-
-
-
-
-
-	Safe_Release(pGameInstance);
 
 	return S_OK;
 }

@@ -60,6 +60,16 @@ HRESULT CAnimation::Initialize(ifstream* pFin, CModel* pModel)
 
 _int CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTimeDelta, _bool Play, _bool Combo)
 {
+	if (m_isFirst_EventCall)
+	{
+		m_isFirst_EventCall = false;
+
+		for (auto& event : m_ControlDesc.m_vecTime_Event)
+		{
+			event.m_isFirst = true;
+		}
+	}
+
 	m_AnimationDesc.m_isFinish = false;
 
 	/* 현재 재생되는 애니메이션 */
@@ -82,12 +92,27 @@ _int CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTime
 	m_RootPosition = pRoot->Get_RootPosition();
 	
 
+	// 재생 duration 관련
+	if (m_ControlDesc.m_isCombo && Combo)
+	{
+		_double ComboDuration = m_AnimationDesc.m_dDuration - 0.35f;
+		if (ComboDuration <= m_AnimationDesc.m_dTimeAcc)
+		{
+			// 전체 재생시간보다 누적시간이 커졌다 == 애니메이션이 끝났다
+			m_AnimationDesc.m_isFinish = true;
+			m_AnimationDesc.m_dTimeAcc = 0.0;
+		}
+	}
+	else
+	{
 	if (m_AnimationDesc.m_dDuration <= m_AnimationDesc.m_dTimeAcc)
 	{
 		// 전체 재생시간보다 누적시간이 커졌다 == 애니메이션이 끝났다
 		m_AnimationDesc.m_isFinish = true;
 		m_AnimationDesc.m_dTimeAcc = 0.0;
 	}
+	}
+
 
 	_uint	index = 0;
 	// EventCall 발동 관련
@@ -98,7 +123,8 @@ _int CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTime
 			event.m_isFirst = false;
 
 			//아래에 이벤트 콜 함수 코드를 작성
-			m_ControlDesc.m_iTest++;
+			m_ControlDesc.m_isEventCall = true;
+			m_ControlDesc.m_iEventIndex = index;
 		}
 		index++;
 	}
@@ -149,7 +175,7 @@ _bool CAnimation::Invalidate_Linear_TransformationMatrices(CModel* pModel, _doub
 
 
 	// 보간duration
-	if (0.15f <= m_AnimationDesc.m_dTimeAcc)
+	if (0.09f <= m_AnimationDesc.m_dTimeAcc)
 	{
 		// 전체 재생시간보다 누적시간이 커졌다 == 애니메이션이 끝났다
 		m_AnimationDesc.m_isFinish = true;

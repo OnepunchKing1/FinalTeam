@@ -4,6 +4,9 @@
 #include "GameInstance.h"
 #include "Animation.h"
 
+#include "SoundMgr.h"
+
+
 CAnimCharacter_Tool::CAnimCharacter_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCharacter_Tool(pDevice, pContext)
 	, m_pImGui_Anim(CImGui_Animation_Tool::GetInstance())
@@ -39,11 +42,12 @@ HRESULT CAnimCharacter_Tool::Initialize(void* pArg)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (!pGameInstance->Get_DIKeyDown(DIK_NUMPAD9))
-	{
+	
+	
 		//여기서 
 		char szFullPath[MAX_PATH] = { "" };
-		strcpy_s(szFullPath, "../Bin/Resources/AnimToolBin/Tanjiro.bin");
+		// 수정 필요
+		strcpy_s(szFullPath, "../../Client/Bin/Resources/AnimToolBin/Tanjiro.bin");
 
 		ifstream fin;
 		fin.open(szFullPath, ios::binary);
@@ -82,7 +86,7 @@ HRESULT CAnimCharacter_Tool::Initialize(void* pArg)
 		}
 
 		fin.close();
-	}
+	
 	Safe_Release(pGameInstance);
 
 	return S_OK;
@@ -90,6 +94,8 @@ HRESULT CAnimCharacter_Tool::Initialize(void* pArg)
 
 void CAnimCharacter_Tool::Tick(_double dTimeDelta)
 {
+	__super::Tick(dTimeDelta);
+
 	if (true == m_isDead)
 		return;
 
@@ -100,9 +106,8 @@ void CAnimCharacter_Tool::Tick(_double dTimeDelta)
 	m_pModelCom->Play_Animation(dTimeDelta);
 	RootAnimation(dTimeDelta);
 
+	Event_Call(dTimeDelta);
 	
-
-	__super::Tick(dTimeDelta);
 }
 
 void CAnimCharacter_Tool::LateTick(_double dTimeDelta)
@@ -253,7 +258,8 @@ void CAnimCharacter_Tool::Save_Animations()
 	//FileFind
 	char FindFile[MAX_PATH] = { "" };
 	WIN32_FIND_DATAA fdFind;
-	HANDLE hFindOut = ::FindFirstFileA("../Bin/Resources/Models/AnimTool/*.bin", &fdFind);
+	//★
+	HANDLE hFindOut = ::FindFirstFileA("../../Client/Bin/Resources/Models/Tanjiro/*.bin", &fdFind);
 	if (hFindOut != INVALID_HANDLE_VALUE)
 	{
 		do
@@ -269,7 +275,7 @@ void CAnimCharacter_Tool::Save_Animations()
 
 	char szFullPath[MAX_PATH] = { "" };
 
-	strcpy_s(szFullPath, "../Bin/Resources/AnimToolBin/");
+	strcpy_s(szFullPath, "../../Client/Bin/Resources/AnimToolBin/");
 	strcat_s(szFullPath, FindFile);
 
 	ofstream fout;
@@ -351,7 +357,7 @@ void CAnimCharacter_Tool::KeyInput(_double dTimeDelta)
 	//콤보공격 테스트
 	if (pGameInstance->Get_DIKeyDown(DIK_NUMPAD7))
 	{
-		//첫 애니메이션 설정
+		/*//첫 애니메이션 설정
 		if (m_pModelCom->Get_Combo_Doing() == false)
 		{
 			m_pModelCom->Set_Combo_Doing(true);
@@ -359,13 +365,60 @@ void CAnimCharacter_Tool::KeyInput(_double dTimeDelta)
 		}
 		//아닐경우, 다음 콤보로 진행
 		else
+			m_pModelCom->Set_Combo_Trigger(true);*/
 			m_pModelCom->Set_Combo_Trigger(true);
 	}
 	
 
 
+
 	Safe_Release(pGameInstance);
 }
+
+_bool CAnimCharacter_Tool::EventCallProcess()
+{
+	CAnimation* pAnim = m_pModelCom->Get_Animation();
+
+	CAnimation::CONTROLDESC ControlDesc = pAnim->Get_ControlDesc();
+
+	if (ControlDesc.m_isEventCall)
+	{
+		ControlDesc.m_isEventCall = false;
+
+		pAnim->Set_ControlDesc(ControlDesc);
+
+		return true;
+	}
+
+	return false;
+}
+
+void CAnimCharacter_Tool::Event_Call(_double dTimeDelta)
+{
+	if (EventCallProcess())
+	{
+#pragma region Combo_Attack
+		if (21 == m_pModelCom->Get_iCurrentAnimIndex())
+		{
+			m_iTest++;
+		}
+		if (22 == m_pModelCom->Get_iCurrentAnimIndex())
+		{
+			m_iTest++;
+		}
+		if (23 == m_pModelCom->Get_iCurrentAnimIndex())
+		{
+			m_iTest++;
+		}
+		if (25 == m_pModelCom->Get_iCurrentAnimIndex())
+		{
+			m_iTest++;
+		}
+#pragma endregion
+	}
+	m_pImGui_Anim->Set_iTest(m_iTest);
+}
+
 
 HRESULT CAnimCharacter_Tool::Add_Components()
 {

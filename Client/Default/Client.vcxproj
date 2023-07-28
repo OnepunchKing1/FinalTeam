@@ -137,7 +137,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fmodex64_vc.lib;Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Reference\Librarys\</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
@@ -165,7 +165,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fmodex64_vc.lib;Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\Reference\Librarys\</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
@@ -182,17 +182,22 @@
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\ColliderManager.h" />
+    <ClInclude Include="..\Public\Level_FinalBoss.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
+    <ClInclude Include="..\Public\Level_House.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
+    <ClInclude Include="..\Public\Level_Train.h" />
+    <ClInclude Include="..\Public\Level_Village.h" />
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\Public\MapObject.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\Player_Tanjiro.h" />
     <ClInclude Include="..\Public\RotationMapObject.h" />
     <ClInclude Include="..\Public\Sky.h" />
+    <ClInclude Include="..\Public\SoundMgr.h" />
     <ClInclude Include="..\Public\StaticMapObject.h" />
-    <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TerrainMapObject.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -205,17 +210,22 @@
     <ClCompile Include="..\Private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\ColliderManager.cpp" />
+    <ClCompile Include="..\Private\Level_FinalBoss.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
+    <ClCompile Include="..\Private\Level_House.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
+    <ClCompile Include="..\Private\Level_Train.cpp" />
+    <ClCompile Include="..\Private\Level_Village.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\Player_Tanjiro.cpp" />
     <ClCompile Include="..\Private\RotationMapObject.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
+    <ClCompile Include="..\Private\SoundMgr.cpp" />
     <ClCompile Include="..\Private\StaticMapObject.cpp" />
-    <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TerrainMapObject.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="pch.cpp">

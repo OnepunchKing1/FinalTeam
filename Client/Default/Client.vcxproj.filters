@@ -19,12 +19,6 @@
     <Filter Include="01. Levels\01. GamePlay">
       <UniqueIdentifier>{710b0984-83fa-458c-be02-8efd4a409b0a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01. Levels\99. Loadiing">
-      <UniqueIdentifier>{5aa88866-07ca-4355-aa7d-849bf2a38ae9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01. Levels\99. Loadiing\Loader">
-      <UniqueIdentifier>{07b93f72-9039-41ee-9ba4-3577f8d3ed92}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObjects">
       <UniqueIdentifier>{b1936517-b52e-47b1-97ba-676614916358}</UniqueIdentifier>
     </Filter>
@@ -45,9 +39,6 @@
     </Filter>
     <Filter Include="02. GameObjects\Environment">
       <UniqueIdentifier>{55816076-9fa5-475a-b62c-afaa924368dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObjects\Environment\Terrain">
-      <UniqueIdentifier>{e8cd0544-99f1-48a8-a4c1-90c219abf03d}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObjects\LoadingTexture">
       <UniqueIdentifier>{8e689594-7817-4b2f-8a62-f8fa397152e4}</UniqueIdentifier>
@@ -75,6 +66,27 @@
     </Filter>
     <Filter Include="02. GameObjects\Environment\Sky">
       <UniqueIdentifier>{ac119d15-7984-4f75-be10-6b17bb2a1a34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\02. Village">
+      <UniqueIdentifier>{f2d4f22e-0c62-4fce-abcf-bed6e88865c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\03. House">
+      <UniqueIdentifier>{b72ed52c-d331-417a-a807-1a5bd490af58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\04. Train">
+      <UniqueIdentifier>{42122498-728c-4179-bbfa-1b3af44a2ba1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\05. FinalBoss">
+      <UniqueIdentifier>{ccaeb494-6aa8-4cdf-8a8c-3e6c75ea2f68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\99. Loadiing">
+      <UniqueIdentifier>{5aa88866-07ca-4355-aa7d-849bf2a38ae9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Levels\99. Loadiing\Loader">
+      <UniqueIdentifier>{07b93f72-9039-41ee-9ba4-3577f8d3ed92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Character\Player\Tanjiro">
+      <UniqueIdentifier>{304c14bd-faf2-427b-b4cd-4fab27b67274}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,9 +126,6 @@
     <ClInclude Include="..\Public\BackGround.h">
       <Filter>02. GameObjects\LoadingTexture</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Terrain.h">
-      <Filter>02. GameObjects\Environment\Terrain</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Camera_Free.h">
       <Filter>02. GameObjects\Camera\Free</Filter>
     </ClInclude>
@@ -144,6 +153,24 @@
     <ClInclude Include="..\Public\TerrainMapObject.h">
       <Filter>02. GameObjects\Environment\MapObject\Terrain</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SoundMgr.h">
+      <Filter>05. SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Village.h">
+      <Filter>01. Levels\02. Village</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_FinalBoss.h">
+      <Filter>01. Levels\05. FinalBoss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_House.h">
+      <Filter>01. Levels\03. House</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Train.h">
+      <Filter>01. Levels\04. Train</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Tanjiro.h">
+      <Filter>02. GameObjects\Character\Player\Tanjiro</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -169,9 +196,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\BackGround.cpp">
       <Filter>02. GameObjects\LoadingTexture</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Terrain.cpp">
-      <Filter>02. GameObjects\Environment\Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Free.cpp">
       <Filter>02. GameObjects\Camera\Free</Filter>
@@ -199,6 +223,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\TerrainMapObject.cpp">
       <Filter>02. GameObjects\Environment\MapObject\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SoundMgr.cpp">
+      <Filter>05. SoundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Village.cpp">
+      <Filter>01. Levels\02. Village</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_FinalBoss.cpp">
+      <Filter>01. Levels\05. FinalBoss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_House.cpp">
+      <Filter>01. Levels\03. House</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Train.cpp">
+      <Filter>01. Levels\04. Train</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Tanjiro.cpp">
+      <Filter>02. GameObjects\Character\Player\Tanjiro</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

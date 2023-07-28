@@ -3,6 +3,10 @@
 #include "Loader.h"
 #include "Level_Logo.h"
 #include "Level_GamePlay.h"
+#include "Level_Village.h"
+#include "Level_House.h"
+#include "Level_Train.h"
+#include "Level_FinalBoss.h"
 #include "GameInstance.h"
 #include "BackGround.h"
 
@@ -36,7 +40,7 @@ void CLevel_Loading::Tick(_double dTimeDelta)
 {
     __super::Tick(dTimeDelta);
 
-    m_pBackGround->Set_TextureIndex(iLoadingTextureIndex % 3);
+    m_pBackGround->Set_TextureIndex(g_iLoadingTextureIndex % 3);
   
     m_pBackGround->Tick(dTimeDelta);
 
@@ -56,19 +60,31 @@ void CLevel_Loading::Tick(_double dTimeDelta)
             case LEVEL_GAMEPLAY:
                 pLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
                 break;
+            case LEVEL_VILLAGE:
+                pLevel = CLevel_Village::Create(m_pDevice, m_pContext);
+                break;
+            case LEVEL_HOUSE:
+                pLevel = CLevel_House::Create(m_pDevice, m_pContext);
+                break;
+            case LEVEL_TRAIN:
+                pLevel = CLevel_Train::Create(m_pDevice, m_pContext);
+                break;
+            case LEVEL_FINALBOSS:
+                pLevel = CLevel_FinalBoss::Create(m_pDevice, m_pContext);
+                break;
             }
 
             if (nullptr == pLevel)
                 return;
 
-            iLoadingTextureIndex += 2;
+            g_iLoadingTextureIndex += 2;
 
             HRESULT hr = 0;
 
             CGameInstance* pGameInstance = CGameInstance::GetInstance();
             Safe_AddRef(pGameInstance);
 
-            hr = pGameInstance->Open_Level(m_eNextLevelID, pLevel);
+            hr = pGameInstance->Open_Level(m_eNextLevelID, pLevel, true);
             Safe_Release(pGameInstance);
 
             if (FAILED(hr))

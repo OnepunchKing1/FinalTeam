@@ -104,6 +104,8 @@ void CCamera_Free::Tick(_double dTimeDelta)
 
 	Safe_Release(pGameInstance);
 
+	XMStoreFloat4(&m_fCameraLook, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
 	__super::Tick(dTimeDelta);
 }
 

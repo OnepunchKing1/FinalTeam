@@ -5,9 +5,9 @@
 
 #include "BackGround.h"
 
-#include "Terrain.h"
 #include "Camera_Free.h"
 #include "Player.h"
+#include "Player_Tanjiro.h"
 
 #include "StaticMapObject.h"
 #include "TerrainMapObject.h"
@@ -35,10 +35,64 @@ unsigned int APIENTRY Loading_Main(void* pArg)
 	switch (pLoader->Get_LevelID())
 	{
 	case LEVEL_LOGO:
-		hr = pLoader->LoadingForLogo();
+		if (false == pLoader->Get_Loaded())
+		{
+			hr = pLoader->LoadingForLogo();
+		}
+		else
+		{
+			pLoader->Set_Finished();
+		}
 		break;
 	case LEVEL_GAMEPLAY:
-		hr = pLoader->LoadingForGamePlay();
+		if (false == pLoader->Get_Loaded())
+		{
+			hr = pLoader->LoadingForGamePlay();
+		}
+		else
+		{
+			pLoader->Set_Finished();
+		}
+		break;
+	case LEVEL_VILLAGE:
+		if (false == pLoader->Get_Loaded())
+		{
+			hr = pLoader->LoadingForVillage();
+		}
+		else
+		{
+			pLoader->Set_Finished();
+		}
+		break;
+	case LEVEL_HOUSE:
+		if (false == pLoader->Get_Loaded())
+		{
+			hr = pLoader->LoadingForHouse();
+		}
+		else
+		{
+			pLoader->Set_Finished();
+		}
+		break;
+	case LEVEL_TRAIN:
+		if (false == pLoader->Get_Loaded())
+		{
+			hr = pLoader->LoadingForTrain();
+		}
+		else
+		{
+			pLoader->Set_Finished();
+		}
+		break;
+	case LEVEL_FINALBOSS:
+		if (false == pLoader->Get_Loaded())
+		{
+			hr = pLoader->LoadingForFinalBoss();
+		}
+		else
+		{
+			pLoader->Set_Finished();
+		}
 		break;
 	}
 
@@ -53,6 +107,14 @@ unsigned int APIENTRY Loading_Main(void* pArg)
 HRESULT CLoader::Initialize(LEVELID eLevelID)
 {
 	m_eLevelID = eLevelID;
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (nullptr != pGameInstance->Get_LoadedStage(m_eLevelID))
+		m_isLoaded = true;
+
+	Safe_Release(pGameInstance);
 
 	InitializeCriticalSection(&m_CS);
 
@@ -131,7 +193,7 @@ HRESULT CLoader::LoadingForLogo()
 
 	SetWindowText(g_hWnd, TEXT("Loading Finished!!!"));
 	m_isFinished = true;
-
+	
 	return S_OK;
 }
 
@@ -148,22 +210,6 @@ HRESULT CLoader::LoadingForGamePlay()
 #pragma region Texture
 		
 #pragma region EnvironmentTexture
-	/* Prototype_Component_Texture_Terrain */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Ground%d_bc.dds"), 2))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Texture_Terrain");
-		return E_FAIL;
-	}
-
-	/* Prototype_Component_Texture_Mask */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Mask"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Mask%d.png")))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Texture_Mask");
-		return E_FAIL;
-	}
-
 	/* For.Prototype_Component_Texture_TerrainMask*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_TerrainMask"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Environments/Map/Acaza_vs/Filter.bmp")))))
@@ -193,16 +239,8 @@ HRESULT CLoader::LoadingForGamePlay()
 	SetWindowText(g_hWnd, TEXT("Loading Model..."));
 #pragma region Model
 
-	Load_MapObjectModel();	// 맵 오브젝트 로드(안원 전용)
-
 #pragma region Buffer
-	/* Prototype_Component_VIBuffer_Terrain */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
-		CVIBuffer_Terrain::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp")))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_VIBuffer_Terrain");
-		return E_FAIL;
-	}
+	
 #pragma endregion
 	_matrix		PivotMatrix = XMMatrixIdentity();
 #pragma region Effect
@@ -211,7 +249,7 @@ HRESULT CLoader::LoadingForGamePlay()
 	
 #pragma region Character
 	/* Prototype_Component_Model_Tanjiro */
-	PivotMatrix = XMMatrixScaling(0.003f, 0.003f, 0.003f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	PivotMatrix = XMMatrixScaling(0.005f, 0.005f, 0.005f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tanjiro"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Tanjiro/Tanjiro.bin", PivotMatrix))))
 	{
@@ -232,6 +270,9 @@ HRESULT CLoader::LoadingForGamePlay()
 #pragma endregion
 
 #pragma region Terrain
+
+	Load_MapObjectModel();	// 맵 오브젝트 로드(안원 전용)
+
 	/* Prototype_Component_Navigation */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/Data/Navigation.dat")))))
@@ -329,17 +370,17 @@ HRESULT CLoader::LoadingForGamePlay()
 		MSG_BOX("Failed to Add_Prototype_GameObject_Player");
 		return E_FAIL;
 	}
+
+	/* Prototype_GameObject_Player_Tanjiro */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Tanjiro"),
+		CPlayer_Tanjiro::Create(m_pDevice, m_pContext))))
+	{
+		MSG_BOX("Failed to Add_Prototype_GameObject_Player_Tanjiro");
+		return E_FAIL;
+	}
 #pragma endregion
 
 #pragma region Environment
-	/* Prototype_GameObject_Terrain */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
-		CTerrain::Create(m_pDevice, m_pContext))))
-	{
-		MSG_BOX("Failed to Add_Prototype_GameObject_Terrain");
-		return E_FAIL;
-	}
-
 	/* For.Prototype_GameObject_StaticMapObject */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticMapObject"),
 		CStaticMapObject::Create(m_pDevice, m_pContext))))
@@ -371,6 +412,406 @@ HRESULT CLoader::LoadingForGamePlay()
 		MSG_BOX("Failed to Add_Prototype_GameObject_Sky");
 		return E_FAIL;
 	}
+#pragma endregion
+
+#pragma region UI
+
+#pragma endregion
+
+#pragma region Particale
+
+#pragma endregion
+
+#pragma region Effect
+
+#pragma endregion
+
+#pragma endregion
+
+	Safe_Release(pGameInstance);
+
+	SetWindowText(g_hWnd, TEXT("Loading Finished!!!"));
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::LoadingForVillage()
+{
+	SetWindowText(g_hWnd, TEXT("LoadingForVillage"));
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+#pragma region COMPONENTS
+
+	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+#pragma region Texture
+
+#pragma region EnvironmentTexture
+
+#pragma endregion
+
+#pragma region RampTexture
+
+#pragma endregion
+
+#pragma region EffectTexture
+
+#pragma endregion
+
+#pragma region UITexture
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+#pragma region Model
+
+#pragma region Buffer
+
+#pragma endregion
+	_matrix		PivotMatrix = XMMatrixIdentity();
+#pragma region Effect
+
+#pragma endregion
+
+#pragma region Character
+	
+#pragma endregion
+
+#pragma region NonCharacter
+
+#pragma endregion
+
+#pragma region Terrain
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+#pragma region Shader
+	
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+#pragma region Etc
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region GAMEOBJECTS
+
+	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+#pragma region Object
+	
+#pragma endregion
+
+#pragma region Environment
+	
+#pragma endregion
+
+#pragma region UI
+
+#pragma endregion
+
+#pragma region Particale
+
+#pragma endregion
+
+#pragma region Effect
+
+#pragma endregion
+
+#pragma endregion
+
+	Safe_Release(pGameInstance);
+
+	SetWindowText(g_hWnd, TEXT("Loading Finished!!!"));
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::LoadingForHouse()
+{
+	SetWindowText(g_hWnd, TEXT("LoadingForHouse"));
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+#pragma region COMPONENTS
+
+	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+#pragma region Texture
+
+#pragma region EnvironmentTexture
+
+#pragma endregion
+
+#pragma region RampTexture
+
+#pragma endregion
+
+#pragma region EffectTexture
+
+#pragma endregion
+
+#pragma region UITexture
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+#pragma region Model
+
+#pragma region Buffer
+
+#pragma endregion
+	_matrix		PivotMatrix = XMMatrixIdentity();
+#pragma region Effect
+
+#pragma endregion
+
+#pragma region Character
+
+#pragma endregion
+
+#pragma region NonCharacter
+	
+#pragma endregion
+
+#pragma region Terrain
+
+	
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+#pragma region Shader
+	
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+#pragma region Etc
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region GAMEOBJECTS
+
+	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+#pragma region Object
+	
+#pragma endregion
+
+#pragma region Environment
+	
+#pragma endregion
+
+#pragma region UI
+
+#pragma endregion
+
+#pragma region Particale
+
+#pragma endregion
+
+#pragma region Effect
+
+#pragma endregion
+
+#pragma endregion
+
+	Safe_Release(pGameInstance);
+
+	SetWindowText(g_hWnd, TEXT("Loading Finished!!!"));
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::LoadingForTrain()
+{
+	SetWindowText(g_hWnd, TEXT("LoadingForTrain"));
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+#pragma region COMPONENTS
+
+	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+#pragma region Texture
+
+#pragma region EnvironmentTexture
+
+#pragma endregion
+
+#pragma region RampTexture
+
+#pragma endregion
+
+#pragma region EffectTexture
+
+#pragma endregion
+
+#pragma region UITexture
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+#pragma region Model
+
+#pragma region Buffer
+
+#pragma endregion
+	_matrix		PivotMatrix = XMMatrixIdentity();
+#pragma region Effect
+
+#pragma endregion
+
+#pragma region Character
+
+#pragma endregion
+
+#pragma region NonCharacter
+	
+#pragma endregion
+
+#pragma region Terrain
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+#pragma region Shader
+	
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+#pragma region Etc
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region GAMEOBJECTS
+
+	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+#pragma region Object
+	
+#pragma endregion
+
+#pragma region Environment
+	
+#pragma endregion
+
+#pragma region UI
+
+#pragma endregion
+
+#pragma region Particale
+
+#pragma endregion
+
+#pragma region Effect
+
+#pragma endregion
+
+#pragma endregion
+
+	Safe_Release(pGameInstance);
+
+	SetWindowText(g_hWnd, TEXT("Loading Finished!!!"));
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::LoadingForFinalBoss()
+{
+	SetWindowText(g_hWnd, TEXT("LoadingForFinalBoss"));
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+#pragma region COMPONENTS
+
+	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+#pragma region Texture
+
+#pragma region EnvironmentTexture
+	
+#pragma endregion
+
+#pragma region RampTexture
+
+#pragma endregion
+
+#pragma region EffectTexture
+
+#pragma endregion
+
+#pragma region UITexture
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+#pragma region Model
+
+#pragma region Buffer
+
+#pragma endregion
+	_matrix		PivotMatrix = XMMatrixIdentity();
+#pragma region Effect
+
+#pragma endregion
+
+#pragma region Character
+	
+#pragma endregion
+
+#pragma region NonCharacter
+	
+#pragma endregion
+
+#pragma region Terrain
+
+#pragma endregion
+
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+#pragma region Shader
+	
+#pragma endregion
+
+	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+#pragma region Etc
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region GAMEOBJECTS
+
+	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+#pragma region Object
+
+#pragma endregion
+
+#pragma region Environment
 
 #pragma endregion
 

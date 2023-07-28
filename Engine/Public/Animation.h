@@ -49,7 +49,9 @@ public:
 
 		// 이벤트 관련
 		vector<EVENTDESC>	m_vecTime_Event;
-		_int	m_iTest = { 0 };
+
+		_bool	m_isEventCall = { false };
+		_int	m_iEventIndex = { 0 };
 
 	}CONTROLDESC;
 
@@ -96,7 +98,8 @@ private:
 
 	_float4		m_Save_RootPos = { 0.0f, 0.0f ,0.0f, 1.0f };
 	
-
+	_bool		m_isFirst_EventCall = { true };
+	_bool		m_isFirst_ComboDuration = { true };
 
 public:
 	static CAnimation* Create(ifstream* pFin, class CModel* pModel);

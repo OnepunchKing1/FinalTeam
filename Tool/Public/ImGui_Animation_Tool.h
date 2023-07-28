@@ -42,6 +42,8 @@ public: // GetSet
 	_bool	Get_Save() { return m_isSave; }
 	void	Set_Save(_bool bSave) { m_isSave = bSave; }
 
+	void	Set_iTest(_int i) { m_iTest = i; }
+
 private: 
 	// Àç»ý play
 	_bool	m_isPlay = { false };
@@ -78,6 +80,9 @@ private:
 
 	//Save
 	_bool	m_isSave = { false };
+
+	_bool	m_isGUINoMove[2] = { true, true };
+	_bool	m_isGUINoResize[2] = { true, true };
 
 public:
 	virtual void Free() override;

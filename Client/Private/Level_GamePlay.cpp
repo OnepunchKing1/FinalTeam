@@ -2,6 +2,8 @@
 #include "..\Public\Level_GamePlay.h"
 
 #include "GameInstance.h"
+#include "Level_Loading.h"
+
 #include "Camera.h"
 #include "Player.h"
 #include "MapObject.h"
@@ -53,7 +55,23 @@ HRESULT CLevel_GamePlay::Initialize()
 void CLevel_GamePlay::Tick(_double dTimeDelta)
 {
     __super::Tick(dTimeDelta);
-    SetWindowText(g_hWnd, TEXT("GamePlay"));
+
+    SetWindowText(g_hWnd, TEXT("Tuto"));
+
+    if (GetKeyState(VK_RETURN) & 0x8000)
+    {
+        HRESULT hr = 0;
+
+        CGameInstance* pGameInstance = CGameInstance::GetInstance();
+        Safe_AddRef(pGameInstance);
+
+        hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_VILLAGE), false, false);
+
+        Safe_Release(pGameInstance);
+
+        if (FAILED(hr))
+            return;
+    }
 }
 
 HRESULT CLevel_GamePlay::Render()
@@ -93,12 +111,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar* pLayerTag)
 {
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
-
-  /*  if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
-    {
-        MSG_BOX("Failed to Add_GameObject : Terrain");
-        return E_FAIL;
-    }*/
 
     /* For.Sky */
     if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag,
@@ -175,7 +187,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar* pLayerTag)
     CharacterDesc.NaviDesc.vStartPosition = XMVectorSet(130.f, 0.f, 140.f, 1.f);
 
     if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, pLayerTag, 
-        TEXT("Prototype_GameObject_Player"), &CharacterDesc)))
+        TEXT("Prototype_GameObject_Player_Tanjiro"), &CharacterDesc)))
     {
         MSG_BOX("Failed to Add_GameObject : CLevel_GamePlay");
         return E_FAIL;

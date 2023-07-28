@@ -13,7 +13,14 @@ namespace Tool
 	static const unsigned int g_iWinSizeX = 1280;
 	static const unsigned int g_iWinSizeY = 720;
 
-	enum LEVELID { LEVEL_STATIC, LEVEL_LOADING, LEVEL_TOOL, LEVEL_END };
+	static const unsigned int g_iGUI_LeftX = 12;
+	static const unsigned int g_iGUI_LeftY = 788;
+	
+	static const unsigned int g_iGUI_RightX = 1304;
+	static const unsigned int g_iGUI_RightY = 10;
+
+	enum LEVELID { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO
+				, LEVEL_TOOL, LEVEL_VILLAGE, LEVEL_HOUSE, LEVEL_TRAIN, LEVEL_FINALBOSS, LEVEL_END };
 }
 
 extern HWND g_hWnd;

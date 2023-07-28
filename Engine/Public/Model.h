@@ -66,13 +66,21 @@ public:// AnimTool용
 	void	Set_Combo_Doing(_bool bComboDo) { m_isCombo_Doing = bComboDo; }
 
 	
+	void Set_Combo_Another(_int AnotherRoute) { 
+		m_isCombo_Another = true; 
+		m_iCombo_AnotherRoute = AnotherRoute;
+	}
 
 private: // AnimTool용
-	_bool	m_isPlay = { false };
+	_bool	m_isPlay = { true };
+
+
 	// 콤보공격용
 	_bool	m_isCombo_Trigger = { false };
 	_bool	m_isCombo_Doing = { false };
 
+	_int	m_iCombo_AnotherRoute = { 0 };
+	_bool	m_isCombo_Another = { false };
 
 private: // 선형보간용
 	_bool	m_isLinearOn = { false };
