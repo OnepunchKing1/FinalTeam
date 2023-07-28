@@ -259,14 +259,7 @@ HRESULT CLoader::LoadingForGamePlay()
 #pragma endregion
 
 #pragma region NonCharacter
-	/* Prototype_Component_Model_TestBox */
-	PivotMatrix = XMMatrixTranslation(-21.9f, 215.2f, -158.6f);
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TestBox"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/TestBox/mdlChest2.bin", PivotMatrix))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Model_TestBox");
-		return E_FAIL;
-	}
+	
 #pragma endregion
 
 #pragma region Terrain
