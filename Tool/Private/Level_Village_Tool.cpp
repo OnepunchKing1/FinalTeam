@@ -43,11 +43,11 @@ HRESULT CLevel_Village_Tool::Initialize()
         return E_FAIL;
     }
 
-    if (FAILED(Ready_Layer_MapObject(TEXT("Layer_MapObject"))))
+    /*if (FAILED(Ready_Layer_MapObject(TEXT("Layer_MapObject"))))
     {
         MSG_BOX("Failed to Ready_Layer_MapObject : CLevel_Village_Tool");
         return E_FAIL;
-    }
+    }*/
 
     return S_OK;
 }
