@@ -54,11 +54,10 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (FAILED(m_pComponenet_Manager->Reserve_Containers(iNumLevels)))
 		return E_FAIL;
 
-<<<<<<< HEAD
-	if (FAILED(m_pFrustum->Initialize()))
-=======
 	if (FAILED(m_pLevel_Manager->Reserve_Containers(iNumLevels)))
->>>>>>> bec53fd3f1eb6136b95fc95455dea05c689f68eb
+		return E_FAIL;
+
+	if (FAILED(m_pFrustum->Initialize()))
 		return E_FAIL;
 
 	return S_OK;

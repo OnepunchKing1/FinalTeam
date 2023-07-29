@@ -222,9 +222,13 @@ void CPlayer_Tanjiro::Animation_Control(_double dTimeDelta)
 
 	Animation_Control_Battle_Attack(dTimeDelta);
 
+	Animation_Control_Battle_Charge(dTimeDelta);
+
 	Animation_Control_Battle_Skill(dTimeDelta);
 
 	Animation_Control_Battle_Guard(dTimeDelta);
+
+	Animation_Control_Battle_Dash(dTimeDelta);
 }
 
 void CPlayer_Tanjiro::Animation_Control_Battle_Move(_double dTimeDelta)
@@ -351,6 +355,7 @@ void CPlayer_Tanjiro::Animation_Control_Battle_Attack(_double dTimeDelta)
 	if (m_Moveset.m_Down_Battle_Combo)
 	{
 		m_Moveset.m_Down_Battle_Combo = false;
+		m_isComboing = true;
 
 		//첫 애니메이션 설정
 		if (m_pModelCom->Get_Combo_Doing() == false)
@@ -386,6 +391,31 @@ void CPlayer_Tanjiro::Animation_Control_Battle_Attack(_double dTimeDelta)
 	Go_Straight_Deceleration(dTimeDelta, 24, 4.0f, 0.10f); // Down
 	Go_Straight_Deceleration(dTimeDelta, 25, 5.0f, 0.35f); // Normal
 	Go_Straight_Deceleration(dTimeDelta, 26, 3.0f, 0.29f); // Up
+
+	if (m_pModelCom->Get_iCurrentAnimIndex() == ANIM_BATTLE_IDLE)
+	{
+		m_isComboing = false;
+	}
+}
+
+void CPlayer_Tanjiro::Animation_Control_Battle_Charge(_double dTimeDelta)
+{
+	if (m_Moveset.m_Down_Battle_Charge)
+	{
+		m_Moveset.m_Down_Battle_Charge = false;
+
+		m_pModelCom->Set_Animation(ANIM_ATK_CHARGE);
+	}
+
+
+
+	if (m_isCharging && m_Moveset.m_State_Battle_Charge == false)
+	{
+		m_isCharging = false;
+
+		m_pModelCom->Set_Animation(33);
+	}
+	Go_Straight_Deceleration(dTimeDelta, 33, 4.5f, 0.15f);
 }
 
 void CPlayer_Tanjiro::Animation_Control_Battle_Skill(_double dTimeDelta)
@@ -449,6 +479,64 @@ void CPlayer_Tanjiro::Animation_Control_Battle_Guard(_double dTimeDelta)
 		m_pModelCom->Set_Animation(65);
 	}
 
+
+	//잡기 ( O키 가드키 + J키 공격키)
+	if (m_Moveset.m_Down_Battle_Throw)
+	{
+		m_Moveset.m_Down_Battle_Throw = false;
+
+		m_isThrowing = true;
+		m_pModelCom->Set_Animation(ANIM_ATK_THROW);
+	}
+	if (m_isThrowing && m_pModelCom->Get_iCurrentAnimIndex() == ANIM_BATTLE_IDLE && m_Moveset.m_State_Battle_Guard)
+	{
+		m_isMaintain_Guard = true;
+	}
+	
+	//잡기 ( O키 가드키 + 이동키)
+	if (m_Moveset.m_Down_Battle_Push)
+	{
+		m_Moveset.m_Down_Battle_Push = false;
+
+		m_isThrowing = true;
+		m_pModelCom->Set_Animation(ANIM_BATTLE_GUARD_PUSH);
+	}
+	if (m_isThrowing && m_pModelCom->Get_iCurrentAnimIndex() == ANIM_BATTLE_IDLE && m_Moveset.m_State_Battle_Guard)
+	{
+		m_isMaintain_Guard = true;
+	}
+
+}
+
+void CPlayer_Tanjiro::Animation_Control_Battle_Dash(_double dTimeDelta)
+{
+	if (m_Moveset.m_Down_Battle_Dash)
+	{
+		m_Moveset.m_Down_Battle_Dash = false;
+
+		m_pModelCom->Set_Animation(ANIM_BATTLE_DASH);
+	}
+	Go_Straight_Constant(dTimeDelta, 80, 3.0f);
+
+
+	if (m_Moveset.m_Down_Battle_Step)
+	{
+		m_Moveset.m_Down_Battle_Step = false;
+
+		m_pTransformCom->Set_Look(m_vLook);
+		if(m_isForward)
+			m_pModelCom->Set_Animation(ANIM_BATTLE_STEP_F);
+		else if(m_isBack)
+			m_pModelCom->Set_Animation(ANIM_BATTLE_STEP_B);
+		else if (m_isLeft)
+			m_pModelCom->Set_Animation(ANIM_BATTLE_STEP_L);
+		else if (m_isRight)
+			m_pModelCom->Set_Animation(ANIM_BATTLE_STEP_R);
+	}
+	_vector vDir = XMLoadFloat4(&m_Moveset.m_Input_Dir);
+	_float4 fDir;
+	XMStoreFloat4(&fDir, -vDir);
+	Go_Dir_Deceleration(dTimeDelta, ANIM_BATTLE_STEP_F, 4.0f, 0.1f, fDir);
 }
 
 void CPlayer_Tanjiro::Moving_Restrict()
@@ -470,6 +558,12 @@ void CPlayer_Tanjiro::Moving_Restrict()
 		m_Moveset.m_isRestrict_Jump = true;
 		m_Moveset.m_isRestrict_JumpCombo = true;
 	}
+	//차지공격 시 무빙제한
+	else if (ANIM_ATK_CHARGE == iCurAnimIndex || 32 == iCurAnimIndex || 33 == iCurAnimIndex )
+	{
+		
+		m_Moveset.m_isRestrict_Charge = true;
+	}
 	//스킬공격 시 무빙제한
 	else if (ANIM_ATK_SKILL_GUARD == iCurAnimIndex || 35 == iCurAnimIndex || 36 == iCurAnimIndex || 37 == iCurAnimIndex
 		|| ANIM_ATK_SKILL_MOVE == iCurAnimIndex || 39 == iCurAnimIndex || 40 == iCurAnimIndex || 41 == iCurAnimIndex
@@ -478,6 +572,13 @@ void CPlayer_Tanjiro::Moving_Restrict()
 		m_Moveset.m_isRestrict_Move = true;
 		m_Moveset.m_isRestrict_KeyInput = true;
 	} 
+	//잡기 공격 시 제한
+	else if (ANIM_ATK_THROW == iCurAnimIndex )
+	{
+		m_Moveset.m_isRestrict_Move = true;
+		m_Moveset.m_isRestrict_KeyInput = true;
+		m_Moveset.m_isRestrict_Throw = true;
+	}
 	//점프 트랙 (이동키 + J키)공격 시 제한
 	else if (ANIM_ATK_AIRTRACK == iCurAnimIndex || 50 == iCurAnimIndex || 51 == iCurAnimIndex)
 	{
@@ -490,7 +591,14 @@ void CPlayer_Tanjiro::Moving_Restrict()
 		|| ANIM_BATTLE_GUARD_HIT_BIG == iCurAnimIndex || ANIM_BATTLE_GUARD_HIT_SMALL == iCurAnimIndex || ANIM_BATTLE_GUARD_PUSH == iCurAnimIndex)
 	{
 		m_Moveset.m_isRestrict_Move = true;
+		//m_Moveset.m_isRestrict_KeyInput = true;
+	}
+	//대시 시 제한
+	else if (ANIM_BATTLE_DASH == iCurAnimIndex || 80 == iCurAnimIndex || 81 == iCurAnimIndex)
+	{
+		m_Moveset.m_isRestrict_Move = true;
 		m_Moveset.m_isRestrict_KeyInput = true;
+		m_Moveset.m_isRestrict_Dash = true;
 	}
 	//점프 시 무빙제한
 	else if (ANIM_BATTLE_JUMP == iCurAnimIndex
@@ -499,6 +607,15 @@ void CPlayer_Tanjiro::Moving_Restrict()
 		m_Moveset.m_isRestrict_Move = true;
 		m_Moveset.m_isRestrict_Jump = true;
 	}
+	//스텝 시 제한
+	else if (ANIM_BATTLE_STEP_AB == iCurAnimIndex || ANIM_BATTLE_STEP_AF == iCurAnimIndex || ANIM_BATTLE_STEP_AL == iCurAnimIndex || ANIM_BATTLE_STEP_AR == iCurAnimIndex
+		|| ANIM_BATTLE_STEP_B == iCurAnimIndex || ANIM_BATTLE_STEP_F == iCurAnimIndex || ANIM_BATTLE_STEP_L == iCurAnimIndex || ANIM_BATTLE_STEP_R == iCurAnimIndex
+		|| 98 == iCurAnimIndex || 100 == iCurAnimIndex)
+	{
+		m_Moveset.m_isRestrict_Move = true;
+		m_Moveset.m_isRestrict_KeyInput = true;
+		m_Moveset.m_isRestrict_Step = true;
+	}
 	//제한 해제d
 	else
 	{
@@ -506,6 +623,10 @@ void CPlayer_Tanjiro::Moving_Restrict()
 		m_Moveset.m_isRestrict_KeyInput = false;
 		m_Moveset.m_isRestrict_Jump = false;
 		m_Moveset.m_isRestrict_JumpCombo = false;
+		m_Moveset.m_isRestrict_Throw = false;
+		m_Moveset.m_isRestrict_Charge = false;
+		m_Moveset.m_isRestrict_Dash = false;
+		m_Moveset.m_isRestrict_Step = false;
 	}
 }
 

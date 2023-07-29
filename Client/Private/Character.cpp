@@ -181,12 +181,28 @@ void CCharacter::Reset_Decleration(_float fResetSpeed)
 
 void CCharacter::Go_Straight_Deceleration(_double dTimeDelta, _int AnimIndex, _float ResetSpeed, _float fDecrease)
 {
-	//콤보 도중의 Transform 이동
+	//서서히 느려지는 Transform 이동
 	if (AnimIndex == m_pModelCom->Get_iCurrentAnimIndex())
 	{
 		Reset_Decleration(ResetSpeed);
 
 		m_pTransformCom->Go_Straight(dTimeDelta * m_fAtk_MoveControl);
+		m_fAtk_MoveControl -= fDecrease;
+		if (m_fAtk_MoveControl <= 0.0f)
+		{
+			m_fAtk_MoveControl = 0.0f;
+		}
+	}
+}
+
+void CCharacter::Go_Dir_Deceleration(_double dTimeDelta, _int AnimIndex, _float ResetSpeed, _float fDecrease, _float4 Dir)
+{
+	//서서히 느려지는 Transform 이동
+	if (AnimIndex == m_pModelCom->Get_iCurrentAnimIndex())
+	{
+		Reset_Decleration(ResetSpeed);
+
+		m_pTransformCom->Go_Dir(dTimeDelta * m_fAtk_MoveControl, XMLoadFloat4(&Dir));
 		m_fAtk_MoveControl -= fDecrease;
 		if (m_fAtk_MoveControl <= 0.0f)
 		{

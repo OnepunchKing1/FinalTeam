@@ -46,6 +46,7 @@ protected:
 
 	//이동 관련
 	void	Go_Straight_Deceleration(_double dTimeDelta, _int AnimIndex, _float ResetSpeed, _float fDecrease);
+	void	Go_Dir_Deceleration(_double dTimeDelta, _int AnimIndex, _float ResetSpeed, _float fDecrease, _float4 Dir);
 	void	Go_Straight_Constant(_double dTimeDelta, _int AnimIndex, _float constantSpeed);
 	void	Gravity(_double dTimeDelta);
 	void	Ground_Animation_Play(_int CurAnim, _int GroundAnim);
