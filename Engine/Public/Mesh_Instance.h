@@ -20,7 +20,7 @@ public:
 	void Set_NumInstance(_uint iNumInstance) { m_iNumInstance = iNumInstance; }
 
 public:
-	virtual HRESULT Initialize_Prototype(ifstream* pFin, _fmatrix PivotMatrix, class CModel_Instance* pModel, _uint iNumInstance);
+	virtual HRESULT Initialize_Prototype(MESHDATA* pMeshData, _fmatrix PivotMatrix, class CModel_Instance* pModel, _uint iNumInstance);
 	virtual HRESULT Initialize(void* pArg) override;
 
 public:
@@ -52,10 +52,10 @@ private:
 	_uint			m_iInstanceStride = { 0 };
 
 private:
-	HRESULT Ready_VertexBuffer_NonAnim(ifstream* pFin, _fmatrix PivotMatrix);
+	HRESULT Ready_VertexBuffer_NonAnim(MESHDATA* pMeshData, _fmatrix PivotMatrix);
 
 public:
-	static CMesh_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, ifstream* pFin, _fmatrix PivotMatrix, class CModel_Instance* pModel, _uint iNumInstance);
+	static CMesh_Instance* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MESHDATA* pMeshData, _fmatrix PivotMatrix, class CModel_Instance* pModel, _uint iNumInstance);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };

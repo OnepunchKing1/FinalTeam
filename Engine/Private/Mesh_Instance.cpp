@@ -17,7 +17,7 @@ CMesh_Instance::CMesh_Instance(const CMesh_Instance & rhs)
 }
 
 
-HRESULT CMesh_Instance::Initialize_Prototype(ifstream* pFin, _fmatrix PivotMatrix, class CModel_Instance* pModel , _uint iNumInstance)
+HRESULT CMesh_Instance::Initialize_Prototype(MESHDATA* pMeshData, _fmatrix PivotMatrix, class CModel_Instance* pModel , _uint iNumInstance)
 {
 	m_iMaxNumInstance = iNumInstance;
 	
@@ -26,12 +26,10 @@ HRESULT CMesh_Instance::Initialize_Prototype(ifstream* pFin, _fmatrix PivotMatri
 	XMStoreFloat4x4(&m_PivotMatrix , PivotMatrix);
 
 	_uint iSize = { 0 };
-	pFin->read(reinterpret_cast<char*>(&iSize), sizeof(_uint));
-	pFin->read(m_szName, iSize);
-	strcat_s(m_szName, "\0");
-	pFin->read(reinterpret_cast<char*>(&m_iMaterialIndex), sizeof(_uint));
-	pFin->read(reinterpret_cast<char*>(&m_iNumVertices), sizeof(_uint));
-	pFin->read(reinterpret_cast<char*>(&m_iNumFaces), sizeof(_uint));
+	strcpy_s(m_szName, pMeshData->szName);
+	m_iMaterialIndex = pMeshData->iMaterialIndex;
+	m_iNumVertices = pMeshData->iNumVertices;
+	m_iNumFaces = pMeshData->iNumFaces;
 
 
 	m_iNumVertexBuffers = 2;
@@ -61,7 +59,7 @@ HRESULT CMesh_Instance::Initialize_Prototype(ifstream* pFin, _fmatrix PivotMatri
 
 	HRESULT			hr = { 0 };
 
-	hr = Ready_VertexBuffer_NonAnim(pFin, PivotMatrix);
+	hr = Ready_VertexBuffer_NonAnim(pMeshData, PivotMatrix);
 
 	if (FAILED(hr))
 		return E_FAIL;
@@ -86,9 +84,9 @@ HRESULT CMesh_Instance::Initialize_Prototype(ifstream* pFin, _fmatrix PivotMatri
 
 	for (_uint i = 0; i < m_iNumFaces; ++i)
 	{
-		pFin->read(reinterpret_cast<char*>(&pSaveIndices[iSaveNumIndices]), sizeof(_uint));
-		pFin->read(reinterpret_cast<char*>(&pSaveIndices[iSaveNumIndices + 1]), sizeof(_uint));
-		pFin->read(reinterpret_cast<char*>(&pSaveIndices[iSaveNumIndices + 2]), sizeof(_uint));
+		pSaveIndices[iSaveNumIndices]		= pMeshData->pMeshIdxData[i].iIndex0;
+		pSaveIndices[iSaveNumIndices + 1]	= pMeshData->pMeshIdxData[i].iIndex1;
+		pSaveIndices[iSaveNumIndices + 2]	= pMeshData->pMeshIdxData[i].iIndex2;
 
 		iSaveNumIndices += 3;
 	}
@@ -178,23 +176,23 @@ HRESULT CMesh_Instance::Bind_Resources()
 	return S_OK;
 }
 
-HRESULT CMesh_Instance::Ready_VertexBuffer_NonAnim(ifstream* pFin, _fmatrix PivotMatrix)
+HRESULT CMesh_Instance::Ready_VertexBuffer_NonAnim(MESHDATA* pMeshData, _fmatrix PivotMatrix)
 {
 	VTXMODEL* pVertices = new VTXMODEL[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXMODEL) * m_iNumVertices);
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
-		pFin->read(reinterpret_cast<char*>(&pVertices[i].vPosition), sizeof(_float3));
+		pVertices[i].vPosition = pMeshData->pMeshVtxData[i].vPosition;
 		XMStoreFloat3(&pVertices[i].vPosition, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vPosition), PivotMatrix));
 
 		m_VertexPos.emplace_back(_float4(pVertices[i].vPosition.x, pVertices[i].vPosition.y, pVertices[i].vPosition.z, 1.f));
 
-		pFin->read(reinterpret_cast<char*>(&pVertices[i].vNormal), sizeof(_float3));
+		pVertices[i].vNormal = pMeshData->pMeshVtxData[i].vNormal;
 		XMStoreFloat3(&pVertices[i].vNormal, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vNormal), PivotMatrix));
 
-		pFin->read(reinterpret_cast<char*>(&pVertices[i].vTexUV), sizeof(_float2));
-		pFin->read(reinterpret_cast<char*>(&pVertices[i].vTangent), sizeof(_float3));
+		pVertices[i].vTexUV = pMeshData->pMeshVtxData[i].vTexUV;
+		pVertices[i].vTangent = pMeshData->pMeshVtxData[i].vTangent;
 	}
 
 	ZeroMemory(&m_SubresourceData, sizeof m_SubresourceData);
@@ -208,11 +206,11 @@ HRESULT CMesh_Instance::Ready_VertexBuffer_NonAnim(ifstream* pFin, _fmatrix Pivo
 	return S_OK;
 }
 
-CMesh_Instance * CMesh_Instance::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, ifstream* pFin, _fmatrix PivotMatrix, CModel_Instance* pModel, _uint iNumInstance)
+CMesh_Instance * CMesh_Instance::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, MESHDATA* pMeshData, _fmatrix PivotMatrix, CModel_Instance* pModel, _uint iNumInstance)
 {
 	CMesh_Instance*		pInstance = new CMesh_Instance(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pFin, PivotMatrix, pModel , iNumInstance)))
+	if (FAILED(pInstance->Initialize_Prototype(pMeshData, PivotMatrix, pModel , iNumInstance)))
 	{
 		MSG_BOX("Failed to Created : CMesh_Instance");
 		Safe_Release(pInstance);

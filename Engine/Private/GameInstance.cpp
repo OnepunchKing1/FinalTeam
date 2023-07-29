@@ -198,7 +198,23 @@ _bool CGameInstance::Get_AnyKeyPressing()
 	return m_pInput_Device->Get_AnyKeyPressing();
 }
 
-CLevel* CGameInstance::Get_LoadedStage(_uint iLevelIndex)
+CLevel* CGameInstance::Get_CulLevel() const
+{
+	if (nullptr == m_pLevel_Manager)
+		return nullptr;
+
+	return m_pLevel_Manager->Get_CulLevel();
+}
+
+_uint CGameInstance::Get_CurLevelIdx() const
+{
+	if (nullptr == m_pLevel_Manager)
+		return false;
+
+	return m_pLevel_Manager->Get_CurLevelIdx();
+}
+
+CLevel* CGameInstance::Get_LoadedStage(_uint iLevelIndex) const
 {
 	if (nullptr == m_pLevel_Manager)
 		return nullptr;
@@ -212,6 +228,22 @@ _bool CGameInstance::Get_IsStage() const
 		return false;
 
 	return m_pLevel_Manager->Get_IsStage();
+}
+
+_bool CGameInstance::Get_IsLoadForAll() const
+{
+	if (nullptr == m_pLevel_Manager)
+		return false;
+
+	return m_pLevel_Manager->Get_IsLoadForAll();
+}
+
+void CGameInstance::Set_IsLoadForAll()
+{
+	if (nullptr == m_pLevel_Manager)
+		return;
+
+	m_pLevel_Manager->Set_IsLoadForAll();
 }
 
 HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel* pNextLevel, _bool isStage, _bool isRelease)

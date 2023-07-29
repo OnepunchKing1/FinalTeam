@@ -26,9 +26,10 @@ public:
 public:
     HRESULT Initialize(LEVELID eLevelID);
 
-    HRESULT LoadingForAllStage();   // 대성 수정 요망
+    HRESULT LoadingForAllStage();
 
     HRESULT LoadingForLogo();
+
     HRESULT LoadingForGamePlay();
     HRESULT LoadingForVillage();
     HRESULT LoadingForHouse();

@@ -3,15 +3,18 @@
 #include "Tool_Defines.h"
 #include "MapObject.h"
 
+BEGIN(Engine)
+class CModel_Instance;
+END
+
 BEGIN(Tool)
 
-class CTerrainMapObject  final : public CMapObject
+class CInstanceMapObject  final : public CMapObject
 {
 private:
-	CTerrainMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CTerrainMapObject(const CTerrainMapObject& rhs);
-	virtual ~CTerrainMapObject() = default;
-
+	CInstanceMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CInstanceMapObject(const CInstanceMapObject& rhs);
+	virtual ~CInstanceMapObject() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -25,11 +28,13 @@ private:
 	HRESULT SetUp_ShaderResources();
 
 private:
-	CTexture* m_pSplatingTexture = { nullptr };
-	CTexture* m_pMaskTexture = { nullptr };
+	 CModel_Instance* m_pModelInstanceCom = { nullptr };
+
+private:
+	_float				m_fTimeDelta = { 0.f };
 
 public:
-	static CTerrainMapObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CInstanceMapObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

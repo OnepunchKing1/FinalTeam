@@ -161,52 +161,55 @@ void CMainApp::Key_Input(_double dTimeDelta)
 	HRESULT hr = 0;
 	if (true == m_pGameInstance->Get_IsStage())
 	{
-		if (m_pGameInstance->Get_DIKeyDown(DIK_F1))
+		if (m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80)
 		{
-			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_LOGO))
-				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_LOGO), false, false);
-			else
-				hr = m_pGameInstance->Swap_Level(LEVEL_LOGO);
-		}
+			if (m_pGameInstance->Get_DIKeyDown(DIK_1))
+			{
+				if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_LOGO))
+					hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_LOGO), false, false);
+				else
+					hr = m_pGameInstance->Swap_Level(LEVEL_LOGO);
+			}
 
-		if (m_pGameInstance->Get_DIKeyDown(DIK_F2))
-		{
-			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_GAMEPLAY))
-				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY), false, false);
-			else
-				hr = m_pGameInstance->Swap_Level(LEVEL_GAMEPLAY);
-		}
+			if (m_pGameInstance->Get_DIKeyDown(DIK_2))
+			{
+				if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_GAMEPLAY))
+					hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY), false, false);
+				else
+					hr = m_pGameInstance->Swap_Level(LEVEL_GAMEPLAY);
+			}
 
-		if (m_pGameInstance->Get_DIKeyDown(DIK_F3))
-		{
-			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_VILLAGE))
-				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_VILLAGE), false, false);
-			else
-				hr = m_pGameInstance->Swap_Level(LEVEL_VILLAGE);
-		}
+			if (m_pGameInstance->Get_DIKeyDown(DIK_3))
+			{
+				if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_VILLAGE))
+					hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_VILLAGE), false, false);
+				else
+					hr = m_pGameInstance->Swap_Level(LEVEL_VILLAGE);
+			}
 
-		if (m_pGameInstance->Get_DIKeyDown(DIK_F4))
-		{
-			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_HOUSE))
-				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_HOUSE), false, false);
-			else
-				hr = m_pGameInstance->Swap_Level(LEVEL_HOUSE);
-		}
-		/*
-		if (m_pGameInstance->Get_DIKeyDown(DIK_F5))
-		{
-			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_TRAIN))
-				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TRAIN), false, false);
-			else
-				hr = m_pGameInstance->Swap_Level(LEVEL_TRAIN);
-		}
-		*/
-		if (m_pGameInstance->Get_DIKeyDown(DIK_F6))
-		{
-			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_FINALBOSS))
-				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FINALBOSS), false, false);
-			else
-				hr = m_pGameInstance->Swap_Level(LEVEL_FINALBOSS);
+			if (m_pGameInstance->Get_DIKeyDown(DIK_4))
+			{
+				if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_HOUSE))
+					hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_HOUSE), false, false);
+				else
+					hr = m_pGameInstance->Swap_Level(LEVEL_HOUSE);
+			}
+
+			if (m_pGameInstance->Get_DIKeyDown(DIK_5))
+			{
+				if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_TRAIN))
+					hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TRAIN), false, false);
+				else
+					hr = m_pGameInstance->Swap_Level(LEVEL_TRAIN);
+			}
+
+			if (m_pGameInstance->Get_DIKeyDown(DIK_6))
+			{
+				if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_FINALBOSS))
+					hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_FINALBOSS), false, false);
+				else
+					hr = m_pGameInstance->Swap_Level(LEVEL_FINALBOSS);
+			}
 		}
 	}
 
