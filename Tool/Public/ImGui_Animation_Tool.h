@@ -42,6 +42,8 @@ public: // GetSet
 	_bool	Get_Save() { return m_isSave; }
 	void	Set_Save(_bool bSave) { m_isSave = bSave; }
 
+	void	Set_iTest(_int i) { m_iTest = i; }
+
 private: 
 	// Àç»ı play
 	_bool	m_isPlay = { false };

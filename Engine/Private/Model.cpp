@@ -167,7 +167,6 @@ HRESULT CModel::Play_Animation(_double dTimeDelta)
 	{
 		NextAnim = m_Animations[m_iCurrentAnimIndex]->Invalidate_TransformationMatrices(this, dTimeDelta, m_isPlay, m_isCombo_Trigger);
 	}
-	//NextAnim = m_Animations[m_iCurrentAnimIndex]->Invalidate_TransformationMatrices(this, dTimeDelta, m_isPlay);
 
 	/* 현재 재생해야할 애니메이션 번호 n == m_iCurrentAnimIndex
 	*  n번의 애니메이션의 행렬 상태로 Trans행렬을 갱신한다.
@@ -188,7 +187,12 @@ HRESULT CModel::Play_Animation(_double dTimeDelta)
 		{
 			// 트리거가 켜지면 여기에 함수
 
-
+			//콤보 분기 일경우,
+			if (m_isCombo_Another)
+			{
+				m_isCombo_Another = false;
+				NextAnim = m_iCombo_AnotherRoute;
+			}
 		}
 		//그냥 애니메이션 진행
 		else

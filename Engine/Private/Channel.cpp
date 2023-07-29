@@ -172,7 +172,7 @@ void CChannel::Invalidate_Linear(CModel* pModel, KEYFRAME LastKeyFrame_Prev, _do
 	//이 애니메이션의 마지막 키 프레임
 
 	// 보간duration
-	if (TrackPosition >= 0.15f)
+	if (TrackPosition >= 0.09f)
 	{
 		/*간혹 전체 재생시간 이전에 키 프레임이 끝났을 경우 남은 재생시간 동안
 		* 마지막 상태를 유지시켜주기 위한 예외처리
@@ -184,7 +184,7 @@ void CChannel::Invalidate_Linear(CModel* pModel, KEYFRAME LastKeyFrame_Prev, _do
 	else
 	{
 		// 보간duration
-		_double dRatio = TrackPosition / 0.15f;
+		_double dRatio = TrackPosition / 0.09f;
 		/*한 키 프레임 구간에서 현재 얼마나 재생됐는지 0 ~ 1
 		* 1보다 커지면 다음 키프레임으로 넘어간다 - 위의 if문을 들어간다
 		*/

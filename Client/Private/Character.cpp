@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 
+
 CCharacter::CCharacter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject(pDevice, pContext)
 {
@@ -60,6 +61,106 @@ void CCharacter::LateTick(_double dTimeDelta)
 HRESULT CCharacter::Render()
 {
 	return S_OK;
+}
+
+HRESULT CCharacter::Read_Animation_Control_File(const char* szBinfilename)
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	char szFullPath[MAX_PATH] = { "" };
+	strcpy_s(szFullPath, "../Bin/Resources/AnimToolBin/");
+	strcat_s(szFullPath, szBinfilename);
+
+	ifstream fin;
+	fin.open(szFullPath, ios::binary);
+	if (false == fin.is_open())
+	{
+		return E_FAIL;
+	}
+
+	_int AnimSize;
+	fin.read(reinterpret_cast<char*>(&AnimSize), sizeof(_int));
+
+	for (_int i = 0; i < AnimSize; i++)
+	{
+		CAnimation::CONTROLDESC ControlDesc;
+
+		fin.read(reinterpret_cast<char*>(&ControlDesc.m_fAnimationSpeed), sizeof(_float));
+		fin.read(reinterpret_cast<char*>(&ControlDesc.m_iConnect_Anim), sizeof(_int));
+		fin.read(reinterpret_cast<char*>(&ControlDesc.m_isCombo), sizeof(_bool));
+		fin.read(reinterpret_cast<char*>(&ControlDesc.m_iConnect_ComboAnim), sizeof(_int));
+		fin.read(reinterpret_cast<char*>(&ControlDesc.m_isRootAnimation), sizeof(_bool));
+
+		_int isizeEvent;
+		fin.read(reinterpret_cast<char*>(&isizeEvent), sizeof(_int));
+
+		for (_int i = 0; i < isizeEvent; i++)
+		{
+			CAnimation::EVENTDESC EventDesc;
+			fin.read(reinterpret_cast<char*>(&EventDesc.m_dTime), sizeof(_double));
+			fin.read(reinterpret_cast<char*>(&EventDesc.m_isFirst), sizeof(_bool));
+
+			ControlDesc.m_vecTime_Event.emplace_back(EventDesc);
+		}
+		m_pModelCom->Set_Animation_Control(i, ControlDesc);
+	}
+	fin.close();
+	
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+void CCharacter::RootAnimation(_double dTimeDelta)
+{
+	CAnimation* pAnim = m_pModelCom->Get_Animation();
+
+	if (pAnim->Get_ControlDesc().m_isRootAnimation)
+	{
+		//애니메이션 시작시 첫 위치
+		if (pAnim->Get_AnimationDesc().m_dTimeAcc == 0.0)
+		{
+			XMStoreFloat4(&m_Save_RootPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_Save_RootPos));
+		}
+		else
+		{
+			_float4 fPos;
+			XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+			_float3 RootPosition = pAnim->Get_RootPosition();
+			_float4x4 RootWorldConvert = m_pTransformCom->Get_WorldFloat4x4();
+			_float3 FinalRootPos = { 0.0f, 0.0f, 0.0f };
+			XMStoreFloat3(&FinalRootPos, XMVector3TransformCoord(XMLoadFloat3(&RootPosition), XMLoadFloat4x4(&RootWorldConvert)));
+
+			_float4 Final = { -FinalRootPos.x * 0.005f, FinalRootPos.y * 0.005f , -FinalRootPos.z * 0.005f, 1.f };
+
+			// 플레이어의 월드 위치를 기준으로 Root bone의 위치를 변화시킴
+			_float4  SubPos = { m_Save_RootPos.x + Final.x, m_Save_RootPos.y + Final.y , m_Save_RootPos.z + Final.z , 1.f };
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&SubPos));
+		}
+	}
+}
+
+_bool CCharacter::EventCallProcess( )
+{
+	CAnimation* pAnim = m_pModelCom->Get_Animation();
+
+	CAnimation::CONTROLDESC ControlDesc = pAnim->Get_ControlDesc();
+
+	if (ControlDesc.m_isEventCall)
+	{
+		ControlDesc.m_isEventCall = false;
+
+		pAnim->Set_ControlDesc(ControlDesc);
+
+		return true;
+	}
+
+	return false;
 }
 
 HRESULT CCharacter::Add_Components()

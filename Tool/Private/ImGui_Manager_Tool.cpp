@@ -60,11 +60,11 @@ void CImGui_Manager_Tool::ImGui_Set()
             ImGui::EndListBox();
         }
 
-        /*if (ImGui::Button("GoToStage"))
+        if (ImGui::Button("GoToStage"))
         {
             if(pGameInstance->Get_IsStage())
                 GoToStage(m_iSelectedStage + 2);
-        }*/
+        }
             
 
         ImGui::TreePop();
@@ -135,7 +135,7 @@ void CImGui_Manager_Tool::ImGUI_ShowDemo()
 		ImGui::ShowDemoWindow(&show_deme_window);
 }
 
-#pragma region Light Set
+#pragma region StageSet
 void CImGui_Manager_Tool::GoToStage(_int iSelected)
 {
     HRESULT hr = 0;
@@ -143,13 +143,24 @@ void CImGui_Manager_Tool::GoToStage(_int iSelected)
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
-    hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading_Tool::Create(m_pDevice, m_pContext, (LEVELID)iSelected));
-
+    if (false == m_isLoad[iSelected - 2])
+    {
+        //Load 해야함
+        hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading_Tool::Create(m_pDevice, m_pContext, (LEVELID)iSelected), false, false);
+    }
+    else
+    {
+        //스테를 갈아끼워야 함
+        hr = pGameInstance->Swap_Level((LEVELID)iSelected);
+    }
     Safe_Release(pGameInstance);
 
     if (FAILED(hr))
         return;
 }
+#pragma endregion
+
+#pragma region Light Set
 void CImGui_Manager_Tool::Set_DefaultLight_ImGui(LIGHTDESC LightDesc)
 {
     m_vLightDesc[0] = LightDesc.vLightDir;

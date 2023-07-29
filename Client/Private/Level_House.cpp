@@ -37,11 +37,11 @@ HRESULT CLevel_House::Initialize()
         return E_FAIL;
     }
 
-    if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+    /*if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
     {
         MSG_BOX("Failed to Ready_Layer_Camera : CLevel_House");
         return E_FAIL;
-    }
+    }*/
 
     if (FAILED(Ready_Layer_MapObject(TEXT("Layer_MapObject"))))
     {
@@ -64,7 +64,7 @@ void CLevel_House::Tick(_double dTimeDelta)
         CGameInstance* pGameInstance = CGameInstance::GetInstance();
         Safe_AddRef(pGameInstance);
 
-        hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TRAIN));
+        hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TRAIN), false, false);
 
         Safe_Release(pGameInstance);
 

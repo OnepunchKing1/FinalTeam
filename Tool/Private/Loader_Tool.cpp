@@ -37,24 +37,19 @@ unsigned int APIENTRY Loading_Main(void* pArg)
 	switch (pLoader->Get_LevelID())
 	{
 	case LEVEL_TOOL:
-		if (false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_TOOL))
-			hr = pLoader->LoadingForTool();
+		hr = pLoader->LoadingForTool(CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_TOOL));
 		break;
 	case LEVEL_VILLAGE:
-		if (false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_VILLAGE))
-			hr = pLoader->LoadingForVillage();
+		hr = pLoader->LoadingForVillage(false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_VILLAGE));
 		break;
 	case LEVEL_HOUSE:
-		if (false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_HOUSE))
-			hr = pLoader->LoadingForHouse();
+		hr = pLoader->LoadingForHouse(false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_HOUSE));
 		break;
 	case LEVEL_TRAIN:
-		if (false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_TRAIN))
-			hr = pLoader->LoadingForTrain();
+		hr = pLoader->LoadingForTrain(false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_TRAIN));
 		break;
 	case LEVEL_FINALBOSS:
-		if (false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_FINALBOSS))
-			hr = pLoader->LoadingForFinalBoss();
+		hr = pLoader->LoadingForFinalBoss(false == CImGui_Manager_Tool::GetInstance()->Get_IsLoad(LEVEL_FINALBOSS));
 		break;
 	}
 
@@ -82,25 +77,28 @@ HRESULT CLoader_Tool::Initialize(LEVELID eLevelID)
 	return S_OK;
 }
 
-HRESULT CLoader_Tool::LoadingForLogo()
+HRESULT CLoader_Tool::LoadingForLogo(_bool isLoad)
 {
 	return S_OK;
 }
 
-HRESULT CLoader_Tool::LoadingForTool()
+HRESULT CLoader_Tool::LoadingForTool(_bool isLoad)
 {
 	SetWindowText(g_hWnd, TEXT("LoadingForTool"));
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
+	if (false == isLoad)
+	{
+
 #pragma region COMPONENTS
 
-	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+		SetWindowText(g_hWnd, TEXT("Loading Texture..."));
 #pragma region Texture
 
 #pragma region EnvironmentTexture
-	
+
 #pragma endregion
 
 #pragma region RampTexture
@@ -118,103 +116,103 @@ HRESULT CLoader_Tool::LoadingForTool()
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+		SetWindowText(g_hWnd, TEXT("Loading Model..."));
 #pragma region Model
-	
+
 #pragma region Buffer
 
 #pragma endregion
-	_matrix		PivotMatrix = XMMatrixIdentity();
+		_matrix		PivotMatrix = XMMatrixIdentity();
 
 #pragma region Effect
 
 #pragma endregion
 
 #pragma region Character
-	/* Prototype_Component_Model_AnimToolCharacter */
-	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Tanjiro"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Tanjiro/Tanjiro.bin", PivotMatrix))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Model_Tanjiro");
-		return E_FAIL;
-	}
+		/* Prototype_Component_Model_AnimToolCharacter */
+		PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Tanjiro"),
+			CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Tanjiro/Tanjiro.bin", PivotMatrix))))
+		{
+			MSG_BOX("Failed to Add_Prototype_Model_Tanjiro");
+			return E_FAIL;
+		}
 
 #pragma endregion
 
 #pragma region NonCharacter
 
-	
+
 #pragma endregion
 
 #pragma region Terrain
 
-	Load_MapObjectModel();	// 맵 오브젝트 로드(안원 전용)
+		Load_MapObjectModel();	// 맵 오브젝트 로드(안원 전용)
 
-	/* Prototype_Component_Navigation */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Data/Navigation.dat")))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Navigation");
-		return E_FAIL;
-	}
-
-#pragma endregion
+		/* Prototype_Component_Navigation */
+		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Navigation"),
+			CNavigation::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Data/Navigation.dat")))))
+		{
+			MSG_BOX("Failed to Add_Prototype_Component_Navigation");
+			return E_FAIL;
+		}
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+#pragma endregion
+
+		SetWindowText(g_hWnd, TEXT("Loading Shader..."));
 #pragma region Shader
-	/* Prototype_Component_Shader_VtxNorTex */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxNorTex"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX_DECL::Elements, VTXNORTEX_DECL::iNumElements))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxNorTex");
-		return E_FAIL;
-	}
+		/* Prototype_Component_Shader_VtxNorTex */
+		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxNorTex"),
+			CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX_DECL::Elements, VTXNORTEX_DECL::iNumElements))))
+		{
+			MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxNorTex");
+			return E_FAIL;
+		}
 
-	/* Prototype_Component_Shader_VtxModel */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxModel"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECL::Elements, VTXMODEL_DECL::iNumElements))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxModel");
-		return E_FAIL;
-	}
+		/* Prototype_Component_Shader_VtxModel */
+		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxModel"),
+			CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_VtxModel.hlsl"), VTXMODEL_DECL::Elements, VTXMODEL_DECL::iNumElements))))
+		{
+			MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxModel");
+			return E_FAIL;
+		}
 
-	/* Prototype_Component_Shader_VtxAnimModel */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxAnimModel"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECL::Elements, VTXANIMMODEL_DECL::iNumElements))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxAnimModel");
-		return E_FAIL;
-	}
+		/* Prototype_Component_Shader_VtxAnimModel */
+		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxAnimModel"),
+			CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_VtxAnimModel.hlsl"), VTXANIMMODEL_DECL::Elements, VTXANIMMODEL_DECL::iNumElements))))
+		{
+			MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxAnimModel");
+			return E_FAIL;
+		}
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+		SetWindowText(g_hWnd, TEXT("Loading ETC..."));
 #pragma region Etc
-	/* Prototype_Component_Collider_AABB */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Collider_AABB"),
-		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_AABB))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Collider_AABB");
-		return E_FAIL;
-	}
+		/* Prototype_Component_Collider_AABB */
+		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Collider_AABB"),
+			CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_AABB))))
+		{
+			MSG_BOX("Failed to Add_Prototype_Component_Collider_AABB");
+			return E_FAIL;
+		}
 
-	/* Prototype_Component_Collider_OBB */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Collider_OBB"),
-		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_OBB))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Collider_OBB");
-		return E_FAIL;
-	}
+		/* Prototype_Component_Collider_OBB */
+		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Collider_OBB"),
+			CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_OBB))))
+		{
+			MSG_BOX("Failed to Add_Prototype_Component_Collider_OBB");
+			return E_FAIL;
+		}
 
-	/* Prototype_Component_Collider_Sphere */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Collider_Sphere"),
-		CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_SPHERE))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Collider_Sphere");
-		return E_FAIL;
-	}
+		/* Prototype_Component_Collider_Sphere */
+		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Collider_Sphere"),
+			CCollider::Create(m_pDevice, m_pContext, CCollider::TYPE_SPHERE))))
+		{
+			MSG_BOX("Failed to Add_Prototype_Component_Collider_Sphere");
+			return E_FAIL;
+		}
 #pragma endregion
 
 
@@ -222,71 +220,71 @@ HRESULT CLoader_Tool::LoadingForTool()
 
 #pragma region GAMEOBJECTS
 
-	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+		SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
 
-	CImGui_Manager_Tool* pGUI = CImGui_Manager_Tool::GetInstance();
-	Safe_AddRef(pGUI);
+		CImGui_Manager_Tool* pGUI = CImGui_Manager_Tool::GetInstance();
+		Safe_AddRef(pGUI);
 
 #pragma region Object
-	/* Prototype_GameObject_Camera_Tool */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Tool"),
-		CCamera_Tool::Create(m_pDevice, m_pContext))))
-	{
-		MSG_BOX("Failed to Add_Prototype_GameObject_Camera_Tool");
-		return E_FAIL;
-	}
+		/* Prototype_GameObject_Camera_Tool */
+		if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Tool"),
+			CCamera_Tool::Create(m_pDevice, m_pContext))))
+		{
+			MSG_BOX("Failed to Add_Prototype_GameObject_Camera_Tool");
+			return E_FAIL;
+		}
 
-	/* Prototype_GameObject_Player_Tool */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Tool"),
-		CPlayer_Tool::Create(m_pDevice, m_pContext))))
-	{
-		MSG_BOX("Failed to Add_Prototype_GameObject_Player_Tool");
-		return E_FAIL;
-	}
+		/* Prototype_GameObject_Player_Tool */
+		if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Tool"),
+			CPlayer_Tool::Create(m_pDevice, m_pContext))))
+		{
+			MSG_BOX("Failed to Add_Prototype_GameObject_Player_Tool");
+			return E_FAIL;
+		}
 
-	//AnimTool용
-	/* Prototype_GameObject_AnimCharacter_Tool */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_AnimCharacter_Tool"),
-		CAnimCharacter_Tool::Create(m_pDevice, m_pContext))))
-	{
-		MSG_BOX("Failed to Add_Prototype_GameObject_AnimCharacter_Tool");
-		return E_FAIL;
-	}
+		//AnimTool용
+		/* Prototype_GameObject_AnimCharacter_Tool */
+		if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_AnimCharacter_Tool"),
+			CAnimCharacter_Tool::Create(m_pDevice, m_pContext))))
+		{
+			MSG_BOX("Failed to Add_Prototype_GameObject_AnimCharacter_Tool");
+			return E_FAIL;
+		}
 #pragma endregion
 
 #pragma region Environment
 
-	/* Prototype_GameObject_Terrain_Tool */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain_Tool"),
-		CTerrain_Tool::Create(m_pDevice, m_pContext))))
-	{
-		MSG_BOX("Failed to Add_Prototype_GameObject_Terrain_Tool");
-		return E_FAIL;
-	}
+		/* Prototype_GameObject_Terrain_Tool */
+		if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain_Tool"),
+			CTerrain_Tool::Create(m_pDevice, m_pContext))))
+		{
+			MSG_BOX("Failed to Add_Prototype_GameObject_Terrain_Tool");
+			return E_FAIL;
+		}
 
-	/* For.Prototype_GameObject_StaticMapObject */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticMapObject"),
-		CStaticMapObject::Create(m_pDevice, m_pContext))))
-	{
-		MSG_BOX("Failed to Add_Prototype_GameObject_StaticMapObject");
-		return E_FAIL;
-	}
+		/* For.Prototype_GameObject_StaticMapObject */
+		if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_StaticMapObject"),
+			CStaticMapObject::Create(m_pDevice, m_pContext))))
+		{
+			MSG_BOX("Failed to Add_Prototype_GameObject_StaticMapObject");
+			return E_FAIL;
+		}
 
-	/* For.Prototype_GameObject_TerrainMapObject */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TerrainMapObject"),
-		CTerrainMapObject::Create(m_pDevice, m_pContext))))
-	{
-		MSG_BOX("Failed to Add_Prototype_GameObject_TerrainMapObject");
-		return E_FAIL;
-	}
+		/* For.Prototype_GameObject_TerrainMapObject */
+		if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TerrainMapObject"),
+			CTerrainMapObject::Create(m_pDevice, m_pContext))))
+		{
+			MSG_BOX("Failed to Add_Prototype_GameObject_TerrainMapObject");
+			return E_FAIL;
+		}
 
-	/* For.Prototype_GameObject_RotationMapObject */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RotationMapObject"),
-		CRotationMapObject::Create(m_pDevice, m_pContext))))
-	{
-		MSG_BOX("Failed to Add_Prototype_GameObject_RotationMapObject");
-		return E_FAIL;
-	}
+		/* For.Prototype_GameObject_RotationMapObject */
+		if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RotationMapObject"),
+			CRotationMapObject::Create(m_pDevice, m_pContext))))
+		{
+			MSG_BOX("Failed to Add_Prototype_GameObject_RotationMapObject");
+			return E_FAIL;
+		}
 
 #pragma endregion
 
@@ -303,8 +301,10 @@ HRESULT CLoader_Tool::LoadingForTool()
 #pragma endregion
 
 
-	Safe_Release(pGUI);
+		Safe_Release(pGUI);
 #pragma endregion
+
+	}
 
 	Safe_Release(pGameInstance);
 
@@ -316,16 +316,19 @@ HRESULT CLoader_Tool::LoadingForTool()
 	return S_OK;
 }
 
-HRESULT CLoader_Tool::LoadingForVillage()
+HRESULT CLoader_Tool::LoadingForVillage(_bool isLoad)
 {
 	SetWindowText(g_hWnd, TEXT("LoadingForVillage"));
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
+	if (false == isLoad)
+	{
+
 #pragma region COMPONENTS
 
-	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+		SetWindowText(g_hWnd, TEXT("Loading Texture..."));
 #pragma region Texture
 
 #pragma region EnvironmentTexture
@@ -346,13 +349,13 @@ HRESULT CLoader_Tool::LoadingForVillage()
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+		SetWindowText(g_hWnd, TEXT("Loading Model..."));
 #pragma region Model
 
 #pragma region Buffer
 
 #pragma endregion
-	_matrix		PivotMatrix = XMMatrixIdentity();
+		_matrix		PivotMatrix = XMMatrixIdentity();
 #pragma region Effect
 
 #pragma endregion
@@ -371,12 +374,12 @@ HRESULT CLoader_Tool::LoadingForVillage()
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+		SetWindowText(g_hWnd, TEXT("Loading Shader..."));
 #pragma region Shader
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+		SetWindowText(g_hWnd, TEXT("Loading ETC..."));
 #pragma region Etc
 
 #pragma endregion
@@ -385,7 +388,7 @@ HRESULT CLoader_Tool::LoadingForVillage()
 
 #pragma region GAMEOBJECTS
 
-	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+		SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
 #pragma region Object
 
 #pragma endregion
@@ -407,6 +410,8 @@ HRESULT CLoader_Tool::LoadingForVillage()
 #pragma endregion
 
 #pragma endregion
+
+	}
 
 	Safe_Release(pGameInstance);
 
@@ -418,16 +423,19 @@ HRESULT CLoader_Tool::LoadingForVillage()
 	return S_OK;
 }
 
-HRESULT CLoader_Tool::LoadingForHouse()
+HRESULT CLoader_Tool::LoadingForHouse(_bool isLoad)
 {
 	SetWindowText(g_hWnd, TEXT("LoadingForHouse"));
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
+	
+	if (false == isLoad)
+	{
 
 #pragma region COMPONENTS
 
-	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+		SetWindowText(g_hWnd, TEXT("Loading Texture..."));
 #pragma region Texture
 
 #pragma region EnvironmentTexture
@@ -448,13 +456,13 @@ HRESULT CLoader_Tool::LoadingForHouse()
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+		SetWindowText(g_hWnd, TEXT("Loading Model..."));
 #pragma region Model
 
 #pragma region Buffer
 
 #pragma endregion
-	_matrix		PivotMatrix = XMMatrixIdentity();
+		_matrix		PivotMatrix = XMMatrixIdentity();
 #pragma region Effect
 
 #pragma endregion
@@ -474,12 +482,12 @@ HRESULT CLoader_Tool::LoadingForHouse()
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+		SetWindowText(g_hWnd, TEXT("Loading Shader..."));
 #pragma region Shader
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+		SetWindowText(g_hWnd, TEXT("Loading ETC..."));
 #pragma region Etc
 
 #pragma endregion
@@ -488,7 +496,7 @@ HRESULT CLoader_Tool::LoadingForHouse()
 
 #pragma region GAMEOBJECTS
 
-	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+		SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
 #pragma region Object
 
 #pragma endregion
@@ -510,6 +518,8 @@ HRESULT CLoader_Tool::LoadingForHouse()
 #pragma endregion
 
 #pragma endregion
+
+	}
 
 	Safe_Release(pGameInstance);
 
@@ -521,16 +531,19 @@ HRESULT CLoader_Tool::LoadingForHouse()
 	return S_OK;
 }
 
-HRESULT CLoader_Tool::LoadingForTrain()
+HRESULT CLoader_Tool::LoadingForTrain(_bool isLoad)
 {
 	SetWindowText(g_hWnd, TEXT("LoadingForTrain"));
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
+	if (false == isLoad)
+	{
+
 #pragma region COMPONENTS
 
-	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+		SetWindowText(g_hWnd, TEXT("Loading Texture..."));
 #pragma region Texture
 
 #pragma region EnvironmentTexture
@@ -551,13 +564,13 @@ HRESULT CLoader_Tool::LoadingForTrain()
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+		SetWindowText(g_hWnd, TEXT("Loading Model..."));
 #pragma region Model
 
 #pragma region Buffer
 
 #pragma endregion
-	_matrix		PivotMatrix = XMMatrixIdentity();
+		_matrix		PivotMatrix = XMMatrixIdentity();
 #pragma region Effect
 
 #pragma endregion
@@ -576,12 +589,12 @@ HRESULT CLoader_Tool::LoadingForTrain()
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+		SetWindowText(g_hWnd, TEXT("Loading Shader..."));
 #pragma region Shader
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+		SetWindowText(g_hWnd, TEXT("Loading ETC..."));
 #pragma region Etc
 
 #pragma endregion
@@ -590,7 +603,7 @@ HRESULT CLoader_Tool::LoadingForTrain()
 
 #pragma region GAMEOBJECTS
 
-	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+		SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
 #pragma region Object
 
 #pragma endregion
@@ -612,6 +625,8 @@ HRESULT CLoader_Tool::LoadingForTrain()
 #pragma endregion
 
 #pragma endregion
+
+	}
 
 	Safe_Release(pGameInstance);
 
@@ -623,16 +638,19 @@ HRESULT CLoader_Tool::LoadingForTrain()
 	return S_OK;
 }
 
-HRESULT CLoader_Tool::LoadingForFinalBoss()
+HRESULT CLoader_Tool::LoadingForFinalBoss(_bool isLoad)
 {
 	SetWindowText(g_hWnd, TEXT("LoadingForFinalBoss"));
 
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
+	if (false == isLoad)
+	{
+
 #pragma region COMPONENTS
 
-	SetWindowText(g_hWnd, TEXT("Loading Texture..."));
+		SetWindowText(g_hWnd, TEXT("Loading Texture..."));
 #pragma region Texture
 
 #pragma region EnvironmentTexture
@@ -653,13 +671,13 @@ HRESULT CLoader_Tool::LoadingForFinalBoss()
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading Model..."));
+		SetWindowText(g_hWnd, TEXT("Loading Model..."));
 #pragma region Model
 
 #pragma region Buffer
 
 #pragma endregion
-	_matrix		PivotMatrix = XMMatrixIdentity();
+		_matrix		PivotMatrix = XMMatrixIdentity();
 #pragma region Effect
 
 #pragma endregion
@@ -678,12 +696,12 @@ HRESULT CLoader_Tool::LoadingForFinalBoss()
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading Shader..."));
+		SetWindowText(g_hWnd, TEXT("Loading Shader..."));
 #pragma region Shader
 
 #pragma endregion
 
-	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
+		SetWindowText(g_hWnd, TEXT("Loading ETC..."));
 #pragma region Etc
 
 #pragma endregion
@@ -692,7 +710,7 @@ HRESULT CLoader_Tool::LoadingForFinalBoss()
 
 #pragma region GAMEOBJECTS
 
-	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+		SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
 #pragma region Object
 
 #pragma endregion
@@ -714,6 +732,8 @@ HRESULT CLoader_Tool::LoadingForFinalBoss()
 #pragma endregion
 
 #pragma endregion
+
+	}
 
 	Safe_Release(pGameInstance);
 

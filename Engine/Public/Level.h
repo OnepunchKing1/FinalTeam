@@ -13,7 +13,7 @@ public:
 	_bool	Get_IsStage()  const {
 		return m_isStage;
 	}
-	void	Set_IsSatge(_bool isStage) {
+	void	Set_IsStage(_bool isStage) {
 		m_isStage = isStage;
 	}
 

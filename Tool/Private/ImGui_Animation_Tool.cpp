@@ -15,7 +15,7 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
     CGameInstance* pGameInstance = CGameInstance::GetInstance();
     Safe_AddRef(pGameInstance);
 
-    ImGui::SetNextWindowPos(ImVec2(g_iGUI_LeftX, g_iGUI_LeftY), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
     ImGui::SetWindowSize(ImVec2(300, -1));
     ImGuiWindowFlags iWindow_Flags = { 0 };
     if (m_isGUINoMove[0])            iWindow_Flags |= ImGuiWindowFlags_NoMove;
@@ -44,7 +44,10 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
 
     m_iSave_AnimIndex = m_iAnimIndex;
 
-    ImGui::ListBox("Animation_List", &m_iAnimIndex, m_vecName_ForListBox.data(), (_int)(m_vecName_ForListBox.size()), 6);
+    ImGui::ListBox("Animation_List", &m_iAnimIndex, m_vecName_ForListBox.data(), (_int)(m_vecName_ForListBox.size()), 25);
+
+    ImGui::End();
+    ImGui::Begin("Animation_Control", nullptr, iWindow_Flags);
 
     ImGui::Text("Current_Index : %d", m_iAnimIndex);
     
@@ -60,6 +63,9 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
     
 #pragma endregion
 
+
+   
+    
 
     /* 설정한 index 의 애니메이션으로 연결됨. */
 #pragma region Connect_Animation
@@ -143,6 +149,7 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
        
         CAnimation::EVENTDESC EventDesc;
         EventDesc.m_dTime = AnimationDesc.m_dTimeAcc;
+        EventDesc.m_isFirst = true;
         ControlDesc.m_vecTime_Event.emplace_back(EventDesc);
         m_pAnimation->Set_ControlDesc(ControlDesc);
     }
@@ -163,7 +170,7 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
 
 
 
-    ImGui::Text("Event Test int : %d", ControlDesc.m_iTest);
+    ImGui::Text("Event Test int : %d", m_iTest);
 
 #pragma endregion
 
@@ -205,14 +212,15 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
 #pragma endregion
 
     ImGui::SeparatorText("WindowSet");
-    ImGui::Checkbox("No Move", &m_isGUINoMove[1]);
-    ImGui::Checkbox("No Resize", &m_isGUINoResize[1]);
+    ImGui::Checkbox("No Move", &m_isGUINoMove[0]);
+    ImGui::Checkbox("No Resize", &m_isGUINoResize[0]);
 
     ImGui::End();
 
 
 #pragma region Event_Time_List  
-    ImGui::SetNextWindowPos(ImVec2(g_iGUI_LeftX * 2 + 300, g_iGUI_LeftY), ImGuiCond_FirstUseEver);
+    //ImGui::SetNextWindowPos(ImVec2(g_iGUI_LeftX * 2 + 300, g_iGUI_LeftY), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
     ImGui::SetWindowSize(ImVec2(200, -1));
     iWindow_Flags = { 0 };
     if (m_isGUINoMove[1])            iWindow_Flags |= ImGuiWindowFlags_NoMove;
