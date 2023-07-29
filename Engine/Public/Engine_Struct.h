@@ -223,20 +223,65 @@ namespace Engine
 	}MESHDATA;
 
 #pragma endregion
-#pragma region Meterials
+#pragma region Materials
 
+	typedef struct tagMaterialData
+	{
+		unsigned int	iNameSize;
+		char			szName[MAX_PATH] = { "" };
+	}MATERIALDATA;
 #pragma endregion
 #pragma region Animations
+	typedef struct tagKeyFrameData
+	{
+		unsigned int	iScaleKey;
+		XMFLOAT3		vScale;
+		double			dScaleTime;
 
+		unsigned int	iRotationKey;
+		XMFLOAT4		vRotation;
+		double			dRotationTime;
+
+		unsigned int	iPositionKey;
+		XMFLOAT3		vPosition;
+		double			dPositionTime;
+	}KEYFRAMEDATA;
+
+	typedef struct tagChannelData
+	{
+		unsigned int	iNameSize;
+		char			szName[MAX_PATH] = { "" };
+
+		unsigned int	iNumKeyFrames;
+		KEYFRAMEDATA*	pKeyFrameData;
+	}CHANNELDATA;
+
+	typedef struct tagAnimationData
+	{
+		unsigned int	iNameSize;
+		char			szName[MAX_PATH] = { "" };
+
+		double			dDuration;
+		double			dTickPerSecond;
+
+		unsigned int	iNumChannels;
+		CHANNELDATA*	pChannelData;
+	}ANIMATIONDATA;
 #pragma endregion
 
 	typedef struct tagModelData
 	{
 		unsigned int	iNumBones;
-		BONEDATA* pBoneData;
+		BONEDATA*		pBoneData;
 
 		unsigned int	iNumMeshes;
-		MESHDATA* pMeshData;
+		MESHDATA*		pMeshData;
+
+		unsigned int	iNumMaterials;
+		MATERIALDATA*	pMaterialData;
+
+		unsigned int	iNumAnimations;
+		ANIMATIONDATA*	pAnimationData;
 	}MODELDATA;
 
 #pragma endregion
