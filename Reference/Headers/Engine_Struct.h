@@ -150,6 +150,17 @@ namespace Engine
 		float			fAngle;
 	}VTXINSTANCE;
 
+	typedef struct tagVertex_ModelInstance
+	{
+		XMFLOAT4				vRight;
+		XMFLOAT4				vUp;
+		XMFLOAT4				vLook;
+		XMFLOAT4				vTranslation;
+
+		unsigned int			iNumInstance;
+
+	}VTXMODELINSTANCE;
+
 	typedef struct ENGINE_DLL tagVertex_Rect_Instance_Declaration
 	{
 		static const unsigned int			iNumElements = { 9 };
@@ -161,6 +172,143 @@ namespace Engine
 		const static unsigned int			iNumElements = { 8 };
 		static D3D11_INPUT_ELEMENT_DESC		Elements[8];
 	}VTXPOINTINSTANCE_DECL;
+
+	typedef struct ENGINE_DLL tagVertex_MODEL_Instance_Declaration
+	{
+		const static unsigned int			iNumElements = { 8 };
+		static D3D11_INPUT_ELEMENT_DESC		Elements[8];
+	}VTXMODELINSTANCE_DECL;
+
+	typedef struct tagModelInstanceDesc
+	{
+		unsigned int		iNumInstance;
+		float				fRange;
+		float				fMinSize;
+		float				fMaxSize;
+
+	}MODELINSTANCEDESC;
+
+#pragma endregion
+
+#pragma region Data
+#pragma region Bones
+	typedef struct tagBoneData
+	{
+		unsigned int	iNameSize;
+		char			szName[MAX_PATH] = { "" };
+		XMFLOAT4X4		TransformationMatrix;
+		int				iParentIndex;
+	}BONEDATA;
+#pragma endregion
+#pragma region Meshes
+	typedef struct tagWeightData
+	{
+		unsigned int	iVertexID;
+		float			fWeights;
+	}WEIGHTDATA;
+
+	typedef struct tagAnimMeshData
+	{
+		XMFLOAT4X4		OffsetMatrix;
+		unsigned int	iNameSize;
+		char			szName[MAX_PATH] = { "" };
+
+		unsigned int	iNumWeights;
+		WEIGHTDATA*		pWeightData;
+	}ANIMMESHDATA;
+
+	typedef struct tagMeshIdxData
+	{
+		unsigned int	iIndex0;
+		unsigned int	iIndex1;
+		unsigned int	iIndex2;
+	}MESHIDXDATA;
+
+	typedef struct tagMeshVtxData
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT2		vTexUV;
+		XMFLOAT3		vTangent;
+	}MESHVTXDATA;
+
+	typedef struct tagMeshData
+	{
+		unsigned int	iNameSize;
+		char			szName[MAX_PATH] = { "" };
+		unsigned int	iMaterialIndex;
+		
+		unsigned int	iNumVertices;
+		MESHVTXDATA*	pMeshVtxData;
+		
+		unsigned int	iNumFaces;
+		MESHIDXDATA*	pMeshIdxData;
+
+		unsigned int	iNumBones;
+		ANIMMESHDATA*	pAnimMeshData;
+	}MESHDATA;
+
+#pragma endregion
+#pragma region Materials
+
+	typedef struct tagMaterialData
+	{
+		unsigned int	iNameSize;
+		char			szName[MAX_PATH] = { "" };
+	}MATERIALDATA;
+#pragma endregion
+#pragma region Animations
+	typedef struct tagKeyFrameData
+	{
+		unsigned int	iScaleKey;
+		XMFLOAT3		vScale;
+		double			dScaleTime;
+
+		unsigned int	iRotationKey;
+		XMFLOAT4		vRotation;
+		double			dRotationTime;
+
+		unsigned int	iPositionKey;
+		XMFLOAT3		vPosition;
+		double			dPositionTime;
+	}KEYFRAMEDATA;
+
+	typedef struct tagChannelData
+	{
+		unsigned int	iNameSize;
+		char			szName[MAX_PATH] = { "" };
+
+		unsigned int	iNumKeyFrames;
+		KEYFRAMEDATA*	pKeyFrameData;
+	}CHANNELDATA;
+
+	typedef struct tagAnimationData
+	{
+		unsigned int	iNameSize;
+		char			szName[MAX_PATH] = { "" };
+
+		double			dDuration;
+		double			dTickPerSecond;
+
+		unsigned int	iNumChannels;
+		CHANNELDATA*	pChannelData;
+	}ANIMATIONDATA;
+#pragma endregion
+
+	typedef struct tagModelData
+	{
+		unsigned int	iNumBones;
+		BONEDATA*		pBoneData;
+
+		unsigned int	iNumMeshes;
+		MESHDATA*		pMeshData;
+
+		unsigned int	iNumMaterials;
+		MATERIALDATA*	pMaterialData;
+
+		unsigned int	iNumAnimations;
+		ANIMATIONDATA*	pAnimationData;
+	}MODELDATA;
 
 #pragma endregion
 }

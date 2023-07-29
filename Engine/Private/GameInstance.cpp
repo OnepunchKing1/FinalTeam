@@ -7,6 +7,7 @@
 #include "Light_Manager.h"
 #include "Font_Manager.h"
 #include "Target_Manager.h"
+#include "Frustum.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -21,6 +22,7 @@ CGameInstance::CGameInstance()
 	, m_pFont_Manager{ CFont_Manager::GetInstance()}
 	, m_pTarget_Manager{ CTarget_Manager::GetInstance() }
 	, m_pPipeLine{ CPipeLine::GetInstance() }
+	, m_pFrustum{ CFrustum::GetInstance() }
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pInput_Device);
@@ -32,6 +34,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pTarget_Manager);
 	Safe_AddRef(m_pPipeLine);
+	Safe_AddRef(m_pFrustum);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHICDESC& GraphicDesc, ID3D11Device** ppDevice, ID3D11DeviceContext** ppContext)
@@ -54,6 +57,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (FAILED(m_pLevel_Manager->Reserve_Containers(iNumLevels)))
 		return E_FAIL;
 
+	if (FAILED(m_pFrustum->Initialize()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -67,6 +73,8 @@ void CGameInstance::Tick_Engine(_double dTimeDelta)
 	m_pObject_Manager->Tick(dTimeDelta);
 
 	m_pPipeLine->Tick();
+
+	m_pFrustum->Tick();
 
 	m_pObject_Manager->LateTick(dTimeDelta);
 
@@ -190,7 +198,23 @@ _bool CGameInstance::Get_AnyKeyPressing()
 	return m_pInput_Device->Get_AnyKeyPressing();
 }
 
-CLevel* CGameInstance::Get_LoadedStage(_uint iLevelIndex)
+CLevel* CGameInstance::Get_CulLevel() const
+{
+	if (nullptr == m_pLevel_Manager)
+		return nullptr;
+
+	return m_pLevel_Manager->Get_CulLevel();
+}
+
+_uint CGameInstance::Get_CurLevelIdx() const
+{
+	if (nullptr == m_pLevel_Manager)
+		return false;
+
+	return m_pLevel_Manager->Get_CurLevelIdx();
+}
+
+CLevel* CGameInstance::Get_LoadedStage(_uint iLevelIndex) const
 {
 	if (nullptr == m_pLevel_Manager)
 		return nullptr;
@@ -204,6 +228,22 @@ _bool CGameInstance::Get_IsStage() const
 		return false;
 
 	return m_pLevel_Manager->Get_IsStage();
+}
+
+_bool CGameInstance::Get_IsLoadForAll() const
+{
+	if (nullptr == m_pLevel_Manager)
+		return false;
+
+	return m_pLevel_Manager->Get_IsLoadForAll();
+}
+
+void CGameInstance::Set_IsLoadForAll()
+{
+	if (nullptr == m_pLevel_Manager)
+		return;
+
+	m_pLevel_Manager->Set_IsLoadForAll();
 }
 
 HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel* pNextLevel, _bool isStage, _bool isRelease)
@@ -388,6 +428,14 @@ _float4 CGameInstance::Get_CameraPosition() const
 	return m_pPipeLine->Get_CameraPosition();
 }
 
+_bool CGameInstance::isIn_WorldSpace(_fvector vWorldPos, _float fRange)
+{
+	if (nullptr == m_pFrustum)
+		return false;
+
+	return m_pFrustum->isIn_WorldSpace(vWorldPos, fRange);
+}
+
 void CGameInstance::Release_Engine()
 {
 	CPipeLine::GetInstance()->DestroyInstance();
@@ -406,6 +454,8 @@ void CGameInstance::Release_Engine()
 
 	CFont_Manager::GetInstance()->DestroyInstance();
 
+	CFrustum::GetInstance()->DestroyInstance();
+
 	CTarget_Manager::GetInstance()->DestroyInstance();
 
 	CInput_Device::GetInstance()->DestroyInstance();
@@ -415,6 +465,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pFrustum);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pFont_Manager);

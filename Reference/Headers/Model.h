@@ -86,6 +86,8 @@ private: // 선형보간용
 	_bool	m_isLinearOn = { false };
 	vector<KEYFRAME> m_LastKeys;
 
+private:
+	MODELDATA					m_ModelData;
 
 private:
 	_float4x4					m_PivotMatrix;
@@ -111,11 +113,13 @@ private:
 	
 
 private:
-	HRESULT Ready_Meshes(ifstream* pFin);
-	HRESULT Ready_Materials(const char* pModelFilePath, ifstream* pFin);
-	HRESULT Ready_HierarchyBones(ifstream* pFin);
-	HRESULT Ready_Animations(ifstream* pFin);
-	
+	HRESULT	Ready_ModelData(const char* pModelFilePath, TYPE eModelType);
+	HRESULT Ready_Meshes();
+	HRESULT Ready_Materials(const char* pModelFilePath);
+	HRESULT Ready_HierarchyBones();
+	HRESULT Ready_Animations();
+	HRESULT Clear_LoadData(TYPE eModelType);
+
 public:
 	static CModel* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, TYPE eModelType, const char* pModelFilePath, _matrix PivotMatrix);
 	virtual CComponent* Clone(void* pArg) override;

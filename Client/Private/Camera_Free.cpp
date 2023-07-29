@@ -122,8 +122,7 @@ HRESULT CCamera_Free::Render()
 void CCamera_Free::TargetCamera(_double dTimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-
-	CTransform* m_pTargetTransformCom = dynamic_cast<CTransform*>(pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
+	CTransform* m_pTargetTransformCom = dynamic_cast<CTransform*>(pGameInstance->Get_Component(pGameInstance->Get_CurLevelIdx(), TEXT("Layer_Player"), TEXT("Com_Transform")));
 
 	_vector vTargetPos = m_pTargetTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);

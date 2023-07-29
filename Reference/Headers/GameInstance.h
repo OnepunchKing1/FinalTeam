@@ -38,10 +38,14 @@ public: /*for Input_Device*/
     _bool		Get_AnyKeyPressing();
 
 public: /*for Level_Manager*/
-    class CLevel* Get_LoadedStage(_uint iLevelIndex);
-    _bool       Get_IsStage() const;
-    HRESULT     Open_Level(_uint iLevelIndex, class CLevel* pNextLevel, _bool isStage = false, _bool isRelease = true);
-    HRESULT     Swap_Level(_uint iLevelIndex);
+    class CLevel*   Get_CulLevel() const;
+    _uint           Get_CurLevelIdx() const;
+    class CLevel*   Get_LoadedStage(_uint iLevelIndex) const;
+    _bool           Get_IsStage() const;
+    _bool           Get_IsLoadForAll() const;
+    void            Set_IsLoadForAll();
+    HRESULT         Open_Level(_uint iLevelIndex, class CLevel* pNextLevel, _bool isStage = false, _bool isRelease = true);
+    HRESULT         Swap_Level(_uint iLevelIndex);
 
 public: /*for Object_Manager*/
     class CComponent*           Get_Component(_uint iLevelIndex, const _tchar * pLayerTag, const _tchar * pComponentTag);
@@ -73,6 +77,9 @@ public: /*for PipeLine*/
     _float4x4	Get_TransformFloat4x4_Inverse(CPipeLine::D3DTRANSFORMSTATE iTransformState) const;
     _float4		Get_CameraPosition() const;
 
+public: /* For.Frustum */
+    _bool isIn_WorldSpace(_fvector vWorldPos, _float fRange = 0.f);
+
 public: /*for Engine*/
     static void Release_Engine();
 
@@ -87,6 +94,7 @@ private:
     class CFont_Manager*        m_pFont_Manager         = { nullptr };
     class CTarget_Manager*      m_pTarget_Manager       = { nullptr };
     class CPipeLine*            m_pPipeLine             = { nullptr };
+    class CFrustum*             m_pFrustum = { nullptr };
 
 public:
     virtual void Free() override;

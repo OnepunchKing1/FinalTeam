@@ -39,6 +39,9 @@ void CRotationMapObject::Tick(_double TimeDelta)
 void CRotationMapObject::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
+
+	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this)))
+		return;
 }
 
 HRESULT CRotationMapObject::Render()

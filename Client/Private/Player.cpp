@@ -103,7 +103,7 @@ void CPlayer::Key_Input_Battle_Move(_double dTimeDelta)
 	Safe_AddRef(pGameInstance);
 
 	//카메라 방향 구해놓기
-	CCamera_Free* pCamera = dynamic_cast<CCamera_Free*>(pGameInstance->Get_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_Camera"), 0));
+	CCamera_Free* pCamera = dynamic_cast<CCamera_Free*>(pGameInstance->Get_GameObject(pGameInstance->Get_CurLevelIdx(), TEXT("Layer_Camera"), 0));
 	_float4 CameraLook = pCamera->Get_CameraLook();
 	CameraLook.y = 0.0f;
 	CameraLook.w = 0.0f;

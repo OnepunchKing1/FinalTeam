@@ -10,7 +10,7 @@ private:
 	virtual ~CChannel() = default;
 
 public:
-	HRESULT Initialize(ifstream* pFin, const char* pName, _uint iBoneIndex);
+	HRESULT Initialize(CHANNELDATA* pChannelData, const char* pName, _uint iBoneIndex);
 	void	Invalidate(class CModel* pModel, _uint& pCurrentKeyFrame, _double TrackPosition);
 	void	Invalidate_Linear(class CModel* pModel, KEYFRAME LastKeyFrame_Prev, _double TrackPosition  );
 	
@@ -45,7 +45,7 @@ private:
 	_bool	 m_isReverse = { false };
 
 public:
-	static CChannel* Create(ifstream* pFin, const char* pName, _uint iBoneIndex);
+	static CChannel* Create(CHANNELDATA* pChannelData, const char* pName, _uint iBoneIndex);
 	virtual void Free() override;
 };
 
