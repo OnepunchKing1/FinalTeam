@@ -27,6 +27,7 @@ public:
     HRESULT Initialize(LEVELID eLevelID);
 
     HRESULT LoadingForLogo();
+
     HRESULT LoadingForGamePlay();
     HRESULT LoadingForVillage();
     HRESULT LoadingForHouse();

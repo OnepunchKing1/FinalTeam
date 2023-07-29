@@ -5,14 +5,11 @@ CBone::CBone()
 {
 }
 
-HRESULT CBone::Initialize(ifstream* pFin)
+HRESULT CBone::Initialize(BONEDATA* pModelData)
 {
-	_uint iSize = { 0 };
-	pFin->read(reinterpret_cast<char*>(&iSize), sizeof(_uint));
-	pFin->read(m_szName, iSize);
-	strcat_s(m_szName, "\0");
-	pFin->read(reinterpret_cast<char*>(&m_TransformationMatrix), sizeof(_float4x4));
-	pFin->read(reinterpret_cast<char*>(&m_iParentIndex), sizeof(_int));
+	strcpy_s(m_szName, pModelData->szName);
+	m_TransformationMatrix = pModelData->TransformationMatrix;
+	m_iParentIndex = pModelData->iParentIndex;
 	XMStoreFloat4x4(&m_CombinedTransformationMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_OffsetMatrix, XMMatrixIdentity());
 
@@ -37,11 +34,11 @@ void CBone::Invalidate_CombinedTransformationMatrix(CModel* pModel)
 	}
 }
 
-CBone* CBone::Create(ifstream* pFin)
+CBone* CBone::Create(BONEDATA* pModelData)
 {
 	CBone* pInstance = new CBone();
 
-	if (FAILED(pInstance->Initialize(pFin)))
+	if (FAILED(pInstance->Initialize(pModelData)))
 	{
 		MSG_BOX("Failed to Created : CBone");
 		Safe_Release(pInstance);

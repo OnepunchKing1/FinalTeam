@@ -163,5 +163,82 @@ namespace Engine
 	}VTXPOINTINSTANCE_DECL;
 
 #pragma endregion
+
+#pragma region Data
+#pragma region Bones
+	typedef struct tagBoneData
+	{
+		unsigned int	iNameSize;
+		char			szName[MAX_PATH] = { "" };
+		XMFLOAT4X4		TransformationMatrix;
+		int				iParentIndex;
+	}BONEDATA;
+#pragma endregion
+#pragma region Meshes
+	typedef struct tagWeightData
+	{
+		unsigned int	iVertexID;
+		float			fWeights;
+	}WEIGHTDATA;
+
+	typedef struct tagAnimMeshData
+	{
+		XMFLOAT4X4 OffsetMatrix;
+		unsigned int	iNameSize;
+		char			szName[MAX_PATH] = { "" };
+
+		unsigned int	iNumWeights;
+		WEIGHTDATA* pWeightData;
+	}ANIMMESHDATA;
+
+	typedef struct tagMeshIdxData
+	{
+		unsigned int	iIndex0;
+		unsigned int	iIndex1;
+		unsigned int	iIndex2;
+	}MESHIDXDATA;
+
+	typedef struct tagMeshVtxData
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT2		vTexUV;
+		XMFLOAT3		vTangent;
+	}MESHVTXDATA;
+
+	typedef struct tagMeshData
+	{
+		unsigned int	iNameSize;
+		char			szName[MAX_PATH] = { "" };
+		unsigned int	iMaterialIndex;
+		
+		unsigned int	iNumVertices;
+		MESHVTXDATA*	pMeshVtxData;
+		
+		unsigned int	iNumFaces;
+		MESHIDXDATA*	pMeshIdxData;
+
+		unsigned int	iNumBones;
+		ANIMMESHDATA*	pAnimMeshData;
+	}MESHDATA;
+
+#pragma endregion
+#pragma region Meterials
+
+#pragma endregion
+#pragma region Animations
+
+#pragma endregion
+
+	typedef struct tagModelData
+	{
+		unsigned int	iNumBones;
+		BONEDATA* pBoneData;
+
+		unsigned int	iNumMeshes;
+		MESHDATA* pMeshData;
+	}MODELDATA;
+
+#pragma endregion
 }
 

@@ -88,6 +88,12 @@ HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char* pModelFilePath
 	strcat_s(szFullPath, szFileName);
 	strcat_s(szFullPath, ".bin");*/
 	
+	ZeroMemory(&m_ModelData, sizeof m_ModelData);
+
+	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
+
+	//===========================
+
 	ifstream fin;
 	fin.open(pModelFilePath, ios::binary);
 
@@ -97,21 +103,92 @@ HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char* pModelFilePath
 		return E_FAIL;
 	}
 
-	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);
+	fin.read(reinterpret_cast<char*>(&m_ModelData.iNumBones), sizeof(_uint));
 
-	/*if (FAILED(Ready_HierarchyBones(m_pAIScene->mRootNode, -1)))
+	m_ModelData.pBoneData = new BONEDATA[m_ModelData.iNumBones];
+
+	for (_uint i = 0; i < m_ModelData.iNumBones; i++)
 	{
-		MSG_BOX("Failed to Ready_HierarchyBones : CModel");
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].iNameSize), sizeof(_uint));
+		fin.read(m_ModelData.pBoneData[i].szName, m_ModelData.pBoneData[i].iNameSize);
+		strcat_s(m_ModelData.pBoneData[i].szName, "\0");
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].TransformationMatrix), sizeof(_float4x4));
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].iParentIndex), sizeof(_int));
+	}
+
+	fin.read(reinterpret_cast<char*>(&m_ModelData.iNumMeshes), sizeof(_uint));
+
+	m_ModelData.pMeshData = new MESHDATA[m_ModelData.iNumMeshes];
+
+	for (_uint i = 0; i < m_ModelData.iNumMeshes; i++)
+	{
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNameSize), sizeof(_uint));
+		fin.read(m_ModelData.pMeshData[i].szName, m_ModelData.pMeshData[i].iNameSize);
+		strcat_s(m_ModelData.pMeshData[i].szName, "\0");
+		fin.read(reinterpret_cast<char*>(m_ModelData.pMeshData[i].iMaterialIndex), sizeof(_uint));
+		fin.read(reinterpret_cast<char*>(m_ModelData.pMeshData[i].iNumVertices), sizeof(_uint));
+		fin.read(reinterpret_cast<char*>(m_ModelData.pMeshData[i].iNumFaces), sizeof(_uint));
+
+		m_ModelData.pMeshData[i].pMeshVtxData = new MESHVTXDATA[m_ModelData.pMeshData[i].iNumVertices];
+
+		for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumVertices; j++)
+		{
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vPosition), sizeof(_float3));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vNormal), sizeof(_float3));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vTexUV), sizeof(_float2));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vTangent), sizeof(_float3));
+		}
+
+
+		if (CModel::TYPE_ANIM == eModelType)
+		{
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumBones), sizeof(_uint));
+
+			m_ModelData.pMeshData[i].pAnimMeshData = new ANIMMESHDATA[m_ModelData.pMeshData[i].iNumBones];
+
+			for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumBones; j++)
+			{
+				fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].OffsetMatrix), sizeof(_float4x4));
+				fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].iNameSize), sizeof(_uint));
+				fin.read(m_ModelData.pMeshData[i].pAnimMeshData[j].szName, m_ModelData.pMeshData[i].pAnimMeshData[j].iNameSize);
+
+				fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights), sizeof(_uint));
+
+				m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData = new WEIGHTDATA[m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights];
+
+				for (_uint k = 0; k < m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights; k++)
+				{
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData[k].iVertexID), sizeof(_uint));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData[k].fWeights), sizeof(_float));
+				}
+			}
+		}
+
+		m_ModelData.pMeshData[i].pMeshIdxData = new MESHIDXDATA[m_ModelData.pMeshData[i].iNumFaces];
+
+		for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumFaces; j++)
+		{
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshIdxData[j].iIndex0), sizeof(_uint));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshIdxData[j].iIndex1), sizeof(_uint));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshIdxData[j].iIndex2), sizeof(_uint));
+		}
+	}
+
+	//===============================
+
+	/*if (FAILED(Ready_ModelData(pModelFilePath, eModelType)))
+	{
+		MSG_BOX("Failed to Ready_ModelData : CModel");
 		return E_FAIL;
 	}*/
 
-	if (FAILED(Ready_HierarchyBones(&fin)))
+	if (FAILED(Ready_HierarchyBones()))
 	{
 		MSG_BOX("Failed to Ready_HierarchyBones : CModel");
 		return E_FAIL;
 	}
 
-	if (FAILED(Ready_Meshes(&fin)))
+	if (FAILED(Ready_Meshes()))
 	{
 		MSG_BOX("Failed to Ready_Meshes : CModel");
 		return E_FAIL;
@@ -252,16 +329,101 @@ HRESULT CModel::Bind_ShaderBoneMatrices(_uint iMeshIndex, CShader* pShader, cons
 	return pShader->SetUp_Matrix_Array(pConstantName, BoneMatrices, 256);
 }
 
-HRESULT CModel::Ready_Meshes(ifstream* pFin)
+HRESULT CModel::Ready_ModelData(const char* pModelFilePath, TYPE eModelType)
 {
-	if (nullptr == pFin)
-		return E_FAIL;
+	ifstream fin;
+	fin.open(pModelFilePath, ios::binary);
 
-	pFin->read(reinterpret_cast<char*>(&m_iNumMeshes), sizeof(_uint));
+	if (false == fin.is_open())
+	{
+		MSG_BOX("Failed to ReadModelBinaryFile : CModel");
+		return E_FAIL;
+	}
+
+#pragma region Bones
+	fin.read(reinterpret_cast<char*>(&m_ModelData.iNumBones), sizeof(_uint));
+
+	m_ModelData.pBoneData = new BONEDATA[m_ModelData.iNumBones];
+
+	for (_uint i = 0; i < m_ModelData.iNumBones; i++)
+	{
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].iNameSize), sizeof(_uint));
+		fin.read(m_ModelData.pBoneData[i].szName, m_ModelData.pBoneData[i].iNameSize);
+		strcat_s(m_ModelData.pBoneData[i].szName, "\0");
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].TransformationMatrix), sizeof(_float4x4));
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].iParentIndex), sizeof(_int));
+	}
+#pragma endregion
+
+#pragma region Meshes
+	fin.read(reinterpret_cast<char*>(&m_ModelData.iNumMeshes), sizeof(_uint));
+
+	m_ModelData.pMeshData = new MESHDATA[m_ModelData.iNumMeshes];
+
+	for (_uint i = 0; i < m_ModelData.iNumMeshes; i++)
+	{
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNameSize), sizeof(_uint));
+		fin.read(m_ModelData.pMeshData[i].szName, m_ModelData.pMeshData[i].iNameSize);
+		strcat_s(m_ModelData.pMeshData[i].szName, "\0");
+		fin.read(reinterpret_cast<char*>(m_ModelData.pMeshData[i].iMaterialIndex), sizeof(_uint));
+		fin.read(reinterpret_cast<char*>(m_ModelData.pMeshData[i].iNumVertices), sizeof(_uint));
+		fin.read(reinterpret_cast<char*>(m_ModelData.pMeshData[i].iNumFaces), sizeof(_uint));
+
+		m_ModelData.pMeshData[i].pMeshVtxData = new MESHVTXDATA[m_ModelData.pMeshData[i].iNumVertices];
+
+		for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumVertices; j++)
+		{
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vPosition), sizeof(_float3));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vNormal), sizeof(_float3));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vTexUV), sizeof(_float2));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vTangent), sizeof(_float3));
+		}
+
+		
+		if (CModel::TYPE_ANIM == eModelType)
+		{
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumBones), sizeof(_uint));
+
+			m_ModelData.pMeshData[i].pAnimMeshData = new ANIMMESHDATA[m_ModelData.pMeshData[i].iNumBones];
+
+			for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumBones; j++)
+			{
+				fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].OffsetMatrix), sizeof(_float4x4));
+				fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].iNameSize), sizeof(_uint));
+				fin.read(m_ModelData.pMeshData[i].pAnimMeshData[j].szName, m_ModelData.pMeshData[i].pAnimMeshData[j].iNameSize);
+
+				fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights), sizeof(_uint));
+
+				m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData = new WEIGHTDATA[m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights];
+				
+				for (_uint k = 0; k < m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights; k++)
+				{
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData[k].iVertexID), sizeof(_uint));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData[k].fWeights), sizeof(_float));
+				}
+			}
+		}
+	}
+#pragma endregion
+
+#pragma region Meterials
+
+#pragma endregion
+
+#pragma region Animations
+
+#pragma endregion
+
+	return E_NOTIMPL;
+}
+
+HRESULT CModel::Ready_Meshes()
+{
+	m_iNumMeshes = m_ModelData.iNumMeshes;
 
 	for (_uint i = 0; i < m_iNumMeshes; i++)
 	{
-		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_eModelType, pFin, XMLoadFloat4x4(&m_PivotMatrix), this);
+		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_eModelType, &m_ModelData.pMeshData[i], XMLoadFloat4x4(&m_PivotMatrix), this);
 		if (nullptr == pMesh)
 		{
 			MSG_BOX("Failed to CreateMesh : CModel");
@@ -335,16 +497,15 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath, ifstream* pFin)
 	return S_OK;
 }
 
-HRESULT CModel::Ready_HierarchyBones(ifstream* pFin)
+HRESULT CModel::Ready_HierarchyBones()
 {
-	_uint iNumBones = { 0 };
-	pFin->read(reinterpret_cast<char*>(&iNumBones), sizeof(_uint));
+	_uint iNumBones = m_ModelData.iNumBones;
 
 	m_Bones.reserve(iNumBones);
 
 	for (_uint i = 0; i < iNumBones; i++)
 	{
-		CBone* pBone = CBone::Create(pFin);
+		CBone* pBone = CBone::Create(&m_ModelData.pBoneData[i]);
 		if (nullptr == pBone)
 			return E_FAIL;
 
