@@ -7,6 +7,7 @@
 #include "Light_Manager.h"
 #include "Font_Manager.h"
 #include "Target_Manager.h"
+#include "Frustum.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -21,6 +22,7 @@ CGameInstance::CGameInstance()
 	, m_pFont_Manager{ CFont_Manager::GetInstance()}
 	, m_pTarget_Manager{ CTarget_Manager::GetInstance() }
 	, m_pPipeLine{ CPipeLine::GetInstance() }
+	, m_pFrustum{ CFrustum::GetInstance() }
 {
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pInput_Device);
@@ -32,6 +34,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pFont_Manager);
 	Safe_AddRef(m_pTarget_Manager);
 	Safe_AddRef(m_pPipeLine);
+	Safe_AddRef(m_pFrustum);
 }
 
 HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, const GRAPHICDESC& GraphicDesc, ID3D11Device** ppDevice, ID3D11DeviceContext** ppContext)
@@ -51,7 +54,11 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (FAILED(m_pComponenet_Manager->Reserve_Containers(iNumLevels)))
 		return E_FAIL;
 
+<<<<<<< HEAD
+	if (FAILED(m_pFrustum->Initialize()))
+=======
 	if (FAILED(m_pLevel_Manager->Reserve_Containers(iNumLevels)))
+>>>>>>> bec53fd3f1eb6136b95fc95455dea05c689f68eb
 		return E_FAIL;
 
 	return S_OK;
@@ -67,6 +74,8 @@ void CGameInstance::Tick_Engine(_double dTimeDelta)
 	m_pObject_Manager->Tick(dTimeDelta);
 
 	m_pPipeLine->Tick();
+
+	m_pFrustum->Tick();
 
 	m_pObject_Manager->LateTick(dTimeDelta);
 
@@ -388,6 +397,14 @@ _float4 CGameInstance::Get_CameraPosition() const
 	return m_pPipeLine->Get_CameraPosition();
 }
 
+_bool CGameInstance::isIn_WorldSpace(_fvector vWorldPos, _float fRange)
+{
+	if (nullptr == m_pFrustum)
+		return false;
+
+	return m_pFrustum->isIn_WorldSpace(vWorldPos, fRange);
+}
+
 void CGameInstance::Release_Engine()
 {
 	CPipeLine::GetInstance()->DestroyInstance();
@@ -406,6 +423,8 @@ void CGameInstance::Release_Engine()
 
 	CFont_Manager::GetInstance()->DestroyInstance();
 
+	CFrustum::GetInstance()->DestroyInstance();
+
 	CTarget_Manager::GetInstance()->DestroyInstance();
 
 	CInput_Device::GetInstance()->DestroyInstance();
@@ -415,6 +434,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pFrustum);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pFont_Manager);
