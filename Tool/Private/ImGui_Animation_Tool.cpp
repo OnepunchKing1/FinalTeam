@@ -247,10 +247,18 @@ void CImGui_Animation_Tool::Animation_ImGui_Main()
 
 void CImGui_Animation_Tool::Set_vecName(vector<char*> vecName)
 {
-    size_t iNameSize = vecName.size();
-    m_vecName_ForListBox.reserve(iNameSize); // Reserve memory to avoid reallocation
-    for (size_t i = 0; i < iNameSize; i++)
-        m_vecName_ForListBox.push_back(vecName[i]);
+   /* if (m_isFirst_ListBox)
+    {
+        m_isFirst_ListBox = false;
+
+        size_t iNameSize = vecName.size();
+        m_vecName_ForListBox.reserve(iNameSize); // Reserve memory to avoid reallocation
+        for (size_t i = 0; i < iNameSize; i++)
+            m_vecName_ForListBox.push_back(vecName[i]);
+    }*/
+
+    m_vecName_ForListBox = vecName;
+  
 }
 
 void CImGui_Animation_Tool::Free()

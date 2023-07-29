@@ -31,6 +31,7 @@ public: // GetSet
 	void Set_Animation(CAnimation* pAnim) { m_pAnimation = pAnim; }
 
 	void Set_vecName(vector<char*> vecName);
+	
 
 	_int Get_AnimIndex() { return m_iAnimIndex; }
 	void Set_AnimIndex(_int index) { m_iAnimIndex = index; }
@@ -55,9 +56,11 @@ private:
 	_bool	m_isRootAnimation = { false };
 
 	// º¯¼ö
+	_bool	m_isFirst_ListBox = { true };
+
 	CAnimation*		m_pAnimation = { nullptr };
 
-	vector<const char*> m_vecName_ForListBox;
+	vector<char*> m_vecName_ForListBox;
 	_int	m_iAnimIndex = { 0 };
 	_int	m_iSave_AnimIndex = { 0 };
 
