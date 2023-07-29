@@ -499,7 +499,7 @@ void CPlayer_Tanjiro::Moving_Restrict()
 		m_Moveset.m_isRestrict_Move = true;
 		m_Moveset.m_isRestrict_Jump = true;
 	}
-	//力茄 秦力
+	//力茄 秦力d
 	else
 	{
 		m_Moveset.m_isRestrict_Move = false;
