@@ -50,6 +50,9 @@ void CTerrainMapObject::Tick(_double TimeDelta)
 void CTerrainMapObject::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
+
+	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this)))
+		return;
 }
 
 HRESULT CTerrainMapObject::Render()

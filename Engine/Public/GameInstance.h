@@ -71,6 +71,9 @@ public: /*for PipeLine*/
     _float4x4	Get_TransformFloat4x4_Inverse(CPipeLine::D3DTRANSFORMSTATE iTransformState) const;
     _float4		Get_CameraPosition() const;
 
+public: /* For.Frustum */
+    _bool isIn_WorldSpace(_fvector vWorldPos, _float fRange = 0.f);
+
 public: /*for Engine*/
     static void Release_Engine();
 
@@ -85,6 +88,7 @@ private:
     class CFont_Manager*        m_pFont_Manager         = { nullptr };
     class CTarget_Manager*      m_pTarget_Manager       = { nullptr };
     class CPipeLine*            m_pPipeLine             = { nullptr };
+    class CFrustum* m_pFrustum = { nullptr };
 
 public:
     virtual void Free() override;

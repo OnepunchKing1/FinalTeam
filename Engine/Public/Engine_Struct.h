@@ -150,6 +150,17 @@ namespace Engine
 		float			fAngle;
 	}VTXINSTANCE;
 
+	typedef struct tagVertex_ModelInstance
+	{
+		XMFLOAT4				vRight;
+		XMFLOAT4				vUp;
+		XMFLOAT4				vLook;
+		XMFLOAT4				vTranslation;
+
+		unsigned int			iNumInstance;
+
+	}VTXMODELINSTANCE;
+
 	typedef struct ENGINE_DLL tagVertex_Rect_Instance_Declaration
 	{
 		static const unsigned int			iNumElements = { 9 };
@@ -161,6 +172,21 @@ namespace Engine
 		const static unsigned int			iNumElements = { 8 };
 		static D3D11_INPUT_ELEMENT_DESC		Elements[8];
 	}VTXPOINTINSTANCE_DECL;
+
+	typedef struct ENGINE_DLL tagVertex_MODEL_Instance_Declaration
+	{
+		const static unsigned int			iNumElements = { 8 };
+		static D3D11_INPUT_ELEMENT_DESC		Elements[8];
+	}VTXMODELINSTANCE_DECL;
+
+	typedef struct tagModelInstanceDesc
+	{
+		unsigned int		iNumInstance;
+		float				fRange;
+		float				fMinSize;
+		float				fMaxSize;
+
+	}MODELINSTANCEDESC;
 
 #pragma endregion
 }

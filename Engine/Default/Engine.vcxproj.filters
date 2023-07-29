@@ -151,6 +151,15 @@
     <Filter Include="01. Utility\03. Component\Collider\DebugDraw">
       <UniqueIdentifier>{f7fb7ac6-293f-44fa-8918-f0f081eddc07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Component\VIBuffer\Instancing\Model">
+      <UniqueIdentifier>{77cb99f7-b2a3-438b-bffe-e1a77b93c040}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\VIBuffer\Instancing\Model\Mesh">
+      <UniqueIdentifier>{f7bbe6f9-ca4c-4ef4-b46f-91acdf7985f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\08. Frustum">
+      <UniqueIdentifier>{cf0a78a0-cdc8-4f8d-a347-824211142b33}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -306,6 +315,15 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
       <Filter>99. Defines</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Model_Instance.h">
+      <Filter>01. Utility\03. Component\VIBuffer\Instancing\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh_Instance.h">
+      <Filter>01. Utility\03. Component\VIBuffer\Instancing\Model\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Frustum.h">
+      <Filter>01. Utility\08. Frustum</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -445,6 +463,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\DebugDraw.cpp">
       <Filter>01. Utility\03. Component\Collider\DebugDraw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model_Instance.cpp">
+      <Filter>01. Utility\03. Component\VIBuffer\Instancing\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh_Instance.cpp">
+      <Filter>01. Utility\03. Component\VIBuffer\Instancing\Model\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Frustum.cpp">
+      <Filter>01. Utility\08. Frustum</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

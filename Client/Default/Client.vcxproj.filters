@@ -85,6 +85,9 @@
     <Filter Include="01. Levels\99. Loadiing\Loader">
       <UniqueIdentifier>{07b93f72-9039-41ee-9ba4-3577f8d3ed92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject\InstanceMapObject">
+      <UniqueIdentifier>{edf890b9-bb3e-4168-b318-747b426d65b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -165,6 +168,9 @@
     <ClInclude Include="..\Public\Level_Train.h">
       <Filter>01. Levels\04. Train</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\InstanceMapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject\InstanceMapObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -233,6 +239,9 @@
     <ClCompile Include="..\Private\Level_Train.cpp">
       <Filter>01. Levels\04. Train</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\InstanceMapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject\InstanceMapObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -261,6 +270,9 @@
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTerrainModel.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxModelInstance.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
