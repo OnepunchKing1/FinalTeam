@@ -195,6 +195,89 @@ void CCharacter::Go_Straight_Deceleration(_double dTimeDelta, _int AnimIndex, _f
 	}
 }
 
+void CCharacter::Go_Straight_Constant(_double dTimeDelta, _int AnimIndex, _float constantSpeed)
+{
+	if (AnimIndex == m_pModelCom->Get_iCurrentAnimIndex())
+	{
+		m_pTransformCom->Go_Straight(dTimeDelta * constantSpeed);
+	}
+}
+
+void CCharacter::Gravity(_double dTimeDelta)
+{
+	_float4 Pos;
+	XMStoreFloat4(&Pos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	//점프 상태
+	if (m_isJumpOn)
+	{
+		if (m_isJumpStop)
+		{
+			m_dTime_JumpStop += dTimeDelta;
+			if (m_dTime_JumpStop >= m_dTime_JumpStop_Duration)
+				m_isJumpStop = false;
+		}
+		else
+		{
+			m_pTransformCom->Go_Up(dTimeDelta * m_fJump_Acc);
+			m_fJump_Acc -= m_fGravity_Fall;
+		}
+
+		m_dDelay_Fall += dTimeDelta;
+		if (m_dDelay_Fall > 0.1)
+		{
+			if (Pos.y <= 0.0)
+			{
+				m_isJumpOn = false;
+				Pos.y = 0.0f;
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&Pos));
+			}		
+		}
+	}
+	//땅 위 상태
+	else
+	{
+		Pos.y = 0.0f;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&Pos));
+		
+		m_fJump_Acc = 0.0f;
+		m_isFirst_JumpAtk = true;
+	}
+	
+	
+}
+
+void CCharacter::Ground_Animation_Play(_int CurAnim, _int GroundAnim)
+{
+	if (m_pModelCom->Get_iCurrentAnimIndex() == CurAnim)
+	{
+		_float4 Pos;
+		XMStoreFloat4(&Pos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+		if (Pos.y <= 0.0f)
+		{
+			m_pModelCom->Set_Animation(GroundAnim);
+		}
+	}
+
+}
+
+void CCharacter::Jumping( _float ResetSpeed, _float fFallDecrease)
+{
+	m_fJump_Acc = ResetSpeed;
+	m_isJumpOn = true;
+	m_dDelay_Fall = 0.0;
+
+	m_fGravity_Fall = fFallDecrease;
+}
+
+void CCharacter::JumpStop(_double dDuration)
+{
+	m_isJumpStop = true;
+	m_dTime_JumpStop_Duration = dDuration;
+	m_dTime_JumpStop = 0.0;
+}
+
 HRESULT CCharacter::Add_Components()
 {
 	/* for.Com_Renderer */

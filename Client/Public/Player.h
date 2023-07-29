@@ -17,25 +17,40 @@ public:
 		//입력 방향
 		_float4	 m_Input_Dir = { 0.f, 0.f, 0.f, 0.f };
 
-		//무빙 제한
+		// 제한
+		_bool	m_isRestrict_KeyInput = { false };
 		_bool	m_isRestrict_Move = { false };
+		_bool	m_isRestrict_Jump = { false };
+		_bool	m_isRestrict_JumpCombo = { false };
 
 		//달리기 키인풋
 		_bool	m_State_Battle_Run = { false };
 		_bool	m_Down_Battle_Run = { false };
 		_bool	m_Up_Battle_Run = { false };
 
+		//점프 키인풋
+		_bool	m_Down_Battle_Jump = { false };
+		_bool	m_Down_Battle_JumpMove = { false };
+
+		//점프 공격 키인풋
+		_bool	m_Down_Battle_Jump_Attack = { false };
+		_bool	m_Down_Battle_Jump_TrackAttack = { false };
+
 		//콤보공격 키인풋
 		_bool	m_Down_Battle_Combo = { false };
 		_bool	m_Down_Battle_Combo_Up = { false };
 		_bool	m_Down_Battle_Combo_Down = { false };
-		_bool	m_isPressing_While_Combo = { false };
+		_bool	m_isPressing_While_Restrict = { false };
 
 		//스킬공격 키인풋
 		_bool	m_Down_Skill_Normal = { false };
 		_bool	m_Down_Skill_Move = { false };
 		_bool	m_Down_Skill_Guard = { false };
 
+		//가드 키인풋
+		_bool	m_Down_Battle_Guard = { false };
+		_bool	m_State_Battle_Guard = { false };
+		_bool	m_Up_Battle_Guard = { false };
 
 	}PLAYERMOVESET;
 
@@ -56,8 +71,13 @@ public:
 protected: //애니메이션 제어용 함수들
 	void	Key_Input(_double dTimeDelta);
 	void	Key_Input_Battle_Move(_double dTimeDelta);
+	void	Key_Input_Battle_Jump(_double dTimeDelta);
 	void	Key_Input_Battle_Attack(_double dTimeDelta);
 	void	Key_Input_Battle_Skill(_double dTimeDelta);
+	void	Key_Input_Battle_Guard(_double dTimeDelta);
+
+
+	
 
 protected: // 애니메이션 제어용 변수들
 	PLAYERMOVESET  m_Moveset;

@@ -10,6 +10,7 @@
 
 //AnimTool¿ë
 #include "AnimCharacter_Tool.h"
+#include "ImGui_Animation_Tool.h"
 
 //MapObject
 #include "StaticMapObject.h"
@@ -213,6 +214,8 @@ HRESULT CLoader_Tool::LoadingForTool(_bool isLoad)
 			MSG_BOX("Failed to Add_Prototype_Component_Collider_Sphere");
 			return E_FAIL;
 		}
+
+
 #pragma endregion
 
 

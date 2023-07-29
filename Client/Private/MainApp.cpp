@@ -192,7 +192,7 @@ void CMainApp::Key_Input(_double dTimeDelta)
 			else
 				hr = m_pGameInstance->Swap_Level(LEVEL_HOUSE);
 		}
-
+		/*
 		if (m_pGameInstance->Get_DIKeyDown(DIK_F5))
 		{
 			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_TRAIN))
@@ -200,7 +200,7 @@ void CMainApp::Key_Input(_double dTimeDelta)
 			else
 				hr = m_pGameInstance->Swap_Level(LEVEL_TRAIN);
 		}
-
+		*/
 		if (m_pGameInstance->Get_DIKeyDown(DIK_F6))
 		{
 			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_FINALBOSS))

@@ -14,8 +14,12 @@ class CPlayer_Tanjiro final : public CPlayer
 public:
 	enum ANIM {
 		ANIM_ATK_COMBO = 21,
+		ANIM_ATK_AIRCOMBO = 29,
 		ANIM_ATK_SKILL_GUARD = 34, ANIM_ATK_SKILL_MOVE = 38, ANIM_ATK_SKILL_NORMAL = 42,
+		ANIM_ATK_AIRTRACK = 49,
+		ANIM_BATTLE_GUARD = 63, ANIM_BATTLE_GUARD_HIT_BIG = 66, ANIM_BATTLE_GUARD_HIT_SMALL = 67, ANIM_BATTLE_GUARD_PUSH = 68,
 		ANIM_BATTLE_IDLE = 82,
+		ANIM_BATTLE_JUMP = 83,
 		ANIM_BATTLE_RUN = 87, ANIM_BATTLE_RUN_END = 89,
 		ANIM_END = 116
 	};
@@ -39,14 +43,21 @@ private: //애니메이션 제어용 함수들
 
 	void	Animation_Control(_double dTimeDelta);
 	void	Animation_Control_Battle_Move(_double dTimeDelta);
+	void	Animation_Control_Battle_Jump(_double dTimeDelta);
 	void	Animation_Control_Battle_Attack(_double dTimeDelta);
 	void	Animation_Control_Battle_Skill(_double dTimeDelta);
+	void	Animation_Control_Battle_Guard(_double dTimeDelta);
+
+	void	Moving_Restrict();
 
 
 
 private: //애니메이션 제어용 변수들
 	//Move
 	_float	m_fMove_Speed = { 2.f };
+
+	_bool	m_isJump_Move = { false };
+
 
 private:
 	/* 임시 코드 */
