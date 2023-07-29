@@ -35,11 +35,11 @@ HRESULT CLevel_FinalBoss::Initialize()
         return E_FAIL;
     }
 
-    /*if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+    if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
     {
         MSG_BOX("Failed to Ready_Layer_Camera : CLevel_FinalBoss");
         return E_FAIL;
-    }*/
+    }
 
     if (FAILED(Ready_Layer_MapObject(TEXT("Layer_MapObject"))))
     {

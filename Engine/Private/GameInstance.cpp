@@ -190,7 +190,23 @@ _bool CGameInstance::Get_AnyKeyPressing()
 	return m_pInput_Device->Get_AnyKeyPressing();
 }
 
-CLevel* CGameInstance::Get_LoadedStage(_uint iLevelIndex)
+CLevel* CGameInstance::Get_CulLevel() const
+{
+	if (nullptr == m_pLevel_Manager)
+		return nullptr;
+
+	return m_pLevel_Manager->Get_CulLevel();
+}
+
+_uint CGameInstance::Get_CurLevelIdx() const
+{
+	if (nullptr == m_pLevel_Manager)
+		return false;
+
+	return m_pLevel_Manager->Get_CurLevelIdx();
+}
+
+CLevel* CGameInstance::Get_LoadedStage(_uint iLevelIndex) const
 {
 	if (nullptr == m_pLevel_Manager)
 		return nullptr;

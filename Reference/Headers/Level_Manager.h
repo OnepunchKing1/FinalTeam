@@ -12,6 +12,10 @@ private:
     virtual ~CLevel_Manager() = default;
 
 public:
+    CLevel* Get_CulLevel() const {
+        return m_pCurrentLevel; 
+    }
+
     _uint   Get_CurLevelIdx() const {
         return m_iLevelIndex;
     }

@@ -183,12 +183,12 @@ namespace Engine
 
 	typedef struct tagAnimMeshData
 	{
-		XMFLOAT4X4 OffsetMatrix;
+		XMFLOAT4X4		OffsetMatrix;
 		unsigned int	iNameSize;
 		char			szName[MAX_PATH] = { "" };
 
 		unsigned int	iNumWeights;
-		WEIGHTDATA* pWeightData;
+		WEIGHTDATA*		pWeightData;
 	}ANIMMESHDATA;
 
 	typedef struct tagMeshIdxData

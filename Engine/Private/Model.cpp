@@ -262,64 +262,90 @@ HRESULT CModel::Ready_ModelData(const char* pModelFilePath, TYPE eModelType)
 
 #pragma region Bones
 	fin.read(reinterpret_cast<char*>(&m_ModelData.iNumBones), sizeof(_uint));
-
-	m_ModelData.pBoneData = new BONEDATA[m_ModelData.iNumBones];
-
-	for (_uint i = 0; i < m_ModelData.iNumBones; i++)
+	
+	if (0 != m_ModelData.iNumBones)
 	{
-		fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].iNameSize), sizeof(_uint));
-		fin.read(m_ModelData.pBoneData[i].szName, m_ModelData.pBoneData[i].iNameSize);
-		strcat_s(m_ModelData.pBoneData[i].szName, "\0");
-		fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].TransformationMatrix), sizeof(_float4x4));
-		fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].iParentIndex), sizeof(_int));
+		m_ModelData.pBoneData = new BONEDATA[m_ModelData.iNumBones];
+
+		for (_uint i = 0; i < m_ModelData.iNumBones; i++)
+		{
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].iNameSize), sizeof(_uint));
+			fin.read(m_ModelData.pBoneData[i].szName, m_ModelData.pBoneData[i].iNameSize);
+			strcat_s(m_ModelData.pBoneData[i].szName, "\0");
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].TransformationMatrix), sizeof(_float4x4));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].iParentIndex), sizeof(_int));
+		}
 	}
 #pragma endregion
 
 #pragma region Meshes
 	fin.read(reinterpret_cast<char*>(&m_ModelData.iNumMeshes), sizeof(_uint));
 
-	m_ModelData.pMeshData = new MESHDATA[m_ModelData.iNumMeshes];
-
-	for (_uint i = 0; i < m_ModelData.iNumMeshes; i++)
+	if (0 != m_ModelData.iNumMeshes)
 	{
-		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNameSize), sizeof(_uint));
-		fin.read(m_ModelData.pMeshData[i].szName, m_ModelData.pMeshData[i].iNameSize);
-		strcat_s(m_ModelData.pMeshData[i].szName, "\0");
-		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iMaterialIndex), sizeof(_uint));
-		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumVertices), sizeof(_uint));
-		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumFaces), sizeof(_uint));
+		m_ModelData.pMeshData = new MESHDATA[m_ModelData.iNumMeshes];
 
-		m_ModelData.pMeshData[i].pMeshVtxData = new MESHVTXDATA[m_ModelData.pMeshData[i].iNumVertices];
-
-		for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumVertices; j++)
+		for (_uint i = 0; i < m_ModelData.iNumMeshes; i++)
 		{
-			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vPosition), sizeof(_float3));
-			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vNormal), sizeof(_float3));
-			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vTexUV), sizeof(_float2));
-			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vTangent), sizeof(_float3));
-		}
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNameSize), sizeof(_uint));
+			fin.read(m_ModelData.pMeshData[i].szName, m_ModelData.pMeshData[i].iNameSize);
+			strcat_s(m_ModelData.pMeshData[i].szName, "\0");
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iMaterialIndex), sizeof(_uint));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumVertices), sizeof(_uint));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumFaces), sizeof(_uint));
 
-		
-		if (CModel::TYPE_ANIM == eModelType)
-		{
-			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumBones), sizeof(_uint));
-
-			m_ModelData.pMeshData[i].pAnimMeshData = new ANIMMESHDATA[m_ModelData.pMeshData[i].iNumBones];
-
-			for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumBones; j++)
+			if (0 != m_ModelData.pMeshData[i].iNumVertices)
 			{
-				fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].OffsetMatrix), sizeof(_float4x4));
-				fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].iNameSize), sizeof(_uint));
-				fin.read(m_ModelData.pMeshData[i].pAnimMeshData[j].szName, m_ModelData.pMeshData[i].pAnimMeshData[j].iNameSize);
-				strcat_s(m_ModelData.pMeshData[i].pAnimMeshData[j].szName, "\0");
-				fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights), sizeof(_uint));
+				m_ModelData.pMeshData[i].pMeshVtxData = new MESHVTXDATA[m_ModelData.pMeshData[i].iNumVertices];
 
-				m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData = new WEIGHTDATA[m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights];
-				
-				for (_uint k = 0; k < m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights; k++)
+				for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumVertices; j++)
 				{
-					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData[k].iVertexID), sizeof(_uint));
-					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData[k].fWeights), sizeof(_float));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vPosition), sizeof(_float3));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vNormal), sizeof(_float3));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vTexUV), sizeof(_float2));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vTangent), sizeof(_float3));
+				}
+			}
+
+			if (CModel::TYPE_ANIM == eModelType)
+			{
+				fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumBones), sizeof(_uint));
+
+				if (0 != m_ModelData.pMeshData[i].iNumBones)
+				{
+					m_ModelData.pMeshData[i].pAnimMeshData = new ANIMMESHDATA[m_ModelData.pMeshData[i].iNumBones];
+
+					for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumBones; j++)
+					{
+						fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].OffsetMatrix), sizeof(_float4x4));
+						fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].iNameSize), sizeof(_uint));
+						fin.read(m_ModelData.pMeshData[i].pAnimMeshData[j].szName, m_ModelData.pMeshData[i].pAnimMeshData[j].iNameSize);
+						strcat_s(m_ModelData.pMeshData[i].pAnimMeshData[j].szName, "\0");
+						fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights), sizeof(_uint));
+
+						if (0 != m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights)
+						{
+							m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData = new WEIGHTDATA[m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights];
+
+							for (_uint k = 0; k < m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights; k++)
+							{
+								fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData[k].iVertexID), sizeof(_uint));
+								fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData[k].fWeights), sizeof(_float));
+							}
+						}
+					}
+				}
+			}
+
+			if (0 != m_ModelData.pMeshData[i].iNumFaces)
+			{
+				m_ModelData.pMeshData[i].pMeshIdxData = new MESHIDXDATA[m_ModelData.pMeshData[i].iNumFaces];
+
+				for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumFaces; j++)
+				{
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshIdxData[j].iIndex0), sizeof(_uint));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshIdxData[j].iIndex1), sizeof(_uint));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshIdxData[j].iIndex2), sizeof(_uint));
 				}
 			}
 		}
@@ -328,23 +354,25 @@ HRESULT CModel::Ready_ModelData(const char* pModelFilePath, TYPE eModelType)
 	
 #pragma region Meterials
 	fin.read(reinterpret_cast<char*>(&m_ModelData.iNumMaterials), sizeof(_uint));
-
-	m_ModelData.pMaterialData = new MATERIALDATA[m_ModelData.iNumMaterials * TEXTURE_TYPE_MAX];
-	
-	for (_uint i = 0; i < m_ModelData.iNumMaterials; i++)
+	if (0 != m_ModelData.iNumMaterials)
 	{
-		for (_uint j = 0; j < TEXTURE_TYPE_MAX; j++)
+		m_ModelData.pMaterialData = new MATERIALDATA[m_ModelData.iNumMaterials * TEXTURE_TYPE_MAX];
+
+		for (_uint i = 0; i < m_ModelData.iNumMaterials; i++)
 		{
-			_uint iIndex = (i * TEXTURE_TYPE_MAX) + j;
-
-			fin.read(reinterpret_cast<char*>(&m_ModelData.pMaterialData[iIndex].iNameSize), sizeof(_uint));
-
-			if (1 >= m_ModelData.pMaterialData[iIndex].iNameSize)
-				continue;
-			else
+			for (_uint j = 0; j < TEXTURE_TYPE_MAX; j++)
 			{
-				fin.read(m_ModelData.pMaterialData[iIndex].szName, m_ModelData.pMaterialData[iIndex].iNameSize);
-				strcat_s(m_ModelData.pMaterialData[iIndex].szName, "\0");
+				_uint iIndex = (i * TEXTURE_TYPE_MAX) + j;
+
+				fin.read(reinterpret_cast<char*>(&m_ModelData.pMaterialData[iIndex].iNameSize), sizeof(_uint));
+
+				if (1 >= m_ModelData.pMaterialData[iIndex].iNameSize)
+					continue;
+				else
+				{
+					fin.read(m_ModelData.pMaterialData[iIndex].szName, m_ModelData.pMaterialData[iIndex].iNameSize);
+					strcat_s(m_ModelData.pMaterialData[iIndex].szName, "\0");
+				}
 			}
 		}
 	}
@@ -353,51 +381,60 @@ HRESULT CModel::Ready_ModelData(const char* pModelFilePath, TYPE eModelType)
 #pragma region Animations
 	fin.read(reinterpret_cast<char*>(&m_ModelData.iNumAnimations), sizeof(_uint));
 
-	m_ModelData.pAnimationData = new ANIMATIONDATA[m_ModelData.iNumAnimations];
-
-	for (_uint i = 0; i < m_ModelData.iNumAnimations; i++)
+	if (0 != m_ModelData.iNumAnimations)
 	{
-		fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].iNameSize), sizeof(_uint));
-		fin.read(m_ModelData.pAnimationData[i].szName, m_ModelData.pAnimationData[i].iNameSize);
-		strcat_s(m_ModelData.pAnimationData[i].szName, "\0");
-		fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].dDuration), sizeof(_double));
-		fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].dTickPerSecond), sizeof(_double));
+		m_ModelData.pAnimationData = new ANIMATIONDATA[m_ModelData.iNumAnimations];
 
-		fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].iNumChannels), sizeof(_uint));
-
-		m_ModelData.pAnimationData[i].pChannelData = new CHANNELDATA[m_ModelData.pAnimationData[i].iNumChannels];
-
-		for (_uint j = 0; j < m_ModelData.pAnimationData[i].iNumChannels; j++)
+		for (_uint i = 0; i < m_ModelData.iNumAnimations; i++)
 		{
-			fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].iNameSize), sizeof(_uint));
-			fin.read(m_ModelData.pAnimationData[i].pChannelData[j].szName, m_ModelData.pAnimationData[i].pChannelData[j].iNameSize);
-			strcat_s(m_ModelData.pAnimationData[i].pChannelData[j].szName, "\0");
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].iNameSize), sizeof(_uint));
+			fin.read(m_ModelData.pAnimationData[i].szName, m_ModelData.pAnimationData[i].iNameSize);
+			strcat_s(m_ModelData.pAnimationData[i].szName, "\0");
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].dDuration), sizeof(_double));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].dTickPerSecond), sizeof(_double));
 
-			fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].iNumKeyFrames), sizeof(_uint));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].iNumChannels), sizeof(_uint));
 
-			m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData = new KEYFRAMEDATA[m_ModelData.pAnimationData[i].pChannelData[j].iNumKeyFrames];
-
-			for (_uint k = 0; k < m_ModelData.pAnimationData[i].pChannelData[j].iNumKeyFrames; k++)
+			if (0 != m_ModelData.pAnimationData[i].iNumChannels)
 			{
-				fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].iScaleKey), sizeof(_uint));
-				if (k < m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].iScaleKey)
-				{
-					fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].vScale), sizeof(_float3));
-					fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].dScaleTime), sizeof(_double));
-				}
+				m_ModelData.pAnimationData[i].pChannelData = new CHANNELDATA[m_ModelData.pAnimationData[i].iNumChannels];
 
-				fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].iRotationKey), sizeof(_uint));
-				if (k < m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].iRotationKey)
+				for (_uint j = 0; j < m_ModelData.pAnimationData[i].iNumChannels; j++)
 				{
-					fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].vRotation), sizeof(_float4));
-					fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].dRotationTime), sizeof(_double));
-				}
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].iNameSize), sizeof(_uint));
+					fin.read(m_ModelData.pAnimationData[i].pChannelData[j].szName, m_ModelData.pAnimationData[i].pChannelData[j].iNameSize);
+					strcat_s(m_ModelData.pAnimationData[i].pChannelData[j].szName, "\0");
 
-				fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].iPositionKey), sizeof(_uint));
-				if (k < m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].iPositionKey)
-				{
-					fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].vPosition), sizeof(_float3));
-					fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].dPositionTime), sizeof(_double));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].iNumKeyFrames), sizeof(_uint));
+
+					if (0 != m_ModelData.pAnimationData[i].pChannelData[j].iNumKeyFrames)
+					{
+						m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData = new KEYFRAMEDATA[m_ModelData.pAnimationData[i].pChannelData[j].iNumKeyFrames];
+
+						for (_uint k = 0; k < m_ModelData.pAnimationData[i].pChannelData[j].iNumKeyFrames; k++)
+						{
+							fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].iScaleKey), sizeof(_uint));
+							if (k < m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].iScaleKey)
+							{
+								fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].vScale), sizeof(_float3));
+								fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].dScaleTime), sizeof(_double));
+							}
+
+							fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].iRotationKey), sizeof(_uint));
+							if (k < m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].iRotationKey)
+							{
+								fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].vRotation), sizeof(_float4));
+								fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].dRotationTime), sizeof(_double));
+							}
+
+							fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].iPositionKey), sizeof(_uint));
+							if (k < m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].iPositionKey)
+							{
+								fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].vPosition), sizeof(_float3));
+								fin.read(reinterpret_cast<char*>(&m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData[k].dPositionTime), sizeof(_double));
+							}
+						}
+					}
 				}
 			}
 		}
@@ -405,7 +442,9 @@ HRESULT CModel::Ready_ModelData(const char* pModelFilePath, TYPE eModelType)
 
 #pragma endregion
 
-	return E_NOTIMPL;
+	fin.close();
+
+	return S_OK;
 }
 
 HRESULT CModel::Ready_Meshes()
@@ -445,8 +484,18 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 			_uint iSize = m_ModelData.pMaterialData[iIndex].iNameSize;
 			char szFilePath[MAX_PATH] = { "" };
 
+			_bool isNormal = { true };
+
 			if (1 >= iSize)
-				continue;
+			{
+				if (MESHMATERIALS::TextureType_NORMALS == j)
+				{
+					strcpy_s(szFilePath, "../../Client/Bin/Resources/Models/AlphaTexture.dds");
+					isNormal = false;
+				}
+				else
+					continue;
+			}
 			else
 			{
 				strcpy_s(szFilePath, m_ModelData.pMaterialData[iIndex].szName);
@@ -473,8 +522,10 @@ HRESULT CModel::Ready_Materials(const char* pModelFilePath)
 
 			_tchar	szConvertFullPath[MAX_PATH] = TEXT("");
 
-			MultiByteToWideChar(CP_ACP, 0, szFullPath, (int)strlen(szFullPath), szConvertFullPath, MAX_PATH);
-
+			if (true == isNormal)
+				MultiByteToWideChar(CP_ACP, 0, szFullPath, (int)strlen(szFullPath), szConvertFullPath, MAX_PATH);
+			else
+				MultiByteToWideChar(CP_ACP, 0, szFilePath, (int)strlen(szFilePath), szConvertFullPath, MAX_PATH);
 			//만든 경로의 파일을 찾아서 텍스처를 만든다
 
 			MeshMaterial.pTexture[j] = CTexture::Create(m_pDevice, m_pContext, szConvertFullPath);
@@ -525,37 +576,46 @@ HRESULT CModel::Ready_Animations()
 HRESULT CModel::Clear_LoadData(TYPE eModelType)
 {
 	//BoneData
-	Safe_Delete_Array(m_ModelData.pBoneData);
+	if (0 != m_ModelData.iNumBones)
+		Safe_Delete_Array(m_ModelData.pBoneData);
 	
 	//MeshData
 	for (_uint i = 0; i < m_ModelData.iNumMeshes; i++)
 	{
-		Safe_Delete_Array(m_ModelData.pMeshData->pMeshVtxData);
-		Safe_Delete_Array(m_ModelData.pMeshData->pMeshIdxData);
+		Safe_Delete_Array(m_ModelData.pMeshData[i].pMeshVtxData);
+		Safe_Delete_Array(m_ModelData.pMeshData[i].pMeshIdxData);
 
 		if (TYPE::TYPE_ANIM == eModelType)
 		{
 			for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumBones; j++)
 			{
-				Safe_Delete_Array(m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData);
+				if (0 != m_ModelData.pMeshData[i].pAnimMeshData[j].iNumWeights)
+					Safe_Delete_Array(m_ModelData.pMeshData[i].pAnimMeshData[j].pWeightData);
 			}
-			Safe_Delete_Array(m_ModelData.pMeshData[i].pAnimMeshData);
+			if (0 != m_ModelData.pMeshData[i].iNumBones)
+				Safe_Delete_Array(m_ModelData.pMeshData[i].pAnimMeshData);
 		}
 	}
+	if (0 != m_ModelData.iNumMeshes)
+		Safe_Delete_Array(m_ModelData.pMeshData);
 
 	//MaterialData
-	Safe_Delete_Array(m_ModelData.pMaterialData);
+	if (0 != m_ModelData.iNumMaterials)
+		Safe_Delete_Array(m_ModelData.pMaterialData);
 
 	//AnimationData
 	for (_uint i = 0; i < m_ModelData.iNumAnimations; i++)
 	{
 		for (_uint j = 0; j < m_ModelData.pAnimationData[i].iNumChannels; j++)
 		{
-			Safe_Delete_Array(m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData);
+			if (0 != m_ModelData.pAnimationData[i].pChannelData[j].iNumKeyFrames)
+				Safe_Delete_Array(m_ModelData.pAnimationData[i].pChannelData[j].pKeyFrameData);
 		}
-		Safe_Delete_Array(m_ModelData.pAnimationData[i].pChannelData);
+		if (0 != m_ModelData.pAnimationData[i].iNumChannels)
+			Safe_Delete_Array(m_ModelData.pAnimationData[i].pChannelData);
 	}
-	Safe_Delete_Array(m_ModelData.pAnimationData);
+	if (0 != m_ModelData.iNumAnimations)
+		Safe_Delete_Array(m_ModelData.pAnimationData);
 
 	return S_OK;
 }
