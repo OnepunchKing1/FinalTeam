@@ -85,6 +85,9 @@
     <Filter Include="01. Levels\99. Loadiing\Loader">
       <UniqueIdentifier>{07b93f72-9039-41ee-9ba4-3577f8d3ed92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Character\Player\Tanjiro">
+      <UniqueIdentifier>{304c14bd-faf2-427b-b4cd-4fab27b67274}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02. GameObjects\Environment\MapObject\InstanceMapObject">
       <UniqueIdentifier>{edf890b9-bb3e-4168-b318-747b426d65b2}</UniqueIdentifier>
     </Filter>
@@ -168,6 +171,9 @@
     <ClInclude Include="..\Public\Level_Train.h">
       <Filter>01. Levels\04. Train</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Player_Tanjiro.h">
+      <Filter>02. GameObjects\Character\Player\Tanjiro</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\InstanceMapObject.h">
       <Filter>02. GameObjects\Environment\MapObject\InstanceMapObject</Filter>
     </ClInclude>
@@ -238,6 +244,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Train.cpp">
       <Filter>01. Levels\04. Train</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Tanjiro.cpp">
+      <Filter>02. GameObjects\Character\Player\Tanjiro</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\InstanceMapObject.cpp">
       <Filter>02. GameObjects\Environment\MapObject\InstanceMapObject</Filter>

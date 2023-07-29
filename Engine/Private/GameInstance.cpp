@@ -54,6 +54,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (FAILED(m_pComponenet_Manager->Reserve_Containers(iNumLevels)))
 		return E_FAIL;
 
+	if (FAILED(m_pLevel_Manager->Reserve_Containers(iNumLevels)))
+		return E_FAIL;
+
 	if (FAILED(m_pFrustum->Initialize()))
 		return E_FAIL;
 
@@ -195,6 +198,14 @@ _bool CGameInstance::Get_AnyKeyPressing()
 	return m_pInput_Device->Get_AnyKeyPressing();
 }
 
+CLevel* CGameInstance::Get_LoadedStage(_uint iLevelIndex)
+{
+	if (nullptr == m_pLevel_Manager)
+		return nullptr;
+
+	return m_pLevel_Manager->Get_LoadedStage(iLevelIndex);
+}
+
 _bool CGameInstance::Get_IsStage() const
 {
 	if (nullptr == m_pLevel_Manager)
@@ -203,12 +214,20 @@ _bool CGameInstance::Get_IsStage() const
 	return m_pLevel_Manager->Get_IsStage();
 }
 
-HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel* pNextLevel, _bool isStage)
+HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel* pNextLevel, _bool isStage, _bool isRelease)
 {
 	if (nullptr == m_pLevel_Manager)
 		return E_FAIL;
 
-	return m_pLevel_Manager->Open_Level(iLevelIndex, pNextLevel, isStage);
+	return m_pLevel_Manager->Open_Level(iLevelIndex, pNextLevel, isStage, isRelease);
+}
+
+HRESULT CGameInstance::Swap_Level(_uint iLevelIndex)
+{
+	if (nullptr == m_pLevel_Manager)
+		return E_FAIL;
+
+	return m_pLevel_Manager->Swap_Level(iLevelIndex);
 }
 
 CComponent* CGameInstance::Get_Component(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pComponentTag)
