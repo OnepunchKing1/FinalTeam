@@ -63,16 +63,16 @@ void CCamera_Free::Tick(_double dTimeDelta)
 
 	if (false == m_bCamChange)
 	{
-		if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+		if (pGameInstance->Get_DIKeyState(DIK_UP) & 0x80)
 			m_pTransformCom->Go_Straight(dTimeDelta);
 
-		if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
+		if (pGameInstance->Get_DIKeyState(DIK_DOWN) & 0x80)
 			m_pTransformCom->Go_Backward(dTimeDelta);
 
-		if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+		if (pGameInstance->Get_DIKeyState(DIK_LEFT) & 0x80)
 			m_pTransformCom->Go_Left(dTimeDelta);
 
-		if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
+		if (pGameInstance->Get_DIKeyState(DIK_RIGHT) & 0x80)
 			m_pTransformCom->Go_Right(dTimeDelta);
 
 		/*if (pGameInstance->Get_DIKeyState(DIK_F7) & 0x80)
@@ -122,6 +122,7 @@ HRESULT CCamera_Free::Render()
 void CCamera_Free::TargetCamera(_double dTimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+
 	CTransform* m_pTargetTransformCom = dynamic_cast<CTransform*>(pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 
 	_vector vTargetPos = m_pTargetTransformCom->Get_State(CTransform::STATE_POSITION);

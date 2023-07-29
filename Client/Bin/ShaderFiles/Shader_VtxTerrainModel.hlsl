@@ -96,6 +96,25 @@ PS_OUT  PS_TERRAIN(PS_IN _In)
 	return Out;
 };
 
+PS_OUT  PS_Main(PS_IN _In)
+{
+	PS_OUT	Out = (PS_OUT)0;
+
+	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vTexUV * 0.1f - 0.5f);
+	vector	vSplatingDiffuse = g_SplatingTexture.Sample(LinearSampler, _In.vTexUV * 0.1f - 0.5f);
+	vector	vMask = g_MaskTexture.Sample(LinearSampler, _In.vTexUV * 0.1f - 0.5f);
+
+	if (vMtrlDiffuse.a < 0.1f)
+		discard;
+
+	Out.vDiffuse = vMtrlDiffuse * (1.f - vMask.r) + vSplatingDiffuse * (vMask.r) * 1.3f;
+	Out.vDiffuse.a = 1.f;
+	Out.vNormal = vector(_In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(_In.vProjPos.w / 300.f, _In.vProjPos.z / _In.vProjPos.w, 0.f, 0.f);
+
+	return Out;
+};
+
 PS_OUT  PS_SKY(PS_IN _In)
 {
 	PS_OUT	Out = (PS_OUT)0;
@@ -119,7 +138,7 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_TERRAIN();
+		PixelShader = compile ps_5_0 PS_Main();
 	}
 
 	pass Sky

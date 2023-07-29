@@ -193,13 +193,13 @@ void CMainApp::Key_Input(_double dTimeDelta)
 				hr = m_pGameInstance->Swap_Level(LEVEL_HOUSE);
 		}
 
-		if (m_pGameInstance->Get_DIKeyDown(DIK_F5))
+		/*if (m_pGameInstance->Get_DIKeyDown(DIK_F5))
 		{
 			if (nullptr == m_pGameInstance->Get_LoadedStage(LEVEL_TRAIN))
 				hr = m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TRAIN), false, false);
 			else
 				hr = m_pGameInstance->Swap_Level(LEVEL_TRAIN);
-		}
+		}*/
 
 		if (m_pGameInstance->Get_DIKeyDown(DIK_F6))
 		{

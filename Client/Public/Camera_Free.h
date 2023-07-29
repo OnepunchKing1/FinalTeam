@@ -32,7 +32,7 @@ private:
 	void TurnMouse(_double TimeDelta);
 	void LockMouse();
 private:
-	_float			m_fDistance = { 2.f };
+	_float			m_fDistance = { 10.f };
 	_bool			m_bCamChange = { false };
 	_bool			m_bLockMouse = { false };
 

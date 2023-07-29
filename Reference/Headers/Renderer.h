@@ -63,6 +63,9 @@ private:
 private:
 	HRESULT Render_Priority();
 	HRESULT Render_ShadowDepth(); // Shadow
+	HRESULT Render_ShadowBlurX();
+	HRESULT Render_ShadowBlurY();
+	HRESULT Render_ShadowBlur();
 	HRESULT Render_SSAO();
 	HRESULT Render_SSAOBlurX();
 	HRESULT Render_SSAOBlurY();
@@ -86,12 +89,16 @@ private:
 private:
 	HRESULT Render_Lights();
 	HRESULT Render_Deferred();
-	HRESULT Render_Deferred2();
 	
-
+	
+private:
+	_bool					m_bSSAOBlur = { false };
+	_bool					m_bSSAOSwitch = { false };
 private:
 	D3D11_VIEWPORT			m_VP; // Shadow
 
+	_float					m_fSSAOBias = { 0.0003f };
+	_float					m_fSSAORadius = { 0.0001f };
 public:
 	static CRenderer* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext);
 	virtual CComponent* Clone(void* pArg) override;
