@@ -128,7 +128,7 @@ HRESULT CLevel_Tool::Ready_Layer_Player(const _tchar* pLayerTag)
 
     CharacterDesc.WorldInfo.vScale = _float3(1.f, 1.f, 1.f);
     CharacterDesc.WorldInfo.fDegree = 0.f;
-    CharacterDesc.WorldInfo.vPosition = _float4(0.f, 0.f, 0.f, 1.f);
+    CharacterDesc.WorldInfo.vPosition = _float4(130.f, 0.f, 140.f, 1.f);
 
     CharacterDesc.TransformDesc.dSpeedPerSec = 5.0;
     CharacterDesc.TransformDesc.dRadianRotationPerSec = (_double)XMConvertToRadians(90.f);
@@ -144,7 +144,7 @@ HRESULT CLevel_Tool::Ready_Layer_Player(const _tchar* pLayerTag)
     CharacterDesc.ColliderDesc[CCharacter_Tool::COLL_SPHERE].vPosition = _float3(0.f, CharacterDesc.ColliderDesc[CCharacter_Tool::COLL_SPHERE].vSize.x, 0.f);
 
     CharacterDesc.NaviDesc.iCurrentIndex = 0;
-    CharacterDesc.NaviDesc.vStartPosition = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+    CharacterDesc.NaviDesc.vStartPosition = XMVectorSet(130.f, 0.f, 140.f, 1.f);
     
     // AnimTool¿ë
     if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, pLayerTag,
@@ -161,7 +161,7 @@ HRESULT CLevel_Tool::Ready_Layer_Player(const _tchar* pLayerTag)
 
 HRESULT CLevel_Tool::Ready_Layer_MapObject(const _tchar* pLayerTag)
 {
-    Load_MapObject_Info(TEXT("../../Data/Object/Room1.dat"), pLayerTag);
+    Load_MapObject_Info(TEXT("../../Data/Object/Acaza_Battle/Acaza_Test.dat"), pLayerTag);
 
     return S_OK;
 }
@@ -194,6 +194,13 @@ HRESULT CLevel_Tool::Load_MapObject_Info(const _tchar* pPath, const _tchar* pLay
         ReadFile(hFile, &tMapObject_Info.vScale, sizeof(_float3), &dwByte, nullptr);
         ReadFile(hFile, &tMapObject_Info.iMapObjectType, sizeof(_uint), &dwByte, nullptr);
 
+        ReadFile(hFile, &tMapObject_Info.iNumInstance, sizeof(_uint), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.fRange, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.fMinSize, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.fMaxSize, sizeof(_float), &dwByte, nullptr);
+
+        ReadFile(hFile, &tMapObject_Info.iInstanceType, sizeof(_uint), &dwByte, nullptr);
+
         ReadFile(hFile, &dwStrByte, sizeof(_ulong), &dwByte, nullptr);
         ReadFile(hFile, &tMapObject_Info.szMeshName, dwStrByte, &dwByte, nullptr);
 
@@ -214,6 +221,11 @@ HRESULT CLevel_Tool::Load_MapObject_Info(const _tchar* pPath, const _tchar* pLay
         case CMapObject::MAPOBJECT_ROTATION:
             if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, TEXT("Layer_MapObject"),
                 TEXT("Prototype_GameObject_RotationMapObject"), &tMapObject_Info)))
+                return E_FAIL;
+            break;
+        case CMapObject::MAPOBJECT_INSTANCE:
+            if (FAILED(pGameInstance->Add_GameObject(LEVEL_TOOL, TEXT("Layer_MapObject"),
+                TEXT("Prototype_GameObject_InstanceMapObject"), &tMapObject_Info)))
                 return E_FAIL;
             break;
         default:

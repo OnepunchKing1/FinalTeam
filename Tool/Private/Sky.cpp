@@ -1,19 +1,21 @@
 #include "pch.h"
-#include "..\Public\MapObject.h"
+#include "..\Public\Sky.h"
 
 #include "GameInstance.h"
 
-CMapObject::CMapObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CSky::CSky(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject(pDevice, pContext)
 {
+
 }
 
-CMapObject::CMapObject(const CMapObject& rhs)
+CSky::CSky(const CSky & rhs)
 	: CGameObject(rhs)
 {
+
 }
 
-HRESULT CMapObject::Initialize_Prototype()
+HRESULT CSky::Initialize_Prototype()
 {
 	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
@@ -21,40 +23,42 @@ HRESULT CMapObject::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CMapObject::Initialize(void* pArg)
+HRESULT CSky::Initialize(void * pArg)
 {
-	if (nullptr == pArg)
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
-
-	memcpy(&m_MapObject_Info, pArg, sizeof m_MapObject_Info);
-
-	wcscpy_s(m_PrototypeObjectTag, m_MapObject_Info.szMeshName);
 
 	if (FAILED(Add_Components()))
-		return E_FAIL;
+		return E_FAIL;	
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_MapObject_Info.vPos));
-	m_pTransformCom->Rotation(m_MapObject_Info.vRotAngle);
-	m_pTransformCom->Scaling(m_MapObject_Info.vScale);
+	m_pTransformCom->Scaling(_float3(0.01f, 0.01f, 0.01f));
 
 	return S_OK;
 }
 
-void CMapObject::Tick(_double TimeDelta)
+void CSky::Tick(_double TimeDelta)
 {
 	__super::Tick(TimeDelta);
 }
 
-void CMapObject::LateTick(_double TimeDelta)
+void CSky::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
 
-	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this)))
-		return;
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
 
+	_float4  vCamPos = pGameInstance->Get_CameraPosition();
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vCamPos));
+
+	Safe_Release(pGameInstance);	
+
+	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this)))
+		return;
 }
 
-HRESULT CMapObject::Render()
+HRESULT CSky::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -69,10 +73,7 @@ HRESULT CMapObject::Render()
 		if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
 			return E_FAIL;
 
-		/*if (FAILED(m_pModelCom->Bind_ShaderResource(i, m_pShaderCom, "g_NormalTexture", MESHMATERIALS::TextureType_NORMALS)))
-			return E_FAIL;*/
-
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(1);
 
 		m_pModelCom->Render(i);
 	}
@@ -80,7 +81,7 @@ HRESULT CMapObject::Render()
 	return S_OK;
 }
 
-HRESULT CMapObject::Add_Components()
+HRESULT CSky::Add_Components()
 {
 	/* For.Com_Transform */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Transform"),
@@ -89,31 +90,31 @@ HRESULT CMapObject::Add_Components()
 
 	/* For.Com_Renderer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"),
-		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
+		TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))		
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModel"),
+	if (FAILED(__super::Add_Component(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxTerrainModel"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_PrototypeObjectTag,
+	if (FAILED(__super::Add_Component(LEVEL_TOOL, TEXT("Prototype_Component_Model_Sky"),
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CMapObject::SetUp_ShaderResources()
+HRESULT CSky::SetUp_ShaderResources()
 {
 	if (nullptr == m_pShaderCom)
-		return E_FAIL;
+		return E_FAIL;	
 
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
 	_float4x4 ViewMatrix = pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW);
@@ -124,16 +125,37 @@ HRESULT CMapObject::SetUp_ShaderResources()
 	if (FAILED(m_pShaderCom->SetUp_Matrix("g_ProjMatrix", &ProjMatrix)))
 		return E_FAIL;
 
-	_float4 vCamPos = pGameInstance->Get_CameraPosition();
-
-	if (FAILED(m_pShaderCom->SetUp_Vector("g_vCamPosition", &vCamPos)))
-		return E_FAIL;
-
 	Safe_Release(pGameInstance);
+
 	return S_OK;
 }
 
-void CMapObject::Free()
+CSky * CSky::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+{
+	CSky*		pInstance = new CSky(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed to Created : CSky");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+CGameObject * CSky::Clone(void * pArg)
+{
+	CSky*		pInstance = new CSky(*this);
+
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("Failed to Cloned : CSky");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CSky::Free()
 {
 	__super::Free();
 

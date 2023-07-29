@@ -57,35 +57,40 @@ HRESULT CModel_Instance::Initialize(void * pArg)
 	if (nullptr == pArg)
 		return E_FAIL;
 
+	ZeroMemory(&m_ModelData, sizeof m_ModelData);
+
 	ifstream fin;
 	fin.open(m_ModelFilePath, ios::binary);
 
 	if (false == fin.is_open())
 	{
-		MSG_BOX("Failed to ReadModelBinaryFile : CModel");
+		MSG_BOX("Failed to ReadModelBinaryFile : CModel_Instance");
 		return E_FAIL;
 	}
 
-	// ª¿¿–±‚
-	_uint iNumBones = { 0 };
-	fin.read(reinterpret_cast<char*>(&iNumBones), sizeof(_uint));
-
-	m_Bones.reserve(iNumBones);
-
-	for (_uint i = 0; i < iNumBones; i++)
+	if (FAILED(Ready_ModelData()))
 	{
-		CBone* pBone = CBone::Create(&fin);
-		if (nullptr == pBone)
-			return E_FAIL;
-
-		m_Bones.emplace_back(pBone);
+		MSG_BOX("Failed to Ready_ModelData : CModel_Instance");
+		return E_FAIL;
 	}
 
-	if (FAILED(Ready_Meshes(&fin, m_iMaxNumInstance)))
+	if (FAILED(Ready_HierarchyBones()))
+	{
+		MSG_BOX("Failed to Ready_HierarchyBones : CModel_Instance");
+		return E_FAIL;
+	}
+
+	if (FAILED(Ready_Meshes(m_iMaxNumInstance)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Materials(m_ModelFilePath.c_str(), &fin)))
+	if (FAILED(Ready_Materials()))
 		return E_FAIL;
+
+	if (FAILED(Clear_LoadData()))
+	{
+		MSG_BOX("Failed to Clear_LoadData : CModel");
+		return E_FAIL;
+	}
 
 
 	memcpy(&m_tModelInstanceDesc, pArg, sizeof m_tModelInstanceDesc);
@@ -160,16 +165,135 @@ HRESULT CModel_Instance::Bind_ShaderResource(CShader * pShader, _uint iMeshIndex
 	return m_Materials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].pTexture[eType]->Bind_ShaderResourceView(pShader, pConstantName);
 }
 
-HRESULT CModel_Instance::Ready_Meshes(ifstream* pFin, _uint iNumInstance)
+HRESULT CModel_Instance::Ready_ModelData()
 {
-	if (nullptr == pFin)
-		return E_FAIL;
+	ifstream fin;
+	fin.open(m_ModelFilePath, ios::binary);
 
-	pFin->read(reinterpret_cast<char*>(&m_iNumMeshes), sizeof(_uint));
+	if (false == fin.is_open())
+	{
+		MSG_BOX("Failed to ReadModelBinaryFile : CModel");
+		return E_FAIL;
+	}
+
+#pragma region Bones
+	fin.read(reinterpret_cast<char*>(&m_ModelData.iNumBones), sizeof(_uint));
+
+	if (0 != m_ModelData.iNumBones)
+	{
+		m_ModelData.pBoneData = new BONEDATA[m_ModelData.iNumBones];
+
+		for (_uint i = 0; i < m_ModelData.iNumBones; i++)
+		{
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].iNameSize), sizeof(_uint));
+			fin.read(m_ModelData.pBoneData[i].szName, m_ModelData.pBoneData[i].iNameSize);
+			strcat_s(m_ModelData.pBoneData[i].szName, "\0");
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].TransformationMatrix), sizeof(_float4x4));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pBoneData[i].iParentIndex), sizeof(_int));
+		}
+	}
+#pragma endregion
+
+#pragma region Meshes
+	fin.read(reinterpret_cast<char*>(&m_ModelData.iNumMeshes), sizeof(_uint));
+
+	if (0 != m_ModelData.iNumMeshes)
+	{
+		m_ModelData.pMeshData = new MESHDATA[m_ModelData.iNumMeshes];
+
+		for (_uint i = 0; i < m_ModelData.iNumMeshes; i++)
+		{
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNameSize), sizeof(_uint));
+			fin.read(m_ModelData.pMeshData[i].szName, m_ModelData.pMeshData[i].iNameSize);
+			strcat_s(m_ModelData.pMeshData[i].szName, "\0");
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iMaterialIndex), sizeof(_uint));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumVertices), sizeof(_uint));
+			fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumFaces), sizeof(_uint));
+
+			if (0 != m_ModelData.pMeshData[i].iNumVertices)
+			{
+				m_ModelData.pMeshData[i].pMeshVtxData = new MESHVTXDATA[m_ModelData.pMeshData[i].iNumVertices];
+
+				for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumVertices; j++)
+				{
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vPosition), sizeof(_float3));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vNormal), sizeof(_float3));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vTexUV), sizeof(_float2));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshVtxData[j].vTangent), sizeof(_float3));
+				}
+			}
+
+			if (0 != m_ModelData.pMeshData[i].iNumFaces)
+			{
+				m_ModelData.pMeshData[i].pMeshIdxData = new MESHIDXDATA[m_ModelData.pMeshData[i].iNumFaces];
+
+				for (_uint j = 0; j < m_ModelData.pMeshData[i].iNumFaces; j++)
+				{
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshIdxData[j].iIndex0), sizeof(_uint));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshIdxData[j].iIndex1), sizeof(_uint));
+					fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].pMeshIdxData[j].iIndex2), sizeof(_uint));
+				}
+			}
+		}
+	}
+#pragma endregion
+
+#pragma region Meterials
+	fin.read(reinterpret_cast<char*>(&m_ModelData.iNumMaterials), sizeof(_uint));
+	if (0 != m_ModelData.iNumMaterials)
+	{
+		m_ModelData.pMaterialData = new MATERIALDATA[m_ModelData.iNumMaterials * TEXTURE_TYPE_MAX];
+
+		for (_uint i = 0; i < m_ModelData.iNumMaterials; i++)
+		{
+			for (_uint j = 0; j < TEXTURE_TYPE_MAX; j++)
+			{
+				_uint iIndex = (i * TEXTURE_TYPE_MAX) + j;
+
+				fin.read(reinterpret_cast<char*>(&m_ModelData.pMaterialData[iIndex].iNameSize), sizeof(_uint));
+
+				if (1 >= m_ModelData.pMaterialData[iIndex].iNameSize)
+					continue;
+				else
+				{
+					fin.read(m_ModelData.pMaterialData[iIndex].szName, m_ModelData.pMaterialData[iIndex].iNameSize);
+					strcat_s(m_ModelData.pMaterialData[iIndex].szName, "\0");
+				}
+			}
+		}
+	}
+#pragma endregion
+
+	fin.close();
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Ready_HierarchyBones()
+{
+	_uint iNumBones = m_ModelData.iNumBones;
+
+	m_Bones.reserve(iNumBones);
+
+	for (_uint i = 0; i < iNumBones; i++)
+	{
+		CBone* pBone = CBone::Create(&m_ModelData.pBoneData[i]);
+		if (nullptr == pBone)
+			return E_FAIL;
+
+		m_Bones.emplace_back(pBone);
+	}
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Ready_Meshes(_uint iNumInstance)
+{
+	m_iNumMeshes = m_ModelData.iNumMeshes;
 
 	for (_uint i = 0; i < m_iNumMeshes; ++i)
 	{
-		CMesh_Instance* pMesh = CMesh_Instance::Create(m_pDevice, m_pContext,pFin, XMLoadFloat4x4(&m_PivotMatrix), this , iNumInstance);
+		CMesh_Instance* pMesh = CMesh_Instance::Create(m_pDevice, m_pContext, &m_ModelData.pMeshData[i], XMLoadFloat4x4(&m_PivotMatrix), this , iNumInstance);
 		if (nullptr == pMesh)
 			return E_FAIL;
 
@@ -179,9 +303,9 @@ HRESULT CModel_Instance::Ready_Meshes(ifstream* pFin, _uint iNumInstance)
 	return S_OK;
 }
 
-HRESULT CModel_Instance::Ready_Materials(const char* pModelFilePath, ifstream* pFin)
+HRESULT CModel_Instance::Ready_Materials()
 {
-	pFin->read(reinterpret_cast<char*>(&m_iNumMaterials), sizeof(_uint));
+	m_iNumMaterials = m_ModelData.iNumMaterials;
 
 	for (_uint i = 0; i < m_iNumMaterials; ++i)
 	{
@@ -190,22 +314,32 @@ HRESULT CModel_Instance::Ready_Materials(const char* pModelFilePath, ifstream* p
 
 		for (_uint j = 0; j < TEXTURE_TYPE_MAX; ++j)
 		{
-			_uint iSize = { 0 };
-			pFin->read(reinterpret_cast<char*>(&iSize), sizeof(_uint));
+			_uint iIndex = (i * TEXTURE_TYPE_MAX) + j;
+
+			_uint iSize = m_ModelData.pMaterialData[iIndex].iNameSize;
 			char szFilePath[MAX_PATH] = { "" };
 
+			_bool isNormal = { true };
+
 			if (1 >= iSize)
-				continue;
+			{
+				if (MESHMATERIALS::TextureType_NORMALS == j)
+				{
+					strcpy_s(szFilePath, "../../Client/Bin/Resources/Models/AlphaTexture.dds");
+					isNormal = false;
+				}
+				else
+					continue;
+			}
 			else
 			{
-				pFin->read(szFilePath, iSize);
-				strcat_s(szFilePath, "\0");
+				strcpy_s(szFilePath, m_ModelData.pMaterialData[iIndex].szName);
 			}
 
 			char		szDrive[MAX_PATH] = "";
 			char		szDir[MAX_PATH] = "";
 
-			_splitpath_s(pModelFilePath, szDrive, MAX_PATH, szDir, MAX_PATH, nullptr, 0, nullptr, 0);
+			_splitpath_s(m_ModelFilePath.c_str(), szDrive, MAX_PATH, szDir, MAX_PATH, nullptr, 0, nullptr, 0);
 
 
 			char		szFileName[MAX_PATH] = "";
@@ -222,8 +356,10 @@ HRESULT CModel_Instance::Ready_Materials(const char* pModelFilePath, ifstream* p
 
 			_tchar		szRealFullPath[MAX_PATH] = TEXT("");
 
-			MultiByteToWideChar(CP_ACP, 0, szFullPath,(_uint) strlen(szFullPath),
-				szRealFullPath, MAX_PATH);
+			if (true == isNormal)
+				MultiByteToWideChar(CP_ACP, 0, szFullPath, (int)strlen(szFullPath), szRealFullPath, MAX_PATH);
+			else
+				MultiByteToWideChar(CP_ACP, 0, szFilePath, (int)strlen(szFilePath), szRealFullPath, MAX_PATH);
 
 			MeshMaterial.pTexture[j] = CTexture::Create(m_pDevice, m_pContext, szRealFullPath);
 			if (nullptr == MeshMaterial.pTexture[j])
@@ -232,6 +368,28 @@ HRESULT CModel_Instance::Ready_Materials(const char* pModelFilePath, ifstream* p
 
 		m_Materials.push_back(MeshMaterial);
 	}
+
+	return S_OK;
+}
+
+HRESULT CModel_Instance::Clear_LoadData()
+{
+	//BoneData
+	if (0 != m_ModelData.iNumBones)
+		Safe_Delete_Array(m_ModelData.pBoneData);
+
+	//MeshData
+	for (_uint i = 0; i < m_ModelData.iNumMeshes; i++)
+	{
+		Safe_Delete_Array(m_ModelData.pMeshData[i].pMeshVtxData);
+		Safe_Delete_Array(m_ModelData.pMeshData[i].pMeshIdxData);
+	}
+	if (0 != m_ModelData.iNumMeshes)
+		Safe_Delete_Array(m_ModelData.pMeshData);
+
+	//MaterialData
+	if (0 != m_ModelData.iNumMaterials)
+		Safe_Delete_Array(m_ModelData.pMaterialData);
 
 	return S_OK;
 }

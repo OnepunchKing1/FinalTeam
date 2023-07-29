@@ -7,13 +7,13 @@ CChannel::CChannel()
 {
 }
 
-HRESULT CChannel::Initialize(ifstream* pFin, const char* pName, _uint iBoneIndex)
+HRESULT CChannel::Initialize(CHANNELDATA* pChannelData, const char* pName, _uint iBoneIndex)
 {
 	strcpy_s(m_szName, pName);
 
 	m_iBoneIndex = iBoneIndex;
 
-	pFin->read(reinterpret_cast<char*>(&m_iNumKeyFrames), sizeof(_uint));
+	m_iNumKeyFrames = pChannelData->iNumKeyFrames;
 
 	_float3		vScale = { 0.f, 0.f, 0.f };
 	_float4		vRotation = { 0.f, 0.f, 0.f, 0.f };
@@ -25,27 +25,26 @@ HRESULT CChannel::Initialize(ifstream* pFin, const char* pName, _uint iBoneIndex
 		ZeroMemory(&KeyFrame, sizeof KeyFrame);
 	
 		_uint iKey = { 0 };
-		pFin->read(reinterpret_cast<char*>(&iKey), sizeof(_uint));
+		iKey = pChannelData->pKeyFrameData[i].iScaleKey;
 		if (i < iKey)
 		{
-			pFin->read(reinterpret_cast<char*>(&vScale), sizeof(_float3));
-			pFin->read(reinterpret_cast<char*>(&KeyFrame.dTime), sizeof(_double));
+			vScale = pChannelData->pKeyFrameData[i].vScale;
+			KeyFrame.dTime = pChannelData->pKeyFrameData[i].dScaleTime;
+		}
+
+		iKey = pChannelData->pKeyFrameData[i].iRotationKey;
+		if (i < iKey)
+		{
+			vRotation = pChannelData->pKeyFrameData[i].vRotation;
+			KeyFrame.dTime = pChannelData->pKeyFrameData[i].dRotationTime;
 		}
 
 		iKey = { 0 };
-		pFin->read(reinterpret_cast<char*>(&iKey), sizeof(_uint));
+		iKey = pChannelData->pKeyFrameData[i].iPositionKey;
 		if (i < iKey)
 		{
-			pFin->read(reinterpret_cast<char*>(&vRotation), sizeof(_float4));
-			pFin->read(reinterpret_cast<char*>(&KeyFrame.dTime), sizeof(_double));
-		}
-
-		iKey = { 0 };
-		pFin->read(reinterpret_cast<char*>(&iKey), sizeof(_uint));
-		if (i < iKey)
-		{
-			pFin->read(reinterpret_cast<char*>(&vPosition), sizeof(_float3));
-			pFin->read(reinterpret_cast<char*>(&KeyFrame.dTime), sizeof(_double));
+			vPosition = pChannelData->pKeyFrameData[i].vPosition;
+			KeyFrame.dTime = pChannelData->pKeyFrameData[i].dPositionTime;
 		}
 
 		KeyFrame.vScale = vScale;
@@ -247,11 +246,11 @@ KEYFRAME CChannel::Get_LastKeyFrame()
 	return LastKeyFrame;
 }
 
-CChannel* CChannel::Create(ifstream* pFin, const char* pName, _uint iBoneIndex)
+CChannel* CChannel::Create(CHANNELDATA* pChannelData, const char* pName, _uint iBoneIndex)
 {
 	CChannel* pInstance = new CChannel();
 
-	if (FAILED(pInstance->Initialize(pFin, pName, iBoneIndex)))
+	if (FAILED(pInstance->Initialize(pChannelData, pName, iBoneIndex)))
 	{
 		MSG_BOX("Failed to Created : CChannel");
 		Safe_Release(pInstance);
