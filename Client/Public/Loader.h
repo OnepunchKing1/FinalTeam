@@ -26,6 +26,8 @@ public:
 public:
     HRESULT Initialize(LEVELID eLevelID);
 
+    HRESULT LoadingForAllStage();   // ´ë¼º ¼öÁ¤ ¿ä¸Á
+
     HRESULT LoadingForLogo();
     HRESULT LoadingForGamePlay();
     HRESULT LoadingForVillage();
@@ -33,8 +35,9 @@ public:
     HRESULT LoadingForTrain();
     HRESULT LoadingForFinalBoss();
 
-private:
-    HRESULT Load_MapObjectModel();      // ¸Ê ¿ÀºêÁ§Æ® ¸ðµ¨ (¿ø)
+private:    // ¸Ê ¿ÀºêÁ§Æ® ¸ðµ¨ (¿ø)
+    HRESULT Load_MapObjectModel_House();      
+    HRESULT Load_MapObjectModel_FinalBoss();     
 
 private:
     ID3D11Device*           m_pDevice = { nullptr };

@@ -16,7 +16,8 @@ BEGIN(Client)
 class CMapObject  abstract : public CGameObject
 {
 public:
-	enum MAPOBJECT_TYPE { MAPOBJECT_STATIC, MAPOBJECT_TERRAIN, MAPOBJECT_ROTATION, MAPOBJECT_END };
+	enum MAPOBJECT_TYPE { MAPOBJECT_STATIC, MAPOBJECT_TERRAIN, MAPOBJECT_ROTATION, MAPOBJECT_INSTANCE, MAPOBJECT_END };
+	enum INSTANCE_TYPE { INSTANCE_NONE, INSTANCE_DEFAULT, INSTANCE_GRASS, INSTANCE_END };
 
 	typedef struct tagMapObjectInfo
 	{
@@ -26,6 +27,13 @@ public:
 
 		_tchar		szMeshName[128];
 		_uint		iMapObjectType;
+
+		_uint		iNumInstance;
+		_float		fRange;
+		_float		fMinSize;
+		_float		fMaxSize;
+
+		_uint		iInstanceType = 0;
 
 	}MAPOBJECT_INFO;
 
