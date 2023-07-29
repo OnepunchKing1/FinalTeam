@@ -94,9 +94,9 @@ HRESULT CMesh::Initialize_Prototype(CModel::TYPE eModelType, MESHDATA* pMeshData
 
 	for (_uint i = 0; i < iNumFaces; i++)
 	{
-		pIndices[iNumIndices] = pMeshData->pMeshIdxData[i].iIndex0;
-		pIndices[iNumIndices + 1] = pMeshData->pMeshIdxData[i].iIndex1;
-		pIndices[iNumIndices + 2] = pMeshData->pMeshIdxData[i].iIndex2;
+		pIndices[iNumIndices]		= pMeshData->pMeshIdxData[i].iIndex0;
+		pIndices[iNumIndices + 1]	= pMeshData->pMeshIdxData[i].iIndex1;
+		pIndices[iNumIndices + 2]	= pMeshData->pMeshIdxData[i].iIndex2;
 
 		m_Faces.emplace_back(_uint3(pIndices[iNumIndices], pIndices[iNumIndices + 1], pIndices[iNumIndices + 2]));
 

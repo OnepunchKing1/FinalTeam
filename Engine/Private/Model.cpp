@@ -257,7 +257,7 @@ HRESULT CModel::Ready_ModelData(const char* pModelFilePath, TYPE eModelType)
 	if (false == fin.is_open())
 	{
 		MSG_BOX("Failed to ReadModelBinaryFile : CModel");
-		return E_FAIL;
+		return E_FAIL; 
 	}
 
 #pragma region Bones

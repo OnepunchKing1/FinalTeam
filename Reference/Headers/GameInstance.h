@@ -38,10 +38,12 @@ public: /*for Input_Device*/
     _bool		Get_AnyKeyPressing();
 
 public: /*for Level_Manager*/
-    class CLevel*         Get_CulLevel() const;
+    class CLevel*   Get_CulLevel() const;
     _uint           Get_CurLevelIdx() const;
     class CLevel*   Get_LoadedStage(_uint iLevelIndex) const;
     _bool           Get_IsStage() const;
+    _bool           Get_IsLoadForAll() const;
+    void            Set_IsLoadForAll();
     HRESULT         Open_Level(_uint iLevelIndex, class CLevel* pNextLevel, _bool isStage = false, _bool isRelease = true);
     HRESULT         Swap_Level(_uint iLevelIndex);
 
@@ -92,7 +94,7 @@ private:
     class CFont_Manager*        m_pFont_Manager         = { nullptr };
     class CTarget_Manager*      m_pTarget_Manager       = { nullptr };
     class CPipeLine*            m_pPipeLine             = { nullptr };
-    class CFrustum* m_pFrustum = { nullptr };
+    class CFrustum*             m_pFrustum = { nullptr };
 
 public:
     virtual void Free() override;

@@ -177,6 +177,7 @@
     <ClInclude Include="..\Public\Camera_Tool.h" />
     <ClInclude Include="..\Public\Character_Tool.h" />
     <ClInclude Include="..\Public\ImGui_Animation_Tool.h" />
+    <ClInclude Include="..\Public\InstanceMapObject.h" />
     <ClInclude Include="..\Public\Level_FinalBoss_Tool.h" />
     <ClInclude Include="..\Public\Level_House_Tool.h" />
     <ClInclude Include="..\Public\Level_Loading_Tool.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="..\Public\MapObject.h" />
     <ClInclude Include="..\Public\Player_Tool.h" />
     <ClInclude Include="..\Public\RotationMapObject.h" />
+    <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\StaticMapObject.h" />
     <ClInclude Include="..\Public\TerrainMapObject.h" />
     <ClInclude Include="..\Public\Tool_Defines.h" />
@@ -212,6 +214,7 @@
     <ClCompile Include="..\Private\Camera_Tool.cpp" />
     <ClCompile Include="..\Private\Character_Tool.cpp" />
     <ClCompile Include="..\Private\ImGui_Animation_Tool.cpp" />
+    <ClCompile Include="..\Private\InstanceMapObject.cpp" />
     <ClCompile Include="..\Private\Level_FinalBoss_Tool.cpp" />
     <ClCompile Include="..\Private\Level_House_Tool.cpp" />
     <ClCompile Include="..\Private\Level_Loading_Tool.cpp" />
@@ -224,6 +227,7 @@
     <ClCompile Include="..\Private\MapObject.cpp" />
     <ClCompile Include="..\Private\Player_Tool.cpp" />
     <ClCompile Include="..\Private\RotationMapObject.cpp" />
+    <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\StaticMapObject.cpp" />
     <ClCompile Include="..\Private\TerrainMapObject.cpp" />
     <ClCompile Include="..\Private\Terrain_Tool.cpp" />
