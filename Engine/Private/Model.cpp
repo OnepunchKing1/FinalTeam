@@ -125,9 +125,9 @@ HRESULT CModel::Initialize_Prototype(TYPE eModelType, const char* pModelFilePath
 		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNameSize), sizeof(_uint));
 		fin.read(m_ModelData.pMeshData[i].szName, m_ModelData.pMeshData[i].iNameSize);
 		strcat_s(m_ModelData.pMeshData[i].szName, "\0");
-		fin.read(reinterpret_cast<char*>(m_ModelData.pMeshData[i].iMaterialIndex), sizeof(_uint));
-		fin.read(reinterpret_cast<char*>(m_ModelData.pMeshData[i].iNumVertices), sizeof(_uint));
-		fin.read(reinterpret_cast<char*>(m_ModelData.pMeshData[i].iNumFaces), sizeof(_uint));
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iMaterialIndex), sizeof(_uint));
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumVertices), sizeof(_uint));
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumFaces), sizeof(_uint));
 
 		m_ModelData.pMeshData[i].pMeshVtxData = new MESHVTXDATA[m_ModelData.pMeshData[i].iNumVertices];
 
@@ -365,9 +365,9 @@ HRESULT CModel::Ready_ModelData(const char* pModelFilePath, TYPE eModelType)
 		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNameSize), sizeof(_uint));
 		fin.read(m_ModelData.pMeshData[i].szName, m_ModelData.pMeshData[i].iNameSize);
 		strcat_s(m_ModelData.pMeshData[i].szName, "\0");
-		fin.read(reinterpret_cast<char*>(m_ModelData.pMeshData[i].iMaterialIndex), sizeof(_uint));
-		fin.read(reinterpret_cast<char*>(m_ModelData.pMeshData[i].iNumVertices), sizeof(_uint));
-		fin.read(reinterpret_cast<char*>(m_ModelData.pMeshData[i].iNumFaces), sizeof(_uint));
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iMaterialIndex), sizeof(_uint));
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumVertices), sizeof(_uint));
+		fin.read(reinterpret_cast<char*>(&m_ModelData.pMeshData[i].iNumFaces), sizeof(_uint));
 
 		m_ModelData.pMeshData[i].pMeshVtxData = new MESHVTXDATA[m_ModelData.pMeshData[i].iNumVertices];
 

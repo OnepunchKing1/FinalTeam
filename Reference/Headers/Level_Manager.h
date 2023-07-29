@@ -12,6 +12,10 @@ private:
     virtual ~CLevel_Manager() = default;
 
 public:
+    _uint   Get_CurLevelIdx() const {
+        return m_iLevelIndex;
+    }
+
     CLevel* Get_LoadedStage(_uint iLevelIndex) const {
         return m_pLoadedLevels[iLevelIndex];
     }
