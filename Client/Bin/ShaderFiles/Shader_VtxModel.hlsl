@@ -112,7 +112,6 @@ PS_OUT  PS_Ramp(PS_IN _In)
 	float2 vGradientUV = float2(fRamp, _In.vTexUV.y);
 	vector vMtrlRamp = g_RampTexture.Sample(LinearSampler, vGradientUV);
 
-
 	if (vMtrlDiffuse.a < 0.9f)
 		discard;
 

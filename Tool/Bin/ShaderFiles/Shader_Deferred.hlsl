@@ -182,12 +182,13 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 	vector      vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 	vector      vSSAO = g_SSAOTexture.Sample(PointSampler, In.vTexUV);
 
-	if(g_bSSAOSwitch == false)
-	Out.vShade = g_vLightDiffuse * (max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
-
-	else if (g_bSSAOSwitch == true)
+	if (g_bSSAOSwitch == false)
 		Out.vShade = g_vLightDiffuse * (max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
 
+	else if (g_bSSAOSwitch == true)
+		Out.vShade = g_vLightDiffuse * (max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) + ((g_vLightAmbient * vSSAO)));
+	//Out.vShade *= vSSAO;
+	/*Out.vShade = g_vLightDiffuse * (max(dot(normalize(g_vLightDir) * -1.f, vNormal), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));*/
 	Out.vShade.a = 1.f;
 
 	vector      vReflect = reflect(normalize(g_vLightDir), vNormal);
@@ -278,7 +279,7 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 	vector      vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexUV);
 	vector      vDepth = g_DepthTexture.Sample(PointSampler, In.vTexUV);
 	//vector      vSSAO = g_SSAOTexture.Sample(PointClampSampler, In.vTexUV);
-	//vShade = ceil(vShade * 3) / 3.0f; // 보통 3톤 이건 근데 자유 5톤까지
+	vShade = ceil(vShade * 3) / 3.0f; // 보통 3톤 이건 근데 자유 5톤까지
 
 	if (vDiffuse.a == 0.f)
 		discard;
@@ -526,6 +527,10 @@ PS_OUT PS_Combine_Blur(PS_IN In)
 	vector      vSSAO = g_SSAOTexture.Sample(LinearSampler, In.vTexUV);
 	if (vFinal.a == 0.f)
 		discard;
+	if (vBlurX.a == 1.f)
+		discard;
+	if (vBlurY.a == 1.f)
+		discard;
 	//vFinal *= vSSAO.r;
 	Out.vColor = ((vFinal + vBlurX + vBlurY) / 3.f);
 
@@ -550,6 +555,10 @@ PS_OUT PS_Combine_SSAOBlur(PS_IN In)
 
 
 	if (vFinal.a == 0.f)
+		discard;
+	if (vBlurX.a == 0.f)
+		discard;
+	if (vBlurY.a == 0.f)
 		discard;
 	
 	Out.vColor = ((vFinal + vBlurX + vBlurY) / 3.f);
@@ -584,10 +593,8 @@ PS_OUT PS_SSAO_Test(PS_IN _In)
 	//float4 vNormal = g_NormalTexture.Sample(PointClampSampler, _In.vTexUV);
 
 	half4      vNormal = g_NormalTexture.Sample(NormalSampler, _In.vTexUV);
-	//float4      vNormal = float4(vNormalDesc.xyz * 2.f - 1.f, 0.f);
-
 	float4 vDepth = g_DepthTexture.Sample(DepthSampler, _In.vTexUV);
-
+	
 	
 	//vNormal = float4(vNormal.xyz * 2.f - 1.f, 0.f);
 	if (vNormal.a != 0.f)
@@ -637,7 +644,7 @@ PS_OUT PS_SSAO_Test(PS_IN _In)
 		vRandomDepth = g_DepthTexture.Sample(DepthSampler, vRandomUV);
 		fOccNorm = vRandomDepth.g * g_fFar * fViewZ;
 
-		if (fOccNorm <= fDepth + g_fBias)
+		if (fOccNorm <= fDepth + 0.0003f)
 			++iColor;
 	}
 

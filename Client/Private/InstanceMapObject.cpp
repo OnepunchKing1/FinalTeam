@@ -50,7 +50,7 @@ void CInstanceMapObject::Tick(_double TimeDelta)
 	{
 		static _float	fDir = 1.f;
 
-		m_fTimeDelta += (_float)TimeDelta * fDir;
+		m_fTimeDelta += 0.001f * fDir;
 
 		if (m_fTimeDelta < -0.7f)
 			fDir = 1.f;
@@ -90,8 +90,8 @@ HRESULT CInstanceMapObject::Render()
 		if (FAILED(m_pModelInstanceCom->Bind_ShaderResource(m_pShaderCom, i, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
 			return E_FAIL;
 
-		/*if (FAILED(m_pModelInstanceCom->Bind_ShaderResource(m_pShaderCom, i, "g_NormalTexture", aiTextureType_NORMALS)))
-			return E_FAIL;*/
+		if (FAILED(m_pModelInstanceCom->Bind_ShaderResource(m_pShaderCom, i, "g_NormalTexture", MESHMATERIALS::TextureType_NORMALS)))
+			return E_FAIL;
 
 		if (m_MapObject_Info.iInstanceType == INSTANCE_GRASS)
 			m_pShaderCom->Begin(1);

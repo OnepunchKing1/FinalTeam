@@ -78,11 +78,11 @@ HRESULT CLevel_FinalBoss::Ready_Lights()
     LightDesc.vLightAmbient     = _float4(1.f, 1.f, 1.f, 1.f);
     LightDesc.vLightSpecular    = _float4(1.f, 1.f, 1.f, 1.f);
 
-    if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
+  /*  if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
     {
         MSG_BOX("Failed to Add_GameObject : Direction_Light");
         return E_FAIL;
-    }
+    }*/
 
     Safe_Release(pGameInstance);
 
