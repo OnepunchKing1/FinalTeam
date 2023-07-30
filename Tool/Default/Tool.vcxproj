@@ -174,6 +174,7 @@
     <ClInclude Include="..\ImGUI\imstb_textedit.h" />
     <ClInclude Include="..\ImGUI\imstb_truetype.h" />
     <ClInclude Include="..\Public\AnimCharacter_Tool.h" />
+    <ClInclude Include="..\Public\AtkCollider.h" />
     <ClInclude Include="..\Public\Camera_Tool.h" />
     <ClInclude Include="..\Public\Character_Tool.h" />
     <ClInclude Include="..\Public\ImGui_Animation_Tool.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="..\ImGUI\imgui_tables.cpp" />
     <ClCompile Include="..\ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\AnimCharacter_Tool.cpp" />
+    <ClCompile Include="..\Private\AtkCollider.cpp" />
     <ClCompile Include="..\Private\Camera_Tool.cpp" />
     <ClCompile Include="..\Private\Character_Tool.cpp" />
     <ClCompile Include="..\Private\ImGui_Animation_Tool.cpp" />

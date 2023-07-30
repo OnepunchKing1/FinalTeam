@@ -63,16 +63,16 @@ void CCamera_Free::Tick(_double dTimeDelta)
 
 	if (false == m_bCamChange)
 	{
-		if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+		if (pGameInstance->Get_DIKeyState(DIK_UPARROW) & 0x80)
 			m_pTransformCom->Go_Straight(dTimeDelta);
 
-		if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
+		if (pGameInstance->Get_DIKeyState(DIK_DOWNARROW) & 0x80)
 			m_pTransformCom->Go_Backward(dTimeDelta);
 
-		if (pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+		if (pGameInstance->Get_DIKeyState(DIK_LEFTARROW) & 0x80)
 			m_pTransformCom->Go_Left(dTimeDelta);
 
-		if (pGameInstance->Get_DIKeyState(DIK_D) & 0x80)
+		if (pGameInstance->Get_DIKeyState(DIK_RIGHTARROW) & 0x80)
 			m_pTransformCom->Go_Right(dTimeDelta);
 
 		/*if (pGameInstance->Get_DIKeyState(DIK_F7) & 0x80)
