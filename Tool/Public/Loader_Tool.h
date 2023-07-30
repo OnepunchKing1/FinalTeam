@@ -30,6 +30,7 @@ public:
     HRESULT LoadingForFinalBoss(_bool isLoad);
 
 private:
+    HRESULT Load_MapObjectModel_AllStage(CGameInstance* pGameInstance);
     HRESULT Load_MapObjectModel_House();
     HRESULT Load_MapObjectModel_FinalBoss();
 

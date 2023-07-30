@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "Base.h"
+#include "GameInstance.h"
 
 BEGIN(Client)
 
@@ -37,6 +38,7 @@ public:
     HRESULT LoadingForFinalBoss();
 
 private:    // ¸Ê ¿ÀºêÁ§Æ® ¸ðµ¨ (¿ø)
+    HRESULT Load_MapObjectModel_AllStage(CGameInstance* pGameInstance);
     HRESULT Load_MapObjectModel_House();      
     HRESULT Load_MapObjectModel_FinalBoss();     
 
