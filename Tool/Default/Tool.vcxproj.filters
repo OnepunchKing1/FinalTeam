@@ -85,6 +85,12 @@
     <Filter Include="01. Levels\99.Loading\Loader">
       <UniqueIdentifier>{a4e87e3f-2278-4bd3-846d-67905aa9fb51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\Environment\MapObject\InstanceMapObject">
+      <UniqueIdentifier>{0bbbf002-f349-4c00-9f49-94e7b7458a0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Environment\Sky">
+      <UniqueIdentifier>{5e8b0323-1ae6-42b4-b177-3f45332fb537}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -189,6 +195,12 @@
     <ClInclude Include="..\Public\Level_Village_Tool.h">
       <Filter>01. Levels\02. Village</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\InstanceMapObject.h">
+      <Filter>02. GameObjects\Environment\MapObject\InstanceMapObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sky.h">
+      <Filter>02. GameObjects\Environment\Sky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -277,6 +289,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Village_Tool.cpp">
       <Filter>01. Levels\02. Village</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InstanceMapObject.cpp">
+      <Filter>02. GameObjects\Environment\MapObject\InstanceMapObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sky.cpp">
+      <Filter>02. GameObjects\Environment\Sky</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

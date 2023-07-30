@@ -51,6 +51,7 @@ void CMapObject::LateTick(_double TimeDelta)
 
 	if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this)))
 		return;
+
 }
 
 HRESULT CMapObject::Render()

@@ -46,6 +46,12 @@ RasterizerState		RS_Default
 	CullMode = BACK;
 	FrontCounterClockwise = false;
 };
+RasterizerState		RS_Default2
+{
+	FillMode = Solid;
+	CullMode = BACK;
+	FrontCounterClockwise = true;
+};
 
 RasterizerState		RS_Wireframe
 {
@@ -115,11 +121,11 @@ DepthStencilState DS_None_ZEnable_None_ZWrite
 	DepthWriteMask = zero;
 };
 
-DepthStencilState DS_Not_ZWrite
+DepthStencilState DS_None_Test
 {
-	DepthEnable = true;
+	DepthEnable = false;
 	DepthWriteMask = zero;
+	DepthFunc = LESS_EQUAL;
 };
-
 
 

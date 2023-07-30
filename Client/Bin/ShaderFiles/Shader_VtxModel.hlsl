@@ -8,7 +8,7 @@ float4		g_vCamPosition;
 texture2D	g_DiffuseTexture;
 texture2D	g_RampTexture;
 
-float		g_fFar;
+float		g_fFar = 300.f;
 
 struct VS_IN
 {
@@ -25,6 +25,8 @@ struct VS_OUT
 	float2		vTexUV : TEXCOORD0;
 	float4		vWorldPos : TEXCOORD1;
 	float4		vProjPos : TEXCOORD2;
+	float4		vTangent : TANGENT;
+	float4		vBinormal : BINORMAL;
 };
 
 VS_OUT VS_Main(VS_IN _In)
@@ -36,6 +38,10 @@ VS_OUT VS_Main(VS_IN _In)
 
 	Out.vPosition = mul(vector(_In.vPosition, 1.f), matWVP);
 	Out.vNormal = normalize(mul(vector(_In.vNormal, 0.f), g_WorldMatrix));
+	// 지훈수정
+	Out.vTangent = normalize(mul(vector(_In.vTangent, 0.f), g_WorldMatrix));
+	Out.vBinormal = normalize(vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f));
+	// 여ㅣ까지
 	Out.vTexUV = _In.vTexUV;
 	Out.vWorldPos = mul(vector(_In.vPosition, 1.f), g_WorldMatrix);
 	Out.vProjPos = Out.vPosition;
@@ -50,6 +56,8 @@ struct PS_IN
 	float2		vTexUV : TEXCOORD0;
 	float4		vWorldPos : TEXCOORD1;
 	float4		vProjPos : TEXCOORD2;
+	float4		vTangent : TANGENT;
+	float4		vBinormal : BINORMAL;
 };
 
 struct PS_OUT
@@ -76,7 +84,7 @@ PS_OUT  PS_Main(PS_IN _In)
 	Out.vDiffuse = vMtrlDiffuse;
 	Out.vDiffuse.a = 1.f;
 	Out.vNormal = vector(_In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-	Out.vDepth = vector(_In.vProjPos.w / g_fFar, _In.vProjPos.z / _In.vProjPos.w, 0.f, 0.f);
+	Out.vDepth = vector(_In.vProjPos.w / 300.f, _In.vProjPos.z / _In.vProjPos.w, 0.f, 0.f);
 
 	return Out;
 };

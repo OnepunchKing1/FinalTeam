@@ -39,6 +39,21 @@ void CStaticMapObject::Tick(_double TimeDelta)
 void CStaticMapObject::LateTick(_double TimeDelta)
 {
 	__super::LateTick(TimeDelta);
+
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	if (_tcscmp(m_MapObject_Info.szMeshName, TEXT("Prototype_Component_Model_Far_01a")) ||
+		_tcscmp(m_MapObject_Info.szMeshName, TEXT("Prototype_Component_Model_Far_02a")) ||
+		_tcscmp(m_MapObject_Info.szMeshName, TEXT("Prototype_Component_Model_Far_04a")) ||
+
+		(true == pGameInstance->isIn_WorldSpace(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 8.f)))
+	{
+		if (FAILED(m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONBLEND, this)))
+			return;
+	}
+
+	Safe_Release(pGameInstance);
 }
 
 HRESULT CStaticMapObject::Render()

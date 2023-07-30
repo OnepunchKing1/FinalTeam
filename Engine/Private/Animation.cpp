@@ -24,30 +24,27 @@ CAnimation::CAnimation(const CAnimation& rhs)
 	strcpy_s(m_AnimationDesc.m_szName, rhs.m_AnimationDesc.m_szName);
 }
 
-HRESULT CAnimation::Initialize(ifstream* pFin, CModel* pModel)
+HRESULT CAnimation::Initialize(ANIMATIONDATA* pAnimationData, CModel* pModel)
 {
 	_uint iSize = { 0 };
-	pFin->read(reinterpret_cast<char*>(&iSize), sizeof(_uint));
-	pFin->read(m_AnimationDesc.m_szName, iSize);
-	strcat_s(m_AnimationDesc.m_szName, "\0");
-	pFin->read(reinterpret_cast<char*>(&m_AnimationDesc.m_dDuration), sizeof(_double));
-	pFin->read(reinterpret_cast<char*>(&m_AnimationDesc.m_dTickPerSecond), sizeof(_double));
-	pFin->read(reinterpret_cast<char*>(&m_AnimationDesc.m_iNumChannels), sizeof(_uint));
+	strcpy_s(m_AnimationDesc.m_szName, pAnimationData->szName);
+	m_AnimationDesc.m_dDuration = pAnimationData->dDuration;
+	m_AnimationDesc.m_dTickPerSecond = pAnimationData->dTickPerSecond;
+
+	m_AnimationDesc.m_iNumChannels = pAnimationData->iNumChannels;
 
 	m_AnimationDesc.m_iCurrentKeyFrames.resize(m_AnimationDesc.m_iNumChannels);
 	
 	for (_uint i = 0; i < m_AnimationDesc.m_iNumChannels; i++)
 	{
 		iSize = { 0 };
-		pFin->read(reinterpret_cast<char*>(&iSize), sizeof(_uint));
 		char szName[MAX_PATH] = { "" };
-		pFin->read(szName, iSize);
-		strcat_s(szName, "\0");
+		strcpy_s(szName, pAnimationData->pChannelData[i].szName);
 
 		//이 애니메이션에서 움직이는 뼈와 이름이 같은 모델의 뼈를 찾아 pBone에 저장
 		CBone * pBone = pModel->Get_Bone(szName);
 
-		CChannel* pChannel = CChannel::Create(pFin, szName, pModel->Get_BoneIndex(pBone->Get_Name()));
+		CChannel* pChannel = CChannel::Create(&pAnimationData->pChannelData[i], szName, pModel->Get_BoneIndex(pBone->Get_Name()));
 		if (nullptr == pChannel)
 			return E_FAIL;
 
@@ -93,7 +90,7 @@ _int CAnimation::Invalidate_TransformationMatrices(CModel* pModel, _double dTime
 	
 
 	// 재생 duration 관련
-	if (m_ControlDesc.m_isCombo && Combo)
+	if (m_ControlDesc.m_isCombo && Combo || m_isEarlyEnd)
 	{
 		_double ComboDuration = m_AnimationDesc.m_dDuration - 0.35f;
 		if (ComboDuration <= m_AnimationDesc.m_dTimeAcc)
@@ -248,11 +245,11 @@ vector<KEYFRAME> CAnimation::Get_LastKeys()
 	return LastKeys;
 }
 
-CAnimation* CAnimation::Create(ifstream* pFin, class CModel* pModel)
+CAnimation* CAnimation::Create(ANIMATIONDATA* pAnimationData, class CModel* pModel)
 {
 	CAnimation* pInstance = new CAnimation();
 
-	if (FAILED(pInstance->Initialize(pFin, pModel)))
+	if (FAILED(pInstance->Initialize(pAnimationData, pModel)))
 	{
 		MSG_BOX("Failed to Created : CAnimation");
 		Safe_Release(pInstance);

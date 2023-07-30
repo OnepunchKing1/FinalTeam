@@ -13,6 +13,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "Model.h"
+#include "Model_Instance.h"
 
 BEGIN(Engine)
 

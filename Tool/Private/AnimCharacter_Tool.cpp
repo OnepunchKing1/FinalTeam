@@ -7,6 +7,7 @@
 #include "SoundMgr.h"
 
 
+
 CAnimCharacter_Tool::CAnimCharacter_Tool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCharacter_Tool(pDevice, pContext)
 	, m_pImGui_Anim(CImGui_Animation_Tool::GetInstance())
@@ -39,9 +40,11 @@ HRESULT CAnimCharacter_Tool::Initialize(void* pArg)
 
 	m_pModelCom->Set_Animation(0);
 
+
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
+	
 	
 	
 		//여기서 
@@ -366,6 +369,7 @@ void CAnimCharacter_Tool::KeyInput(_double dTimeDelta)
 		//아닐경우, 다음 콤보로 진행
 		else
 			m_pModelCom->Set_Combo_Trigger(true);*/
+
 			m_pModelCom->Set_Combo_Trigger(true);
 	}
 	
@@ -494,6 +498,7 @@ CGameObject* CAnimCharacter_Tool::Clone(void* pArg)
 void CAnimCharacter_Tool::Free()
 {
 	__super::Free();
+
 
 	Safe_Release(m_pImGui_Anim);
 

@@ -3,6 +3,8 @@
 #include "Tool_Defines.h"
 #include "Character_Tool.h"
 
+#include "ImGui_Animation_Tool.h"
+
 BEGIN(Engine)
 
 END

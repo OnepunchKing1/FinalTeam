@@ -25,7 +25,7 @@ public:
 	}
 
 public:
-	HRESULT		Initialize(ifstream* pFin);
+	HRESULT		Initialize(BONEDATA* pModelData);
 	void		Invalidate_CombinedTransformationMatrix(class CModel* pModel);
 
 private:
@@ -36,7 +36,7 @@ private:
 	_int		m_iParentIndex = { -1 };
 
 public:
-	static CBone* Create(ifstream* pFin);
+	static CBone* Create(BONEDATA* pModelData);
 	CBone* Clone();
 	virtual void Free() override;
 };

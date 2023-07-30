@@ -42,7 +42,20 @@ protected:
 	HRESULT	Read_Animation_Control_File(const char* szBinfilename);
 	void	RootAnimation(_double dTimeDelta);
 	_bool	EventCallProcess( );
+	void	Reset_Decleration(_float fResetSpeed);
 
+	//이동 관련
+	void	Go_Straight_Deceleration(_double dTimeDelta, _int AnimIndex, _float ResetSpeed, _float fDecrease);
+	void	Go_Dir_Deceleration(_double dTimeDelta, _int AnimIndex, _float ResetSpeed, _float fDecrease, _float4 Dir);
+	void	Go_Straight_Constant(_double dTimeDelta, _int AnimIndex, _float constantSpeed);
+	void	Gravity(_double dTimeDelta);
+	void	Ground_Animation_Play(_int CurAnim, _int GroundAnim);
+	void	Jumping( _float ResetSpeed, _float fFallDecrease);
+	void	JumpStop(_double dDuration);
+
+protected:
+	void	Set_FallingStatus(_float fFallSpeed, _float fGravityAcc) { m_fJump_Acc = -fFallSpeed; m_fGravity_Fall = fGravityAcc; }
+	
 protected:
 	CHARACTERDESC	m_CharacterDesc;
 
@@ -55,6 +68,24 @@ protected:
 
 protected:
 	_float4		m_Save_RootPos = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+
+	//Attack MoveControl
+	_float	m_fAtk_MoveControl = { 0.0f };
+	_bool	m_isReset_Atk_MoveControl = { false };
+
+	//Jump 
+	_float	m_fGravity_Fall = { 0.1f};
+	_double m_dDelay_Fall = { 0.0 };
+	_bool	m_isJumpOn = { false };
+	_float	m_fJump_Acc = { 0.0f };
+
+	_bool	m_isJumpStop = { false };
+	_double m_dTime_JumpStop = { 0.0 };
+	_double	m_dTime_JumpStop_Duration = { 0.0 };
+
+	_bool	m_isFirst_JumpAtk = { true };
+
 
 protected:
 	HRESULT Add_Components();

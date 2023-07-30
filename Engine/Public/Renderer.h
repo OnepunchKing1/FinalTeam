@@ -64,6 +64,12 @@ private:
 	HRESULT Render_Priority();
 	HRESULT Render_ShadowDepth(); // Shadow
 	HRESULT Render_SSAO();
+	HRESULT Render_SSAOBlurX();
+	HRESULT Render_SSAOBlurY();
+	HRESULT Render_SSAOFinal();
+	HRESULT Render_BlurX();
+	HRESULT Render_BlurY();
+	HRESULT Render_CombineBlur();
 	HRESULT Render_NonBlend();
 	HRESULT Render_NonLight();
 	HRESULT Render_Blend();
@@ -80,6 +86,8 @@ private:
 private:
 	HRESULT Render_Lights();
 	HRESULT Render_Deferred();
+	HRESULT Render_Deferred2();
+	
 
 private:
 	D3D11_VIEWPORT			m_VP; // Shadow

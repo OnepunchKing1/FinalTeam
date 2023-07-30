@@ -37,11 +37,11 @@ HRESULT CLevel_Train::Initialize()
         return E_FAIL;
     }
 
-    /*if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+    if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
     {
         MSG_BOX("Failed to Ready_Layer_Camera : CLevel_Train");
         return E_FAIL;
-    }*/
+    }
 
     if (FAILED(Ready_Layer_MapObject(TEXT("Layer_MapObject"))))
     {
@@ -117,13 +117,13 @@ HRESULT CLevel_Train::Ready_Layer_BackGround(const _tchar* pLayerTag)
         return E_FAIL;
     }*/
 
-    /* For.Sky */
-    if (FAILED(pGameInstance->Add_GameObject(LEVEL_TRAIN, pLayerTag,
-        TEXT("Prototype_GameObject_Sky"))))
-    {
-        MSG_BOX("Failed to Add_GameObject : Sky");
-        return E_FAIL;
-    }
+    ///* For.Sky */
+    //if (FAILED(pGameInstance->Add_GameObject(LEVEL_TRAIN, pLayerTag,
+    //    TEXT("Prototype_GameObject_Sky"))))
+    //{
+    //    MSG_BOX("Failed to Add_GameObject : Sky");
+    //    return E_FAIL;
+    //}
 
     Safe_Release(pGameInstance);
 
@@ -205,7 +205,7 @@ HRESULT CLevel_Train::Ready_Layer_Player(const _tchar* pLayerTag)
 
 HRESULT CLevel_Train::Ready_Layer_MapObject(const _tchar* pLayerTag)
 {
-    Load_MapObject_Info(TEXT("../../Data/Object/Acaza_Battle/Acaza_Battle.dat"), pLayerTag);
+    //Load_MapObject_Info(TEXT("../../Data/Object/Acaza_Battle/Acaza_Battle.dat"), pLayerTag);
 
     return S_OK;
 }
@@ -237,6 +237,13 @@ HRESULT CLevel_Train::Load_MapObject_Info(const _tchar* pPath, const _tchar* pLa
         ReadFile(hFile, &tMapObject_Info.vRotAngle, sizeof(_float3), &dwByte, nullptr);
         ReadFile(hFile, &tMapObject_Info.vScale, sizeof(_float3), &dwByte, nullptr);
         ReadFile(hFile, &tMapObject_Info.iMapObjectType, sizeof(_uint), &dwByte, nullptr);
+
+        ReadFile(hFile, &tMapObject_Info.iNumInstance, sizeof(_uint), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.fRange, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.fMinSize, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.fMaxSize, sizeof(_float), &dwByte, nullptr);
+
+        ReadFile(hFile, &tMapObject_Info.iInstanceType, sizeof(_uint), &dwByte, nullptr);
 
         ReadFile(hFile, &dwStrByte, sizeof(_ulong), &dwByte, nullptr);
         ReadFile(hFile, &tMapObject_Info.szMeshName, dwStrByte, &dwByte, nullptr);
