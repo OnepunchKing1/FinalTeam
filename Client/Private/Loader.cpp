@@ -144,7 +144,7 @@ HRESULT CLoader::LoadingForAllStage()
 			MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxTerrainModel");
 			return E_FAIL;
 		}
-
+		        
 		/* Prototype_Component_Shader_VtxModelInstance */
 		if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModelInstance"),
 			CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModelInstance.hlsl"), VTXMODELINSTANCE_DECL::Elements, VTXMODELINSTANCE_DECL::iNumElements))))
