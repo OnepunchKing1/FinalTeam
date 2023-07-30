@@ -96,12 +96,12 @@ HRESULT CTerrainMapObject::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_SplatingTexture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Splating"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Splating"),
 		TEXT("Com_SplatingTexture"), (CComponent**)&m_pSplatingTexture)))
 		return E_FAIL;
 
 	/* For.Com_MaskTexture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_TerrainMask"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_TerrainMask"),
 		TEXT("Com_MaskTexture"), (CComponent**)&m_pMaskTexture)))
 		return E_FAIL;
 

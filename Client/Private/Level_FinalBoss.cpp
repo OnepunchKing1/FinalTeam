@@ -35,11 +35,11 @@ HRESULT CLevel_FinalBoss::Initialize()
         return E_FAIL;
     }
 
-    /*if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+    if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
     {
         MSG_BOX("Failed to Ready_Layer_Camera : CLevel_FinalBoss");
         return E_FAIL;
-    }*/
+    }
 
     if (FAILED(Ready_Layer_MapObject(TEXT("Layer_MapObject"))))
     {
@@ -175,7 +175,7 @@ HRESULT CLevel_FinalBoss::Ready_Layer_Player(const _tchar* pLayerTag)
     CharacterDesc.NaviDesc.vStartPosition = XMVectorSet(130.f, 0.f, 140.f, 1.f);
 
     if (FAILED(pGameInstance->Add_GameObject(LEVEL_FINALBOSS, pLayerTag, 
-        TEXT("Prototype_GameObject_Player"), &CharacterDesc)))
+        TEXT("Prototype_GameObject_Player_Tanjiro"), &CharacterDesc)))
     {
         MSG_BOX("Failed to Add_GameObject : CLevel_FinalBoss");
         return E_FAIL;

@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "..\Public\Loader.h"
 
-#include "GameInstance.h"
-
 #include "BackGround.h"
 
 #include "Camera_Free.h"
@@ -33,6 +31,7 @@ unsigned int APIENTRY Loading_Main(void* pArg)
 
 	HRESULT	hr = 0;
 
+	hr = pLoader->LoadingForAllStage();
 
 	switch (pLoader->Get_LevelID())
 	{
@@ -97,7 +96,7 @@ unsigned int APIENTRY Loading_Main(void* pArg)
 		}
 		break;
 	}
-
+	
 	if (FAILED(hr))
 		return 1;
 
@@ -126,6 +125,46 @@ HRESULT CLoader::Initialize(LEVELID eLevelID)
 		MSG_BOX("Failed to BeginThread");
 		return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CLoader::LoadingForAllStage()
+{
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+
+	if (false == pGameInstance->Get_IsLoadForAll())
+	{
+		/* Prototype_Component_Shader_VtxTerrainModel */
+		if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxTerrainModel"),
+			CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTerrainModel.hlsl"), VTXMODEL_DECL::Elements, VTXMODEL_DECL::iNumElements))))
+		{
+			MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxTerrainModel");
+			return E_FAIL;
+		}
+
+		/* Prototype_Component_Shader_VtxModelInstance */
+		if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModelInstance"),
+			CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModelInstance.hlsl"), VTXMODELINSTANCE_DECL::Elements, VTXMODELINSTANCE_DECL::iNumElements))))
+		{
+			MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxModelInstance");
+			return E_FAIL;
+		}
+
+		/*==========================================================================*/
+		Load_MapObjectModel_AllStage(pGameInstance);
+		
+	}
+	else
+	{
+
+	}
+
+	pGameInstance->Set_IsLoadForAll();
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
@@ -212,15 +251,7 @@ HRESULT CLoader::LoadingForGamePlay()
 #pragma region Texture
 		
 #pragma region EnvironmentTexture
-	/* For.Prototype_Component_Texture_TerrainMask*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_TerrainMask"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Environments/Map/Acaza_vs/Filter.jpg")))))
-		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Splating*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Splating"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Environments/Map/Acaza_vs/T_d_114_RiceField_01a_BC.dds")))))
-		return E_FAIL;
 
 #pragma endregion
 
@@ -261,14 +292,7 @@ HRESULT CLoader::LoadingForGamePlay()
 #pragma endregion
 
 #pragma region NonCharacter
-	/* Prototype_Component_Model_TestBox */
-	PivotMatrix = XMMatrixTranslation(-21.9f, 215.2f, -158.6f);
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TestBox"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/TestBox/mdlChest2.bin", PivotMatrix))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Model_TestBox");
-		return E_FAIL;
-	}
+	
 #pragma endregion
 
 #pragma region Terrain
@@ -280,8 +304,6 @@ HRESULT CLoader::LoadingForGamePlay()
 		MSG_BOX("Failed to Add_Prototype_Component_Navigation");
 		return E_FAIL;
 	}
-
-	Load_MapObjectModel_AllStage();
 
 #pragma endregion
 
@@ -313,21 +335,7 @@ HRESULT CLoader::LoadingForGamePlay()
 		return E_FAIL;
 	}
 
-	/* Prototype_Component_Shader_VtxTerrainModel */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxTerrainModel"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTerrainModel.hlsl"), VTXMODEL_DECL::Elements, VTXMODEL_DECL::iNumElements))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxTerrainModel");
-		return E_FAIL;
-	}
-
-	/* Prototype_Component_Shader_VtxModelInstance */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModelInstance"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxModelInstance.hlsl"), VTXMODELINSTANCE_DECL::Elements, VTXMODELINSTANCE_DECL::iNumElements))))
-	{
-		MSG_BOX("Failed to Add_Prototype_Component_Shader_VtxModelInstance");
-		return E_FAIL;
-	}
+	
 #pragma endregion
 
 	SetWindowText(g_hWnd, TEXT("Loading ETC..."));
@@ -806,7 +814,7 @@ HRESULT CLoader::LoadingForFinalBoss()
 #pragma endregion
 
 #pragma region Terrain
-	Load_MapObjectModel_FinalBoss();	// 맵 오브젝트 로드(안원 전용)
+	Load_MapObjectModel_FinalBoss();	// 맵 오브젝트 로드(안원 전용)	
 #pragma endregion
 
 #pragma endregion
@@ -856,12 +864,22 @@ HRESULT CLoader::LoadingForFinalBoss()
 	return S_OK;
 }
 
-HRESULT CLoader::Load_MapObjectModel_AllStage()
+HRESULT CLoader::Load_MapObjectModel_AllStage(CGameInstance* pGameInstance)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
 	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 
+	// ===========Texture=============
+	/* For.Prototype_Component_Texture_TerrainMask*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_TerrainMask"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Environments/Map/Acaza_vs/Filter.jpg")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Splating*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Splating"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Environments/Map/Acaza_vs/T_d_114_RiceField_01a_BC.dds")))))
+		return E_FAIL;
+
+	// ===========Model=============
 	/* For.Prototype_Component_ModelInstance_114_Grass_01a*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_114_Grass_01a"),
 		CModel_Instance::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Environments/Map/Acaza_vs/114_Grass_01a.bin", PivotMatrix, 100))))
@@ -982,9 +1000,7 @@ HRESULT CLoader::Load_MapObjectModel_AllStage()
 		CModel_Instance::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_12a.bin", PivotMatrix, 20))))
 		return E_FAIL;
 
-	Safe_Release(pGameInstance);
-
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 HRESULT CLoader::Load_MapObjectModel_House()

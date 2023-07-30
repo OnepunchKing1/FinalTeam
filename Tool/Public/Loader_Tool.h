@@ -20,6 +20,8 @@ public:
 public:
     HRESULT Initialize(LEVELID eLevelID);
 
+    HRESULT LoadingForAllStage();
+
     HRESULT LoadingForLogo(_bool isLoad);
     HRESULT LoadingForTool(_bool isLoad);
     HRESULT LoadingForVillage(_bool isLoad);
@@ -28,7 +30,9 @@ public:
     HRESULT LoadingForFinalBoss(_bool isLoad);
 
 private:
-    HRESULT Load_MapObjectModel();      // ¸Ê ¿ÀºêÁ§Æ® ¸ðµ¨ (¿ø)
+    HRESULT Load_MapObjectModel_AllStage(CGameInstance* pGameInstance);
+    HRESULT Load_MapObjectModel_House();
+    HRESULT Load_MapObjectModel_FinalBoss();
 
 private:
     ID3D11Device*           m_pDevice = { nullptr };

@@ -117,7 +117,7 @@ HRESULT CInstanceMapObject::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxModelInstance"),
+	if (FAILED(__super::Add_Component(LEVEL_TOOL, TEXT("Prototype_Component_Shader_VtxModelInstance"),
 		TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
@@ -127,7 +127,7 @@ HRESULT CInstanceMapObject::Add_Components()
 	tModelInstanceDesc.fRange = m_MapObject_Info.fRange;
 	tModelInstanceDesc.fMinSize = m_MapObject_Info.fMinSize;
 	tModelInstanceDesc.fMaxSize = m_MapObject_Info.fMaxSize;
-	
+
 	LEVELID eLevelID = LEVEL_END;
 
 	switch (m_MapObject_Info.iSceneType)
@@ -136,7 +136,7 @@ HRESULT CInstanceMapObject::Add_Components()
 		eLevelID = LEVEL_STATIC;
 		break;
 	case SCENE_GAMEPLAY:
-		eLevelID = LEVEL_GAMEPLAY;
+		eLevelID = LEVEL_TOOL;
 		break;
 	case SCENE_VILLAGE:
 		eLevelID = LEVEL_VILLAGE;
@@ -154,7 +154,7 @@ HRESULT CInstanceMapObject::Add_Components()
 
 	/* For.Com_ModelInstance */
 	if (FAILED(__super::Add_Component(eLevelID, m_PrototypeObjectTag,
-		TEXT("Com_ModelInstance"), (CComponent**)&m_pModelInstanceCom , &tModelInstanceDesc)))
+		TEXT("Com_ModelInstance"), (CComponent**)&m_pModelInstanceCom, &tModelInstanceDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -178,9 +178,9 @@ HRESULT CInstanceMapObject::SetUp_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->SetUp_Matrix("g_ProjMatrix", &ProjMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->SetUp_RawValue("g_fTimeDelta", &m_fTimeDelta , sizeof _float)))
+	if (FAILED(m_pShaderCom->SetUp_RawValue("g_fTimeDelta", &m_fTimeDelta, sizeof _float)))
 		return E_FAIL;
-	
+
 
 	Safe_Release(pGameInstance);
 

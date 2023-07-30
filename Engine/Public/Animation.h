@@ -24,7 +24,6 @@ public:
 
 	}ANIMATIONDESC;
 
-
 	typedef struct tagEvent
 	{
 		_double m_dTime;
@@ -55,15 +54,13 @@ public:
 
 	}CONTROLDESC;
 
-	
-
 private:
 	CAnimation();
 	CAnimation(const CAnimation& rhs);
 	virtual ~CAnimation() = default;
 
 public:
-	HRESULT Initialize(ifstream* pFin, class CModel* pModel);
+	HRESULT Initialize(ANIMATIONDATA* pAnimationData, class CModel* pModel);
 	_int	Invalidate_TransformationMatrices(class CModel* pModel, _double dTimeDelta, _bool Play , _bool Combo );
 	_bool	Invalidate_Linear_TransformationMatrices(class CModel* pModel, _double dTimeDelta, _bool Play, vector<KEYFRAME> vecLastKey );
 	//_float4  Get_Pos_RootAnimation(CTransform* pTransformCom);
@@ -84,14 +81,13 @@ public:
 	void	Reset_TimeAcc() { m_AnimationDesc.m_dTimeAcc = 0.0; }
 
 	void	Set_ControlDesc(CONTROLDESC control) { m_ControlDesc = control; }
-
+	void	Set_EarlyEnd(_bool bEnd) { m_isEarlyEnd = bEnd; }
 
 
 private:
 	ANIMATIONDESC	m_AnimationDesc;
 	CONTROLDESC		m_ControlDesc;
 	
-
 
 private:
 	_float3		m_RootPosition ;
@@ -101,8 +97,10 @@ private:
 	_bool		m_isFirst_EventCall = { true };
 	_bool		m_isFirst_ComboDuration = { true };
 
+	_bool		m_isEarlyEnd = { false };
+
 public:
-	static CAnimation* Create(ifstream* pFin, class CModel* pModel);
+	static CAnimation* Create(ANIMATIONDATA* pAnimationData, class CModel* pModel);
 	CAnimation* Clone();
 	virtual void Free() override;
 };

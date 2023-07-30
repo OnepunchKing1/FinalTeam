@@ -36,12 +36,11 @@ public:
 	virtual void Tick(_double TimeDelta);
 
 private:
-	HRESULT Ready_Meshes(ifstream* pFin,_uint iNumInstance);
-	HRESULT Ready_Materials(const char* pModelFilePath, ifstream* pFin);
-
-//private:
-//	Assimp::Importer						m_Importer;
-//	const aiScene*							m_pAIScene = { nullptr };
+	HRESULT	Ready_ModelData();
+	HRESULT Ready_HierarchyBones();
+	HRESULT Ready_Meshes(_uint iNumInstance);
+	HRESULT Ready_Materials();
+	HRESULT Clear_LoadData();
 
 private:
 	_float4x4								m_PivotMatrix;
@@ -55,6 +54,7 @@ private:
 	vector<MESHMATERIALS>					m_Materials;
 
 private:
+	MODELDATA								m_ModelData;
 	string									m_ModelFilePath;
 
 private:
@@ -68,7 +68,6 @@ private:
 	_uint									m_iNumInstance = { 0 };	// 몇개의 도형을 그릴것인가?
 	_uint									m_iMaxNumInstance = { 0 };
 	ID3D11Buffer*							m_pVBInstance = { nullptr };
-
 
 private:
 	vector<class CBone*>		m_Bones;
