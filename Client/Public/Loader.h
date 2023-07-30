@@ -26,7 +26,7 @@ public:
 public:
     HRESULT Initialize(LEVELID eLevelID);
 
-    HRESULT LoadingForAllStage();   // ´ë¼º ¼öÁ¤ ¿ä¸Á
+      
 
     HRESULT LoadingForLogo();
     HRESULT LoadingForGamePlay();
@@ -36,6 +36,7 @@ public:
     HRESULT LoadingForFinalBoss();
 
 private:    // ¸Ê ¿ÀºêÁ§Æ® ¸ðµ¨ (¿ø)
+    HRESULT Load_MapObjectModel_AllStage();
     HRESULT Load_MapObjectModel_House();      
     HRESULT Load_MapObjectModel_FinalBoss();     
 

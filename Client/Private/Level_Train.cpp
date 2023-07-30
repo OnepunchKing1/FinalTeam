@@ -245,6 +245,11 @@ HRESULT CLevel_Train::Load_MapObject_Info(const _tchar* pPath, const _tchar* pLa
 
         ReadFile(hFile, &tMapObject_Info.iInstanceType, sizeof(_uint), &dwByte, nullptr);
 
+        ReadFile(hFile, &tMapObject_Info.bRandomRatationY, sizeof(_bool), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.iArrangementType, sizeof(_uint), &dwByte, nullptr);
+
+        ReadFile(hFile, &tMapObject_Info.iSceneType, sizeof(_uint), &dwByte, nullptr);
+
         ReadFile(hFile, &dwStrByte, sizeof(_ulong), &dwByte, nullptr);
         ReadFile(hFile, &tMapObject_Info.szMeshName, dwStrByte, &dwByte, nullptr);
 
@@ -267,6 +272,10 @@ HRESULT CLevel_Train::Load_MapObject_Info(const _tchar* pPath, const _tchar* pLa
                 TEXT("Prototype_GameObject_RotationMapObject"), &tMapObject_Info)))
                 return E_FAIL;
             break;
+        case CMapObject::MAPOBJECT_INSTANCE:
+            if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_MapObject"),
+                TEXT("Prototype_GameObject_InstanceMapObject"), &tMapObject_Info)))
+                return E_FAIL;
         default:
             break;
         }

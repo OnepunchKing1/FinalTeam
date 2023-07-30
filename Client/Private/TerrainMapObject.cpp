@@ -105,8 +105,32 @@ HRESULT CTerrainMapObject::Add_Components()
 		TEXT("Com_MaskTexture"), (CComponent**)&m_pMaskTexture)))
 		return E_FAIL;
 
+	LEVELID eLevelID = LEVEL_END;
+	
+	switch (m_MapObject_Info.iSceneType)
+	{
+	case SCENE_STATIC:
+		eLevelID = LEVEL_STATIC;
+		break;
+	case SCENE_GAMEPLAY:
+		eLevelID = LEVEL_GAMEPLAY;
+		break;
+	case SCENE_VILLAGE:
+		eLevelID = LEVEL_VILLAGE;
+		break;
+	case SCENE_HOUSE:
+		eLevelID = LEVEL_HOUSE;
+		break;
+	case SCENE_TRAIN:
+		eLevelID = LEVEL_TRAIN;
+		break;
+	case SCENE_FINALBOSS:
+		eLevelID = LEVEL_FINALBOSS;
+		break;
+	}
+
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_PrototypeObjectTag,
+	if (FAILED(__super::Add_Component(eLevelID, m_PrototypeObjectTag,
 		TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
