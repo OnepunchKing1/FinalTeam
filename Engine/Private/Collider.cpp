@@ -44,6 +44,13 @@ void CCollider::ReMake_Collider(_float fRadius)
 	m_pSphere[DATA_ORIGIN]->Radius = fRadius;
 }
 
+void CCollider::ReMake_Collider(_float3 vCenter, _float fRadius, _fmatrix TransformMatrix)
+{
+	m_pSphere[DATA_ORIGIN]->Center = vCenter;
+	m_pSphere[DATA_ORIGIN]->Radius = fRadius;
+	m_pSphere[DATA_ORIGIN]->Transform(*m_pSphere[DATA_CURRENT], TransformMatrix);
+}
+
 HRESULT CCollider::Initialize_Prototype(TYPE eColliderType)
 {
 	m_eColliderType = eColliderType;

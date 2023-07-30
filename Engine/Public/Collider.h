@@ -38,6 +38,7 @@ public:
 public:
 	void ReMake_Collider(TYPE eColliderType, _fmatrix TransformMatrix);
 	void ReMake_Collider(_float fRadius);
+	void ReMake_Collider(_float3 vCenter, _float fRadius, _fmatrix TransformMatrix);
 
 public:
 	virtual HRESULT Initialize_Prototype(TYPE eColliderType);

@@ -5,6 +5,9 @@
 
 #include "Player.h"
 
+#include "AtkCollider.h"
+#include "AtkCollManager.h"
+
 CCamera_Free::CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera(pDevice, pContext)
 {
@@ -74,6 +77,29 @@ void CCamera_Free::Tick(_double dTimeDelta)
 
 		if (pGameInstance->Get_DIKeyState(DIK_RIGHTARROW) & 0x80)
 			m_pTransformCom->Go_Right(dTimeDelta);
+
+		//if (pGameInstance->Get_DIKeyState(DIK_NUMPAD3) & 0x80)
+		if (pGameInstance->Get_DIKeyDown(DIK_NUMPAD3))
+		{
+			CTransform* pPlayerTransform = dynamic_cast<CTransform*>(pGameInstance->Get_Component(pGameInstance->Get_CurLevelIdx(), TEXT("Layer_Player"), TEXT("Com_Transform")));
+
+			CAtkCollider::ATKCOLLDESC AtkCollDesc;
+			ZeroMemory(&AtkCollDesc, sizeof AtkCollDesc);
+
+			AtkCollDesc.ColliderDesc.vSize = _float3(3.f, 1.f, 1.f);
+			AtkCollDesc.ColliderDesc.vPosition = _float3(-5.f + m_fX, AtkCollDesc.ColliderDesc.vSize.x, 0.f);
+
+			AtkCollDesc.dLifeTime = 1.0;
+
+			AtkCollDesc.pTransform = pPlayerTransform;
+
+			CAtkCollManager::GetInstance()->Reuse_Collider(TEXT("Layer_Test"), &AtkCollDesc);
+
+			m_fX += 1.f;
+
+			if (5.f < -5.f + m_fX)
+				m_fX = 0.f;
+		}
 
 		/*if (pGameInstance->Get_DIKeyState(DIK_F7) & 0x80)
 			Set_Fov(0.1f);

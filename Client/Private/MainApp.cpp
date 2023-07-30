@@ -2,6 +2,7 @@
 #include "..\Public\MainApp.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
+#include "AtkCollManager.h"
 
 #include "SoundMgr.h"
 
@@ -320,6 +321,7 @@ void CMainApp::Free()
 
 	CSoundMgr::Get_Instance()->StopAll();
 
+	CAtkCollManager::GetInstance()->DestroyInstance();
 	CSoundMgr::Get_Instance()->Destroy_Instance();
 	CGameInstance::Release_Engine();
 }

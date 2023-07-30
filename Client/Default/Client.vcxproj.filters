@@ -94,6 +94,9 @@
     <Filter Include="02. GameObjects\AtkCollider">
       <UniqueIdentifier>{4217705c-bb2c-4014-8026-5aae0ed86d69}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\AtkCollider\Manager">
+      <UniqueIdentifier>{4217c31b-b8df-4fde-a195-dfd3766bb9bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -183,6 +186,9 @@
     <ClInclude Include="..\Public\AtkCollider.h">
       <Filter>02. GameObjects\AtkCollider</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AtkCollManager.h">
+      <Filter>02. GameObjects\AtkCollider\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -259,6 +265,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\AtkCollider.cpp">
       <Filter>02. GameObjects\AtkCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AtkCollManager.cpp">
+      <Filter>02. GameObjects\AtkCollider\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

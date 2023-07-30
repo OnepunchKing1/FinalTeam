@@ -4,6 +4,8 @@
 #include "GameInstance.h"
 #include "Player.h"
 
+IMPLEMENT_SINGLETON(CColliderManager)
+
 CColliderManager::CColliderManager()
 {
 }
