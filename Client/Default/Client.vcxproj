@@ -178,6 +178,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\Boss_Battle_Frame.h" />
+    <ClInclude Include="..\Public\Boss_Battle_Hp.h" />
     <ClInclude Include="..\Public\Camera_Free.h" />
     <ClInclude Include="..\Public\Character.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -193,7 +195,14 @@
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\Public\MapObject.h" />
+    <ClInclude Include="..\Public\Monster_Test.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\Player_Battle_Combo.h" />
+    <ClInclude Include="..\Public\Player_Battle_Frame.h" />
+    <ClInclude Include="..\Public\Player_Battle_Hp.h" />
+    <ClInclude Include="..\Public\Player_Battle_Mp.h" />
+    <ClInclude Include="..\Public\Player_Battle_Ult_Effect.h" />
+    <ClInclude Include="..\Public\Player_Battle_Ult_Frame.h" />
     <ClInclude Include="..\Public\Player_Tanjiro.h" />
     <ClInclude Include="..\Public\RotationMapObject.h" />
     <ClInclude Include="..\Public\Sky.h" />
@@ -208,6 +217,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Boss_Battle_Frame.cpp" />
+    <ClCompile Include="..\Private\Boss_Battle_Hp.cpp" />
     <ClCompile Include="..\Private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Character.cpp" />
     <ClCompile Include="..\Private\ColliderManager.cpp" />
@@ -222,7 +233,14 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\MapObject.cpp" />
+    <ClCompile Include="..\Private\Monster_Test.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\Player_Battle_Combo.cpp" />
+    <ClCompile Include="..\Private\Player_Battle_Frame.cpp" />
+    <ClCompile Include="..\Private\Player_Battle_Hp.cpp" />
+    <ClCompile Include="..\Private\Player_Battle_Mp.cpp" />
+    <ClCompile Include="..\Private\Player_Battle_Ult_Effect.cpp" />
+    <ClCompile Include="..\Private\Player_Battle_Ult_Frame.cpp" />
     <ClCompile Include="..\Private\Player_Tanjiro.cpp" />
     <ClCompile Include="..\Private\RotationMapObject.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />

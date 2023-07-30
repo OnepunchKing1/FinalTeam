@@ -17,12 +17,27 @@ public:
 	virtual void	LateTick(_double dTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	_float	Get_UI_Layer(void) {
+		return m_UI_Layer;
+	}
+
 protected:
-	//_float		m_fX, m_fY, m_fSizeX, m_fSizeY;
-	//_float4x4	m_ProjMatrix;
+	_double					m_fX, m_fY, m_fSizeX, m_fSizeY = {};
+	_float4x4				m_ProjMatrix = {};
+
+	_int                   m_ScreenWidth = {};
+	_int                   m_ScreenHeight = {};
+	_int                   m_MouseX = {};
+	_int                   m_MouseY = {};
+
+	_bool                  m_Is_Render = { true };
 
 protected:
 	_bool	Pt_InUI();
+	_float  m_UI_Layer = { 0 };
+
+
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
