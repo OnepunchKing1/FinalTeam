@@ -65,6 +65,7 @@ void CLevel_Village::Tick(_double dTimeDelta)
         CGameInstance* pGameInstance = CGameInstance::GetInstance();
         Safe_AddRef(pGameInstance);
 
+        pGameInstance->Clear_Light();
         hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_HOUSE), false, false);
 
         Safe_Release(pGameInstance);
@@ -246,6 +247,12 @@ HRESULT CLevel_Village::Load_MapObject_Info(const _tchar* pPath, const _tchar* p
 
         ReadFile(hFile, &tMapObject_Info.iInstanceType, sizeof(_uint), &dwByte, nullptr);
 
+        ReadFile(hFile, &tMapObject_Info.bRandomRatationY, sizeof(_bool), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.iArrangementType, sizeof(_uint), &dwByte, nullptr);
+
+        ReadFile(hFile, &tMapObject_Info.iSceneType, sizeof(_uint), &dwByte, nullptr);
+
+
         ReadFile(hFile, &dwStrByte, sizeof(_ulong), &dwByte, nullptr);
         ReadFile(hFile, &tMapObject_Info.szMeshName, dwStrByte, &dwByte, nullptr);
 
@@ -266,6 +273,10 @@ HRESULT CLevel_Village::Load_MapObject_Info(const _tchar* pPath, const _tchar* p
         case CMapObject::MAPOBJECT_ROTATION:
             if (FAILED(pGameInstance->Add_GameObject(LEVEL_VILLAGE, TEXT("Layer_MapObject"),
                 TEXT("Prototype_GameObject_RotationMapObject"), &tMapObject_Info)))
+                return E_FAIL;
+        case CMapObject::MAPOBJECT_INSTANCE:
+            if (FAILED(pGameInstance->Add_GameObject(LEVEL_GAMEPLAY, TEXT("Layer_MapObject"),
+                TEXT("Prototype_GameObject_InstanceMapObject"), &tMapObject_Info)))
                 return E_FAIL;
             break;
         default:

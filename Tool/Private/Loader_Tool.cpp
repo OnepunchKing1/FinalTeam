@@ -10,6 +10,7 @@
 
 //AnimTool¿ë
 #include "AnimCharacter_Tool.h"
+#include "ImGui_Animation_Tool.h"
 
 //MapObject
 #include "StaticMapObject.h"
@@ -107,125 +108,7 @@ HRESULT CLoader_Tool::LoadingForAllStage()
 
 		/*==========================================================================*/
 
-		/* For.Prototype_Component_ModelInstance_114_Grass_01a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_114_Grass_01a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Grass_01a.bin", PivotMatrix, 100))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_114_Grass_02a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_114_Grass_02a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Grass_02a.bin", PivotMatrix, 100))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_114_Grass_03a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_114_Grass_03a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Grass_03a.bin", PivotMatrix, 100))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_GrassStrip_01a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_GrassStrip_01a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/GrassStrip_01a.bin", PivotMatrix, 50))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_114_Bush_01a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_114_Bush_01a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Bush_01a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_114_Seedlings_01a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_114_Seedlings_01a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Seedlings_01a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_114_SmallTree_03a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_114_SmallTree_03a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_SmallTree_03a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_006_MiddleTree_01a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_006_MiddleTree_01a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Trees/006_MiddleTree_01a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_006_MiddleTree_02a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_006_MiddleTree_02a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Trees/006_MiddleTree_02a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Coniferous_01a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Coniferous_01a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Trees/cmn_mount_Coniferous_01a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Coniferous_02a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Coniferous_02a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Trees/cmn_mount_Coniferous_02a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Coniferous_03a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Coniferous_03a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Trees/cmn_mount_Coniferous_03a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Coniferous_04a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Coniferous_04a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Trees/cmn_mount_Coniferous_04a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_01a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_01a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_01a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_02a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_02a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_02a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_03a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_03a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_03a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_03b*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_03b"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_03b.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_03c*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_03c"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_03c.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_04a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_04a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_04a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_05a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_05a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_05a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_06a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_06a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_06a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_09a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_09a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_09a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_10a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_10a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_10a.bin", PivotMatrix, 20))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_12a*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_12a"),
-			CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_12a.bin", PivotMatrix, 20))))
-			return E_FAIL;
+		Load_MapObjectModel_AllStage(pGameInstance);
 	}
 	else
 	{
@@ -260,15 +143,7 @@ HRESULT CLoader_Tool::LoadingForTool(_bool isLoad)
 #pragma region Texture
 
 #pragma region EnvironmentTexture
-		/* For.Prototype_Component_Texture_TerrainMask*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Texture_TerrainMask"),
-			CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/Filter.bmp")))))
-			return E_FAIL;
-
-		/* For.Prototype_Component_Texture_Splating*/
-		if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Texture_Splating"),
-			CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/T_d_114_RiceField_01a_BC.dds")))))
-			return E_FAIL;
+	
 #pragma endregion
 
 #pragma region RampTexture
@@ -383,6 +258,8 @@ HRESULT CLoader_Tool::LoadingForTool(_bool isLoad)
 			MSG_BOX("Failed to Add_Prototype_Component_Collider_Sphere");
 			return E_FAIL;
 		}
+
+
 #pragma endregion
 
 
@@ -921,6 +798,145 @@ HRESULT CLoader_Tool::LoadingForFinalBoss(_bool isLoad)
 	return S_OK;
 }
 
+HRESULT CLoader_Tool::Load_MapObjectModel_AllStage(CGameInstance* pGameInstance)
+{
+	_matrix PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+
+	// ===========Texture=============
+	/* For.Prototype_Component_Texture_TerrainMask*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_TerrainMask"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/Filter.jpg")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Splating*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Splating"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/T_d_114_RiceField_01a_BC.dds")))))
+		return E_FAIL;
+
+	// ===========Model=============
+	/* For.Prototype_Component_ModelInstance_114_Grass_01a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_114_Grass_01a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Grass_01a.bin", PivotMatrix, 100))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_114_Grass_02a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_114_Grass_02a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Grass_02a.bin", PivotMatrix, 100))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_114_Grass_03a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_114_Grass_03a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Grass_03a.bin", PivotMatrix, 100))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_GrassStrip_01a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_GrassStrip_01a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/GrassStrip_01a.bin", PivotMatrix, 50))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_114_Bush_01a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_114_Bush_01a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Bush_01a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_114_Seedlings_01a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_114_Seedlings_01a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Seedlings_01a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_114_SmallTree_03a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_114_SmallTree_03a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_SmallTree_03a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_006_MiddleTree_01a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_006_MiddleTree_01a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Trees/006_MiddleTree_01a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_006_MiddleTree_02a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_006_MiddleTree_02a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Trees/006_MiddleTree_02a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Coniferous_01a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Coniferous_01a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Trees/cmn_mount_Coniferous_01a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Coniferous_02a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Coniferous_02a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Trees/cmn_mount_Coniferous_02a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Coniferous_03a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Coniferous_03a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Trees/cmn_mount_Coniferous_03a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Coniferous_04a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Coniferous_04a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Trees/cmn_mount_Coniferous_04a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_01a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_01a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_01a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_02a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_02a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_02a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_03a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_03a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_03a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_03b*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_03b"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_03b.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_03c*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_03c"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_03c.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_04a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_04a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_04a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_05a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_05a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_05a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_06a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_06a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_06a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_09a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_09a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_09a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_10a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_10a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_10a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ModelInstance_cmn_mount_Bush_12a*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_ModelInstance_cmn_mount_Bush_12a"),
+		CModel_Instance::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Environments/Map/Bushes/cmn_mount_Bush_12a.bin", PivotMatrix, 20))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLoader_Tool::Load_MapObjectModel_House()
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -1079,104 +1095,104 @@ HRESULT CLoader_Tool::Load_MapObjectModel_FinalBoss()
 
 	// ===============BattleMap Acaza======================
 	/* For.Prototype_Component_Model_BattleMap_Acaza*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_BattleMap_Acaza"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_BattleMap_Acaza"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/BattleMap_Acaza.bin", PivotMatrix))))
 		return E_FAIL;
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 	/* For.Prototype_Component_Model_BrokenLocomotive_01*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_BrokenLocomotive_01"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_BrokenLocomotive_01"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/BrokenLocomotive_01.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_BrokenLocomotive_01c*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_BrokenLocomotive_01c"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_BrokenLocomotive_01c"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/BrokenLocomotive_01c.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_BrokenLocomotive_02a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_BrokenLocomotive_02a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_BrokenLocomotive_02a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/BrokenLocomotive_02a.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_BrokenLocomotive_03a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_BrokenLocomotive_03a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_BrokenLocomotive_03a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/BrokenLocomotive_03a.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_BrokenLocomotive_04a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_BrokenLocomotive_04a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_BrokenLocomotive_04a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/BrokenLocomotive_04a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Sky*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Sky"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_Sky"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/Sky.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_Far_01a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Far_01a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_Far_01a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/Far_01a.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_Far_02a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Far_02a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_Far_02a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/Far_02a.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_Far_04a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Far_04a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_Far_04a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/Far_04a.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_far_hill_01a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_far_hill_01a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_far_hill_01a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/far_hill_01a.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_far_hill_02a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_far_hill_02a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_far_hill_02a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/far_hill_02a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_114_SmallCliff_01a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_114_SmallCliff_01a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_114_SmallCliff_01a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_SmallCliff_01a.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_Rail_01a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Rail_01a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_Rail_01a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/Rail_01a.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_Rail_02a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_Rail_02a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_Rail_02a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/Rail_02a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_114_Middle_01a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_114_Middle_01a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_114_Middle_01a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Middle_01a.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_114_Middle_02a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_114_Middle_02a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_114_Middle_02a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Middle_02a.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_114_Middle_02b*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_114_Middle_02b"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_114_Middle_02b"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Middle_02b.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_114_Middle_03a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_114_Middle_03a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_114_Middle_03a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Middle_03a.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_114_Middle_03b*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_114_Middle_03b"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_114_Middle_03b"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Middle_03b.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_114_Middle_04a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_114_Middle_04a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_114_Middle_04a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Middle_04a.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_114_Middle_04b*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_114_Middle_04b"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_114_Middle_04b"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Middle_04b.bin", PivotMatrix))))
 		return E_FAIL;
 	/* For.Prototype_Component_Model_114_Middle_05a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_114_Middle_05a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_114_Middle_05a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Acaza_vs/114_Middle_05a.bin", PivotMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_006_Trees_04a*/
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_TOOL, TEXT("Prototype_Component_Model_006_Trees_04a"),
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_FINALBOSS, TEXT("Prototype_Component_Model_006_Trees_04a"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Environments/Map/Trees/006_Trees_04a.bin", PivotMatrix))))
 		return E_FAIL;
 

@@ -73,9 +73,9 @@ PS_OUT  PS_TERRAIN(PS_IN _In)
 {
 	PS_OUT	Out = (PS_OUT)0;
 
-	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vTexUV * 0.1f - 0.5f);
+	vector	vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, _In.vTexUV * 0.1f-0.5f);
 	vector	vSplatingDiffuse = g_SplatingTexture.Sample(LinearSampler, _In.vTexUV * 0.1f - 0.5f);
-	vector	vMask = g_MaskTexture.Sample(LinearSampler, _In.vTexUV * 0.1f - 0.5f);
+	vector	vMask = g_MaskTexture.Sample(LinearSampler, _In.vTexUV * 0.1f -0.5f);
 
 	/* 이 노멀아르 정의하기위한 로컬스페이스(x:Tangent, y:biNormal, z:Normal)에 정의되어있는 상태이다. */
 	vector	vNormalDesc = g_NormalTexture.Sample(LinearSampler, _In.vTexUV);
@@ -86,7 +86,7 @@ PS_OUT  PS_TERRAIN(PS_IN _In)
 
 	vNormal = mul(vNormal, WorldMatrix);
 
-	Out.vDiffuse = vMtrlDiffuse * (1.f - vMask.r) + vSplatingDiffuse * (vMask.r) * 1.3f;
+	Out.vDiffuse = vMtrlDiffuse * (vMask.r) + vSplatingDiffuse * (1.f - vMask.r) * 1.3f;
 
 	// In.vNormal xyz각각이 -1 ~ 1
 	// Out.vNormal 저장받을 수 있는 xyz각각 0 ~ 1

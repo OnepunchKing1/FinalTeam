@@ -45,6 +45,7 @@ public://Set
 		m_Animations[index]->Set_ControlDesc(ControlDesc);
 	}
 
+	void	Set_EarlyEnd(_int index, _bool bEnd) { m_Animations[index]->Set_EarlyEnd(bEnd); }
 
 public:
 	HRESULT Initialize_Prototype(TYPE eModelType, const char* pModelFilePath, _fmatrix PivotMatrix);

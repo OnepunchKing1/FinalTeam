@@ -71,48 +71,11 @@ void CImGui_Manager_Tool::ImGui_Set()
     }
 #pragma endregion
 
-#pragma region Light Set
-    if (ImGui::TreeNode("Light Set"))
+#pragma region Collider Set
+    if (ImGui::TreeNode("Collider Set"))
     {
-        ImGui::SeparatorText("Direction");
+        //ImGui::SeparatorText("Direction");
 
-
-        if (ImGui::BeginTable("", 2))
-        {
-            ImGui::TableNextColumn();
-            ImGui::SliderFloat3("Dir", (_float*)&m_vLightDesc[0], -1.f, 1.f);
-
-            ImGui::TableNextColumn();
-            if (ImGui::Button("SetDir"))
-                pGameInstance->Set_Light(0, 0, m_vLightDesc[0]);
-
-            ImGui::TableNextColumn();
-            ImGui::SliderFloat3("Diffuse", (_float*)&m_vLightDesc[1], 0.f, 1.f);
-
-            ImGui::TableNextColumn();
-            if (ImGui::Button("SetDif"))
-                pGameInstance->Set_Light(0, 1, m_vLightDesc[1]);
-
-            ImGui::TableNextColumn();
-            ImGui::SliderFloat3("Ambient", (_float*)&m_vLightDesc[2], 0.f, 1.f);
-
-            ImGui::TableNextColumn();
-            if (ImGui::Button("SetAmb"))
-                pGameInstance->Set_Light(0, 2, m_vLightDesc[2]);
-
-            ImGui::TableNextColumn();
-            ImGui::SliderFloat3("Specular", (_float*)&m_vLightDesc[3], 0.f, 1.f);
-
-            ImGui::TableNextColumn();
-            if (ImGui::Button("SetSpe"))
-                pGameInstance->Set_Light(0, 3, m_vLightDesc[3]);
-
-            ImGui::TableNextColumn();
-            if (ImGui::Button("SetAll"))
-                for (_uint i = 0; i < 4; i++)
-                    pGameInstance->Set_Light(0, i, m_vLightDesc[i]);
-            ImGui::EndTable();
-        }
 
         ImGui::TreePop();
     }
@@ -160,7 +123,7 @@ void CImGui_Manager_Tool::GoToStage(_int iSelected)
 }
 #pragma endregion
 
-#pragma region Light Set
+#pragma region Collider Set
 void CImGui_Manager_Tool::Set_DefaultLight_ImGui(LIGHTDESC LightDesc)
 {
     m_vLightDesc[0] = LightDesc.vLightDir;
