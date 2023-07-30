@@ -50,12 +50,12 @@ void CInstanceMapObject::Tick(_double TimeDelta)
 	{
 		static _float	fDir = 1.f;
 
-		m_fTimeDelta += (_float)TimeDelta * fDir;
+		m_fTimeDelta += 0.01f * fDir;
 
-		if (m_fTimeDelta < -0.7f)
+		if (m_fTimeDelta < -1.f)
 			fDir = 1.f;
 
-		if (m_fTimeDelta > 0.7f)
+		if (m_fTimeDelta > 1.f)
 			fDir = -1.f;
 	}
 
@@ -90,7 +90,7 @@ HRESULT CInstanceMapObject::Render()
 		if (FAILED(m_pModelInstanceCom->Bind_ShaderResource(m_pShaderCom, i, "g_DiffuseTexture", MESHMATERIALS::TextureType_DIFFUSE)))
 			return E_FAIL;
 
-		/*if (FAILED(m_pModelInstanceCom->Bind_ShaderResource(m_pShaderCom, i, "g_NormalTexture", aiTextureType_NORMALS)))
+		/*if (FAILED(m_pModelInstanceCom->Bind_ShaderResource(m_pShaderCom, i, "g_NormalTexture", MESHMATERIALS::TextureType_DIFFUSE)))
 			return E_FAIL;*/
 
 		if (m_MapObject_Info.iInstanceType == INSTANCE_GRASS)
@@ -127,10 +127,34 @@ HRESULT CInstanceMapObject::Add_Components()
 	tModelInstanceDesc.fRange = m_MapObject_Info.fRange;
 	tModelInstanceDesc.fMinSize = m_MapObject_Info.fMinSize;
 	tModelInstanceDesc.fMaxSize = m_MapObject_Info.fMaxSize;
-	
+
+	LEVELID eLevelID = LEVEL_END;
+
+	switch (m_MapObject_Info.iSceneType)
+	{
+	case SCENE_STATIC:
+		eLevelID = LEVEL_STATIC;
+		break;
+	case SCENE_GAMEPLAY:
+		eLevelID = LEVEL_TOOL;
+		break;
+	case SCENE_VILLAGE:
+		eLevelID = LEVEL_VILLAGE;
+		break;
+	case SCENE_HOUSE:
+		eLevelID = LEVEL_HOUSE;
+		break;
+	case SCENE_TRAIN:
+		eLevelID = LEVEL_TRAIN;
+		break;
+	case SCENE_FINALBOSS:
+		eLevelID = LEVEL_FINALBOSS;
+		break;
+	}
+
 	/* For.Com_ModelInstance */
-	if (FAILED(__super::Add_Component(LEVEL_TOOL, m_PrototypeObjectTag,
-		TEXT("Com_ModelInstance"), (CComponent**)&m_pModelInstanceCom , &tModelInstanceDesc)))
+	if (FAILED(__super::Add_Component(eLevelID, m_PrototypeObjectTag,
+		TEXT("Com_ModelInstance"), (CComponent**)&m_pModelInstanceCom, &tModelInstanceDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -154,9 +178,9 @@ HRESULT CInstanceMapObject::SetUp_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->SetUp_Matrix("g_ProjMatrix", &ProjMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->SetUp_RawValue("g_fTimeDelta", &m_fTimeDelta , sizeof _float)))
+	if (FAILED(m_pShaderCom->SetUp_RawValue("g_fTimeDelta", &m_fTimeDelta, sizeof _float)))
 		return E_FAIL;
-	
+
 
 	Safe_Release(pGameInstance);
 

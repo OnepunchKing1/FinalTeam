@@ -42,10 +42,6 @@ private:
 	HRESULT Ready_Materials();
 	HRESULT Clear_LoadData();
 
-//private:
-//	Assimp::Importer						m_Importer;
-//	const aiScene*							m_pAIScene = { nullptr };
-
 private:
 	_float4x4								m_PivotMatrix;
 
