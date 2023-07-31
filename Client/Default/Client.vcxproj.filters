@@ -264,6 +264,12 @@
     <ClInclude Include="..\Public\AtkCollManager.h">
       <Filter>02. GameObjects\AtkCollider\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AtkCollider.h" />
+      <Filter>02. GameObjects\AtkCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster.h">
+      <Filter>02. GameObjects\Character\Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -368,6 +374,12 @@
     <ClCompile Include="..\Private\AtkCollManager.cpp">
       <Filter>02. GameObjects\AtkCollider\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\AtkCollider.cpp" />
+      <Filter>02. GameObjects\AtkCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster.cpp">
+      <Filter>02. GameObjects\Character\Monster</Filter>
+    </ClCompile>   
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

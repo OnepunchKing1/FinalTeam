@@ -5,9 +5,6 @@
 
 #include "Player.h"
 
-#include "AtkCollider.h"
-#include "AtkCollManager.h"
-
 CCamera_Free::CCamera_Free(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera(pDevice, pContext)
 {
@@ -135,52 +132,21 @@ void CCamera_Free::FreeCamera(_double dTimeDelta)
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (pGameInstance->Get_DIKeyState(DIK_UPARROW) & 0x80)
+	if (pGameInstance->Get_DIKeyState(DIK_UP) & 0x80)
 		m_pTransformCom->Go_Straight(dTimeDelta);
 
-	if (pGameInstance->Get_DIKeyState(DIK_DOWNARROW) & 0x80)
+	if (pGameInstance->Get_DIKeyState(DIK_DOWN) & 0x80)
 		m_pTransformCom->Go_Backward(dTimeDelta);
 
-	if (pGameInstance->Get_DIKeyState(DIK_LEFTARROW) & 0x80)
+	if (pGameInstance->Get_DIKeyState(DIK_LEFT) & 0x80)
 		m_pTransformCom->Go_Left(dTimeDelta);
 
 	if (pGameInstance->Get_DIKeyState(DIK_RIGHT) & 0x80)
 		m_pTransformCom->Go_Right(dTimeDelta);
 
-	//if (pGameInstance->Get_DIKeyState(DIK_NUMPAD3) & 0x80)
-	if (pGameInstance->Get_DIKeyDown(DIK_NUMPAD3))
-	{
-		CTransform* pPlayerTransform = dynamic_cast<CTransform*>(pGameInstance->Get_Component(pGameInstance->Get_CurLevelIdx(), TEXT("Layer_Player"), TEXT("Com_Transform")));
-
-		_vector vLook = XMVector3Normalize(pPlayerTransform->Get_State(CTransform::STATE_LOOK));
-
-		CAtkCollider::ATKCOLLDESC AtkCollDesc;
-		ZeroMemory(&AtkCollDesc, sizeof AtkCollDesc);
-
-		AtkCollDesc.ColliderDesc.vSize = _float3(3.f, 1.f, 1.f);
-		//AtkCollDesc.ColliderDesc.vPosition = _float3(0.f + m_fX, AtkCollDesc.ColliderDesc.vSize.x, -5.f + m_fX);
-		AtkCollDesc.ColliderDesc.vPosition = Convert::ToFloat3(vLook * m_fX);
-
-		AtkCollDesc.dLifeTime = 1.0;
-
-		AtkCollDesc.pTransform = pPlayerTransform;
-
-		CAtkCollManager::GetInstance()->Reuse_Collider(TEXT("Layer_PlayerAtk"), &AtkCollDesc);
-
-		m_fX += 1.f;
-
-		if (5.f < m_fX)
-			m_fX = 0.f;
-	}
-
-		/*if (pGameInstance->Get_DIKeyState(DIK_F7) & 0x80)
-			Set_Fov(0.1f);
-
-		if (pGameInstance->Get_DIKeyState(DIK_F8) & 0x80)
-			Set_Fov(-0.1f);*/
-
-		// Camera_Shake
-		
+	// Camera_Shake
+	if (pGameInstance->Get_DIKeyDown(DIK_LCONTROL))
+		Shake(1.f, 500);
 
 		_long MouseMove = { 0 };
 
