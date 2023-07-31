@@ -85,6 +85,20 @@ void CPlayer::Dir_Setting(_bool Reverse)
 	//135degree look
 	_vector quaternionRotation2 = XMQuaternionRotationAxis(vUp, XMConvertToRadians(135.0f));
 	_vector v135Rotate = XMVector3Rotate(vLook, quaternionRotation2);
+
+	if (pGameInstance->Get_DIKeyDown(DIK_Z))
+	{
+		m_pRendererCom->Set_Invert();
+	}
+	if (pGameInstance->Get_DIKeyDown(DIK_X))
+	{
+		m_pRendererCom->Set_GrayScale();
+	}
+	if (pGameInstance->Get_DIKeyDown(DIK_C))
+	{
+		m_pRendererCom->Set_Sepia();
+	}
+
 	if (Reverse)
 	{
 		v45Rotate = -v45Rotate;

@@ -332,6 +332,7 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT(*fp)())
 		MSG_BOX("Failed to Render_SSAOFinalBlur");
 		return E_FAIL;
 	}
+
 	/*if (FAILED(Render_ShadowBlurX()))
 	{
 		MSG_BOX("Failed to Render_ShadowBlurX");
@@ -347,7 +348,7 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT(*fp)())
 		MSG_BOX("Failed to Render_ShadowBlur");
 		return E_FAIL;
 	}*/
-
+	
 	if (FAILED(Render_Lights()))
 	{
 		MSG_BOX("Failed to Render_Lights");
@@ -861,7 +862,7 @@ HRESULT CRenderer::Render_BlurX()
 	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	m_bSSAOBlur = false;
+	m_bSSAOBlur = true;
 	if (FAILED(m_pShader->SetUp_RawValue("g_bSSAO", &m_bSSAOBlur, sizeof(_bool))))
 		return E_FAIL;
 
@@ -902,7 +903,7 @@ HRESULT CRenderer::Render_BlurY()
 	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	m_bSSAOBlur = false;
+	m_bSSAOBlur = true;
 	if (FAILED(m_pShader->SetUp_RawValue("g_bSSAO", &m_bSSAOBlur, sizeof(_bool))))
 		return E_FAIL;
 
@@ -1061,6 +1062,7 @@ HRESULT CRenderer::Render_UI()
 {
 	m_RenderObjects[RENDER_UI].sort([](CGameObject* pDest, CGameObject* pSrc)->bool {
 		return dynamic_cast<CUI*>(pDest)->Get_UI_Layer() < dynamic_cast<CUI*>(pSrc)->Get_UI_Layer();
+
 	});
 
 	for (auto& pGameObject : m_RenderObjects[RENDER_UI])
@@ -1235,6 +1237,38 @@ HRESULT CRenderer::Render_Deferred()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ShadowDepth"), m_pShader, "g_ShadowDepthTexture")))
 		return E_FAIL;
+
+	// 임시로 만들어 두겠음 -> 이거 나중에 플레이어에서 불변수 넘겨주는 방식으로 합시다.
+	CGameInstance* pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+	/*if (pGameInstance->Get_DIKeyDown(DIK_Z))
+	{
+		if (m_bInvert == false)
+			m_bInvert = true;
+		else if (m_bInvert == true)
+			m_bInvert = false;
+	}
+	if (pGameInstance->Get_DIKeyDown(DIK_X))
+	{
+		if (m_bGrayScale == false)
+			m_bGrayScale = true;
+		else if (m_bGrayScale == true)
+			m_bGrayScale = false;
+	}
+	if (pGameInstance->Get_DIKeyDown(DIK_C))
+	{
+		if (m_bSepia == false)
+			m_bSepia = true;
+		else if (m_bSepia == true)
+			m_bSepia = false;
+	}*/
+	if (FAILED(m_pShader->SetUp_RawValue("g_bInvert", &m_bInvert, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_RawValue("g_bSepia", &m_bSepia, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_RawValue("g_bGrayScale", &m_bGrayScale, sizeof(_bool))))
+		return E_FAIL;
+	Safe_Release(pGameInstance);
 
 	/*if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ShadowBlur"), m_pShader, "g_DepthTexture")))
 		return E_FAIL;*/

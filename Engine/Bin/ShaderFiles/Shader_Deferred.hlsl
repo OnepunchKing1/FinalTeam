@@ -39,6 +39,9 @@ matrix         g_matLightView;
 bool           g_bSSAO;
 bool		   g_bSSAOSwitch;
 
+bool		   g_bInvert;
+bool		   g_bGrayScale;
+bool		   g_bSepia;
 
 //===================================================
 float g_fRadius;
@@ -308,21 +311,41 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 
 	/*if (vDiffuse.a == 0.f)
 		discard;*/
-	//vector adjustedDiffuse = vDiffuse * vSSAO;
-	//vector adjustedShade = vShade * vSSAO;
+		//vector adjustedDiffuse = vDiffuse * vSSAO;
+		//vector adjustedShade = vShade * vSSAO;
 
-	//// 새로 계산된 결과를 적용하여 최종 결과를 만듦
-	//Out.vColor = adjustedDiffuse * adjustedShade;
+		//// 새로 계산된 결과를 적용하여 최종 결과를 만듦
+		//Out.vColor = adjustedDiffuse * adjustedShade;
 
 
-	/*if (vShade.r < 0.21f)
-		vShade.rgb = float3(0.2f, 0.2f, 0.2f);
-	else if (vShade.r >= 0.21f && vShade.r < 0.41f)
-		vShade.rgb = float3(0.4f, 0.4f, 0.4f);
-	else if (vShade.r >= 0.41f && vShade.r <= 1.f)
-		vShade.rgb = float3(0.7f, 0.7f, 0.7f);*/
+		/*if (vShade.r < 0.21f)
+			vShade.rgb = float3(0.2f, 0.2f, 0.2f);
+		else if (vShade.r >= 0.21f && vShade.r < 0.41f)
+			vShade.rgb = float3(0.4f, 0.4f, 0.4f);
+		else if (vShade.r >= 0.41f && vShade.r <= 1.f)
+			vShade.rgb = float3(0.7f, 0.7f, 0.7f);*/
 
 	Out.vColor = (vDiffuse) * (vShade);
+
+	if (true == g_bGrayScale)
+		Out.vColor.rgb = dot(Out.vColor.rgb, float3(0.3f, 0.59f, 0.11f));
+
+	if (true == g_bInvert)
+		Out.vColor = float4(1.0f - Out.vColor.r, 1.0f - Out.vColor.g, 1.0f - Out.vColor.b, Out.vColor.a);
+
+	if (true == g_bSepia)
+	{
+		float4 sepia;
+		sepia.a = Out.vColor.a;
+		sepia.r = dot(Out.vColor.rgb, float3(0.393f, 0.769f, 0.189f));
+		sepia.g = dot(Out.vColor.rgb, float3(0.349f, 0.686f, 0.168f));
+		sepia.b = dot(Out.vColor.rbb, float3(0.272f, 0.534f, 0.131f));
+
+		Out.vColor = vector(sepia.r, sepia.g, sepia.b, sepia.a);
+	}
+
+
+
 	if (Out.vColor.a == 0.f)
 		discard;
 
@@ -441,8 +464,11 @@ PS_OUT PS_Bloom(PS_IN In)
 	vector vFragColor = g_FinalTexture.Sample(LinearSampler, In.vTexUV);
 
 	float fBrightness = dot(vFragColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
+	//float fBrightness = dot(vFragColor.rgb, float3(0.1126f, 0.9152f, 0.1222f));
 	if (fBrightness > 0.8f)
 		fBrightColor = vector(vFragColor.rgb, 1.f);
+
+
 
 	Out.vColor = fBrightColor;
 
@@ -473,6 +499,8 @@ PS_OUT PS_Apply_Bloom(PS_IN In)
 	if (Out.vColor.a == 0.f)
 		discard;
 
+
+
 	return Out;
 }
 
@@ -482,11 +510,26 @@ float m_TexH = 720.f;
 
 static const float Weight[13] =
 {
-	0.0561, 0.1353, 0.278, 0.4868, 0.7261, 0.9231,
-	1, 0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561
+	/*0.0561, 0.1353, 0.278, 0.4868, 0.7261, 0.9231,
+	1, 0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561*/
+	 0.002216,
+	0.008764,
+	0.026995,
+	0.064759,
+	0.120985,
+	0.176033,
+	0.199471,
+	0.176033,
+	0.120985,
+	0.064759,
+	0.026995,
+	0.008764,
+	0.002216,
+	//0.1122, 0.2706, 0.556, 0.9736, 1.4522, 1.8462, 2, 1.8462, 1.4522, 0.9736, 0.556, 0.2706, 0.1122
+
 
 };
-static const float Total = 6.2108;
+static const float Total = /*6.2108*/1.00000012 /*12.4216*/;
 //static const float Total = 2.636;
 //static const float FinalWeight[7] =
 //{
@@ -669,12 +712,12 @@ PS_OUT PS_Combine_Blur(PS_IN In)
 
 	/*if (Out.vColor.a == 0.f)
 		discard;*/
-	/*if (Out.vColor.a == 1.f)
-		discard;
-	if (Out.vColor.r == float(1.f) && Out.vColor.g == float(1.f) && Out.vColor.b == float(1.f))
-		discard;
-	if (Out.vColor.r == float(0.f) && Out.vColor.g == float(0.f) && Out.vColor.b == float(0.f))
-		discard;*/
+		/*if (Out.vColor.a == 1.f)
+			discard;
+		if (Out.vColor.r == float(1.f) && Out.vColor.g == float(1.f) && Out.vColor.b == float(1.f))
+			discard;
+		if (Out.vColor.r == float(0.f) && Out.vColor.g == float(0.f) && Out.vColor.b == float(0.f))
+			discard;*/
 
 	return Out;
 }
