@@ -123,25 +123,27 @@ HRESULT CMainApp::Render()
 		m_TimeAcc = 0.0;
 	}
 
-	if (true == m_isRenderFPS)
-	{
-		if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), _float2(0.5f, 0.5f))))
+	if (m_isRenderDebugInfo) {
+
+		if (true == m_isRenderFPS)
+		{
+			if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), _float2(0.5f, 0.5f))))
+				return E_FAIL;
+		}
+
+		if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("Num0 To OnOff StaticCam"), _float2(0.f, 640.f), _float2(0.5f, 0.5f))))
 			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("Num9 To OnOff LockMouse"), _float2(0.f, 660.f), _float2(0.5f, 0.5f))))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F7 To OnOff FPS"), _float2(0.f, 680.f), _float2(0.5f, 0.5f))))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F8 To OnOff RenderDebug"), _float2(0.f, 700.f), _float2(0.5f, 0.5f))))
+			return E_FAIL;
+
 	}
-
-	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("Num0 To OnOff StaticCam"), _float2(0.f, 640.f), _float2(0.5f, 0.5f))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("Num9 To OnOff LockMouse"), _float2(0.f, 660.f), _float2(0.5f, 0.5f))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F7 To OnOff FPS"), _float2(0.f, 680.f), _float2(0.5f, 0.5f))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F8 To OnOff RenderDebug"), _float2(0.f, 700.f), _float2(0.5f, 0.5f))))
-		return E_FAIL;
-
-	
 	
 #endif // _DEBUG
 
@@ -219,7 +221,8 @@ void CMainApp::Key_Input(_double dTimeDelta)
 	if (m_pGameInstance->Get_DIKeyDown(DIK_F8))
 		m_pRenderer->OnOff_RenderTarget();
 	
-	
+	if (m_pGameInstance->Get_DIKeyDown(DIK_TAB))
+		m_isRenderDebugInfo = !m_isRenderDebugInfo;
 
 }
 #endif // _DEBUG
@@ -272,6 +275,101 @@ HRESULT CMainApp::Ready_Prototype_Component_For_Static()
 		MSG_BOX("Failed to Add_Prototype_Component_Texture_BackGround");
 		return E_FAIL;
 	}
+
+	/* Prototype_Component_Texture_UI */
+
+#pragma region Player_Battle_Bar_UI	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Frame"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Battle_Bar/P/P_Frame.png")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Face"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Battle_Face/P/C_%d.png"), 5))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Name"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Battle_Name/P/N_%d.png"), 5))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Hp"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Battle_Bar/P/Hp_%d.png"), 4))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Mp"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Battle_Bar/P/Mp_%d.png"), 4))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Ult_Frame"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Ult_Bar/Ult_Frame_%d.png"), 6))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Ult_Stack"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Ult_Bar/Ult_Stack_%d.png"), 2))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Ult_Bar_Color"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Ult_Bar/Ult_Bar_Color_0.png")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Combo_Frame"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Combo/Combo_Frame_%d.png"), 2))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Num_Combo"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Combo/Num_Combo%d.png"), 10))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Ult_Stack_Num"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Ult_Bar/Ult_Num_%d.png"), 4))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Ult_Stock_Eff"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Ult_Bar/Eff/Ult_Stock_Eff_%d.png"), 4))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Ult_Awk"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Ult_Bar/Eff/Eff_Awk_%d.png"), 6))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Ult_Swk"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Ult_Bar/Eff/Eff_Swk_%d.png"), 6))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Ult_Flower"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Ult_Bar/Ult_Gauge_Flower.png")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Lang_Ult"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Ult_Bar/Lang_Ult_%d.png"), 4))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Player_Battle_Eff_Gauge"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Ult_Bar/Eff/Eff_Gauge_%d.png"), 2))))
+		return E_FAIL;
+
+#pragma endregion
+
+#pragma region Boss_Battle_Bar_UI	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Boss_Battle_Frame"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Battle_Bar/B/B_Frame.png")))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Boss_Battle_Face"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Battle_Face/B/C_%d.png"), 9))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Boss_Battle_Name"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Battle_Name/B/N_%d.png"), 9))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Boss_Battle_Hp"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/UI/Battle_Bar/B/Hp_%d.png"), 4))))
+		return E_FAIL;
+
+
+#pragma endregion
 
 
 	Safe_AddRef(m_pRenderer);

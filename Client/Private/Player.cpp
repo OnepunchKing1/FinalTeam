@@ -49,7 +49,7 @@ void CPlayer::LateTick(_double dTimeDelta)
 {
 	__super::LateTick(dTimeDelta);
 
-
+	
 }
 
 HRESULT CPlayer::Render()

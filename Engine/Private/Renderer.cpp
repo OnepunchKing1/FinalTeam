@@ -7,6 +7,8 @@
 #include "VIBuffer_Rect.h"
 #include "PipeLine.h"
 #include "GameInstance.h"
+#include "UI.h"
+
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
@@ -757,6 +759,10 @@ HRESULT CRenderer::Render_Blend()
 
 HRESULT CRenderer::Render_UI()
 {
+	m_RenderObjects[RENDER_UI].sort([](CGameObject* pDest, CGameObject* pSrc)->bool {
+		return dynamic_cast<CUI*>(pDest)->Get_UI_Layer() < dynamic_cast<CUI*>(pSrc)->Get_UI_Layer();
+	});
+
 	for (auto& pGameObject : m_RenderObjects[RENDER_UI])
 	{
 		if (nullptr != pGameObject)
