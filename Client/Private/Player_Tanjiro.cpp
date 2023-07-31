@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "SoundMgr.h"
 
+#include "AtkCollManager.h"
 
 CPlayer_Tanjiro::CPlayer_Tanjiro(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPlayer(pDevice, pContext)
@@ -385,6 +386,22 @@ void CPlayer_Tanjiro::Animation_Control_Battle_Attack(_double dTimeDelta)
 				}
 			}
 		}
+
+		//=======================AtkCollTest=======================
+
+		CAtkCollider::ATKCOLLDESC AtkCollDesc;
+		ZeroMemory(&AtkCollDesc, sizeof AtkCollDesc);
+
+		AtkCollDesc.ColliderDesc.vSize = _float3(3.f, 1.f, 1.f);
+		AtkCollDesc.ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+
+		AtkCollDesc.dLifeTime = 1.0;
+
+		AtkCollDesc.pTransform = m_pTransformCom;
+
+		CAtkCollManager::GetInstance()->Reuse_Collider(TEXT("Layer_PlayerAtk"), &AtkCollDesc);
+
+		//=========================================================
 	}
 	// 공격 모션별 전진이동 제어 (Timedelta, 애니메이션인덱스,  초기화속도,  감속도)
 	Go_Straight_Deceleration(dTimeDelta, ANIM_ATK_COMBO, 3.0f, 0.3f);
