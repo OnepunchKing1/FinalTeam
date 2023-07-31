@@ -148,7 +148,7 @@ void CCamera_Free::FreeCamera(_double dTimeDelta)
 	if (pGameInstance->Get_DIKeyDown(DIK_LCONTROL))
 		Shake(1.f, 500);
 
-	_long MouseMove = { 0 };
+		_long MouseMove = { 0 };
 
 	if (MouseMove = pGameInstance->Get_DIMouseMove(CInput_Device::DIMS_X))
 	{

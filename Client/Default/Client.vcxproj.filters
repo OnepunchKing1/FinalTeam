@@ -145,6 +145,12 @@
     <Filter Include="02. GameObjects\UI\00.Player_Battle_Bar\Sup_Bar\Frame">
       <UniqueIdentifier>{75cdf47c-c18e-49a1-b217-8c15b666530c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\AtkCollider">
+      <UniqueIdentifier>{7f94dad7-d326-47f1-b06d-c52075fed801}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\AtkCollider\Manager">
+      <UniqueIdentifier>{a04c8a4e-c42a-466e-b952-271e7df79043}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -186,12 +192,6 @@
     <ClInclude Include="..\Public\Camera_Free.h">
       <Filter>02. GameObjects\Camera\Free</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Character.h">
-      <Filter>02. GameObjects\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Player.h">
-      <Filter>02. GameObjects\Character\Player</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\ColliderManager.h">
       <Filter>04. ColliderManager</Filter>
     </ClInclude>
@@ -228,9 +228,6 @@
     <ClInclude Include="..\Public\InstanceMapObject.h">
       <Filter>02. GameObjects\Environment\MapObject\InstanceMapObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Player_Tanjiro.h">
-      <Filter>02. GameObjects\Character\Player\Tanjiro</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Monster_Test.h">
       <Filter>02. GameObjects\Character\Monster\Test</Filter>
     </ClInclude>
@@ -258,9 +255,23 @@
     <ClInclude Include="..\Public\Player_Battle_Combo.h">
       <Filter>02. GameObjects\UI\02.Combo_Info\Combo</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\AtkCollider.h" />
     <ClInclude Include="..\Public\Monster.h">
       <Filter>02. GameObjects\Character\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AtkCollider.h">
+      <Filter>02. GameObjects\AtkCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AtkCollManager.h">
+      <Filter>02. GameObjects\AtkCollider\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Tanjiro.h">
+      <Filter>02. GameObjects\Character\Player\Tanjiro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player.h">
+      <Filter>02. GameObjects\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Character.h">
+      <Filter>02. GameObjects\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -290,12 +301,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Camera_Free.cpp">
       <Filter>02. GameObjects\Camera\Free</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Character.cpp">
-      <Filter>02. GameObjects\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Player.cpp">
-      <Filter>02. GameObjects\Character\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ColliderManager.cpp">
       <Filter>04. ColliderManager</Filter>
@@ -333,9 +338,6 @@
     <ClCompile Include="..\Private\InstanceMapObject.cpp">
       <Filter>02. GameObjects\Environment\MapObject\InstanceMapObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Player_Tanjiro.cpp">
-      <Filter>02. GameObjects\Character\Player\Tanjiro</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Monster_Test.cpp">
       <Filter>02. GameObjects\Character\Monster\Test</Filter>
     </ClCompile>
@@ -363,9 +365,23 @@
     <ClCompile Include="..\Private\Player_Battle_Combo.cpp">
       <Filter>02. GameObjects\UI\02.Combo_Info\Combo</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\AtkCollider.cpp" />
     <ClCompile Include="..\Private\Monster.cpp">
       <Filter>02. GameObjects\Character\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AtkCollider.cpp">
+      <Filter>02. GameObjects\AtkCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AtkCollManager.cpp">
+      <Filter>02. GameObjects\AtkCollider\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Tanjiro.cpp">
+      <Filter>02. GameObjects\Character\Player\Tanjiro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>02. GameObjects\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Character.cpp">
+      <Filter>02. GameObjects\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

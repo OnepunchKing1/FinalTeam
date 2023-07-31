@@ -46,12 +46,12 @@ HRESULT CMonster_Test::Initialize(void* pArg)
 
 void CMonster_Test::Tick(_double dTimeDelta)
 {
-	//__super::Tick(dTimeDelta);
+	__super::Tick(dTimeDelta);
 	
 	if (true == m_isDead)
 		return;
 
-	Animation_Control(dTimeDelta);
+	//Animation_Control(dTimeDelta);
 
 	//局聪皋捞记 贸府
 	m_pModelCom->Play_Animation(dTimeDelta);

@@ -211,6 +211,8 @@ PS_OUT  PS_Outline(PS_IN In)
 	PS_OUT	Out = (PS_OUT)0;
 
 	
+
+	
 	float4 outlineColor = g_lineColor;
 
 	float4 diffuseColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);

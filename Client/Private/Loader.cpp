@@ -22,6 +22,8 @@
 #include "Player_Battle_Combo.h"
 #include "Player_Battle_Ult_Effect.h"
 
+#include "AtkCollider.h"
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{pContext}
@@ -292,9 +294,8 @@ HRESULT CLoader::LoadingForGamePlay()
 #pragma region Character
 	/* Prototype_Component_Model_Tanjiro */
 	PivotMatrix = XMMatrixScaling(0.005f, 0.005f, 0.005f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	//PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tanjiro"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Tanjiro/Tanjiro.bin", PivotMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Character/Tanjiro/Tanjiro.bin", PivotMatrix))))
 	{
 		MSG_BOX("Failed to Add_Prototype_Model_Tanjiro");
 		return E_FAIL;
@@ -383,6 +384,15 @@ HRESULT CLoader::LoadingForGamePlay()
 #pragma region GAMEOBJECTS
 
 	SetWindowText(g_hWnd, TEXT("Loading GameObject..."));
+
+	/* Prototype_GameObject_AtkCollider */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_AtkCollider"),
+		CAtkCollider::Create(m_pDevice, m_pContext))))
+	{
+		MSG_BOX("Failed to Add_Prototype_GameObject_AtkCollider");
+		return E_FAIL;
+	}
+
 #pragma region Object
 	/* Prototype_GameObject_Camera_Free */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),

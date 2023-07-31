@@ -31,10 +31,12 @@ public:
 
 #ifdef _DEBUG
 public:
-	void OnOff_RenderTarget() { m_isRenderTarget = !m_isRenderTarget; }
+	
 	void Set_Sepia() { m_bSepia = !m_bSepia; }
 	void Set_GrayScale() { m_bGrayScale = !m_bGrayScale; }
 	void Set_Invert() { m_bInvert = !m_bInvert; }
+	void OnOff_RenderDebug()	{ m_isRenderDebug = !m_isRenderDebug; }
+	void OnOff_RenderTarget()	{ m_isRenderTarget = !m_isRenderTarget; }
 
 public:
 	HRESULT Add_DebugGroup(CComponent* pComponent);
@@ -60,6 +62,7 @@ private:
 private:
 	list<CComponent*>		m_DebugRender;
 
+	_bool					m_isRenderDebug = { false };
 	_bool					m_isRenderTarget = { false };
 #endif // _DEBUG
 
@@ -89,11 +92,13 @@ private:
 #ifdef _DEBUG
 private:
 	HRESULT Render_Debug();
+	HRESULT Render_RenderTaget();
 #endif // _DEBUG
 
 private:
 	HRESULT Render_Lights();
 	HRESULT Render_Deferred();
+	HRESULT Render_Deferred2();
 	
 	
 private:

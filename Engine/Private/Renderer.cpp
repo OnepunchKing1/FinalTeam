@@ -410,9 +410,18 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT(*fp)())
 	}
 
 #ifdef _DEBUG
-	if (true == m_isRenderTarget)
+	if(true == m_isRenderDebug)
 	{
 		if (FAILED(Render_Debug()))
+		{
+			MSG_BOX("Failed to Render_Debug");
+			return E_FAIL;
+		}
+	}
+
+	if (true == m_isRenderTarget)
+	{
+		if (FAILED(Render_RenderTaget()))
 		{
 			MSG_BOX("Failed to Render_Debug");
 			return E_FAIL;
@@ -738,6 +747,8 @@ HRESULT CRenderer::Render_SSAOBlurX()
 	if (FAILED(m_pTarget_Manager->End_MRT()))
 		return E_FAIL;
 
+
+
 	return S_OK;
 }
 
@@ -771,6 +782,7 @@ HRESULT CRenderer::Render_SSAOBlurY()
 
 	if (FAILED(m_pTarget_Manager->End_MRT()))
 		return E_FAIL;
+
 
 
 	return S_OK;
@@ -1119,6 +1131,11 @@ HRESULT CRenderer::Render_Debug()
 
 	m_DebugRender.clear();
 
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_RenderTaget()
+{
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 
