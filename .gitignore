@@ -441,6 +441,8 @@ Client/Bin/*
 !Client/Bin/ShaderFiles
 !Client/Bin/Sound
 !Client/Bin/fmodex64.dll
+Client/Bin/Resources/Models/Character/Akaza/Akaza.bin
+Client/Bin/Resources/Models/Character/Tanjiro/Tanjiro.bin
 !Engine/Bin
 Engine/Bin/*
 !Engine/Bin/ShaderFiles
