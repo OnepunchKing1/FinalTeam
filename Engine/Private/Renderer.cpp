@@ -124,13 +124,13 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	/* For.Target_ExportFinal */
-	_float4 vColor_ExportTexture = { 1.f, 1.f, 1.f, 0.f };
+	_float4 vColor_ExportTexture = { 0.f, 0.f, 0.f, 1.f };
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ExportFinal")
 		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_ExportTexture)))
 		return E_FAIL;
 
 	/* For.Target_HDR */
-	_float4 vColor_HDRTexture = { 1.f, 1.f, 1.f, 0.f };
+	_float4 vColor_HDRTexture = { 0.f, 0.f, 0.f, 1.f };
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_HDR")
 		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_HDRTexture)))
 		return E_FAIL;
@@ -868,7 +868,9 @@ HRESULT CRenderer::Render_BlurX()
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ExportFinal"), m_pShader, "g_BlurTexture")))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->Begin(6)))
+	/*if (FAILED(m_pShader->Begin(6)))
+		return E_FAIL;*/
+	if (FAILED(m_pShader->Begin(10)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBuffer->Render()))
@@ -907,7 +909,9 @@ HRESULT CRenderer::Render_BlurY()
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ExportFinal"), m_pShader, "g_BlurTexture")))
 		return E_FAIL;
 
-	if (FAILED(m_pShader->Begin(7)))
+	/*if (FAILED(m_pShader->Begin(7)))
+		return E_FAIL;*/
+	if (FAILED(m_pShader->Begin(11)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBuffer->Render()))
@@ -941,13 +945,13 @@ HRESULT CRenderer::Render_CombineBlur()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_BlurY"), m_pShader, "g_BlurYTexture")))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_CombineBlur"), m_pShader, "g_Texture")))
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ExportFinal"), m_pShader, "g_Texture")))
 		return E_FAIL;
 	/*if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAO"), m_pShader, "g_SSAOTexture")))
 		return E_FAIL;*/
 
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAOBlur"), m_pShader, "g_SSAOTexture")))
-		return E_FAIL;
+	/*if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAOBlur"), m_pShader, "g_SSAOTexture")))
+		return E_FAIL;*/
 
 	if (FAILED(m_pShader->Begin(8)))
 		return E_FAIL;
@@ -963,6 +967,7 @@ HRESULT CRenderer::Render_Bloom()
 {
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
+
 	/*if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_HDR"))))
 		return E_FAIL;*/
 
@@ -1136,6 +1141,10 @@ HRESULT CRenderer::Render_Debug()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_SSAOBlur"), m_pShader, m_pVIBuffer)))
 		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_ExportHDR"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_HDR"), m_pShader, m_pVIBuffer)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -1226,6 +1235,7 @@ HRESULT CRenderer::Render_Deferred()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ShadowDepth"), m_pShader, "g_ShadowDepthTexture")))
 		return E_FAIL;
+
 	/*if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ShadowBlur"), m_pShader, "g_DepthTexture")))
 		return E_FAIL;*/
 		/*if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ShadowBlur"), m_pShader, "g_ShadowDepthTexture")))

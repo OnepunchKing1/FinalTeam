@@ -361,52 +361,52 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 
 	if (vPosition.z > vShadowDepthInfo.r * 300.0f + 0.1f)
 	{
-		vector vColor = vector(0.7f, 0.7f, 0.7f, 0.1f);
+		vector vColor = vector(0.9f, 0.9f, 0.9f, 1.f);
 		Out.vColor *= vColor;
 	}
 	else if (vPosition.z > vShadowDepthInfo.r * 300.0f + 0.2f)
 	{
-		vector vColor = vector(0.7f, 0.7f, 0.7f, 0.2f);
+		vector vColor = vector(0.9f, 0.9f, 0.9f, 0.9f);
 		Out.vColor *= vColor;
 	}
 	else if (vPosition.z > vShadowDepthInfo.r * 300.0f + 0.3f)
 	{
-		vector vColor = vector(0.7f, 0.7f, 0.7f, 0.3f);
+		vector vColor = vector(0.9f, 0.9f, 0.9f, 0.8f);
 		Out.vColor *= vColor;
 	}
 	else if (vPosition.z > vShadowDepthInfo.r * 300.0f + 0.4f)
 	{
-		vector vColor = vector(0.7f, 0.7f, 0.7f, 0.4f);
+		vector vColor = vector(0.9f, 0.9f, 0.9f, 0.7f);
 		Out.vColor *= vColor;
 	}
 	else if (vPosition.z > vShadowDepthInfo.r * 300.0f + 0.5f)
 	{
-		vector vColor = vector(0.7f, 0.7f, 0.7f, 0.5f);
+		vector vColor = vector(0.9f, 0.9f, 0.9f, 0.6f);
 		Out.vColor *= vColor;
 	}
 	else if (vPosition.z > vShadowDepthInfo.r * 300.0f + 0.6f)
 	{
-		vector vColor = vector(0.7f, 0.7f, 0.7f, 0.6f);
+		vector vColor = vector(0.9f, 0.9f, 0.9f, 0.5f);
 		Out.vColor *= vColor;
 	}
 	else if (vPosition.z > vShadowDepthInfo.r * 300.0f + 0.7f)
 	{
-		vector vColor = vector(0.7f, 0.7f, 0.7f, 0.7f);
+		vector vColor = vector(0.9f, 0.9f, 0.9f, 0.4f);
 		Out.vColor *= vColor;
 	}
 	else if (vPosition.z > vShadowDepthInfo.r * 300.0f + 0.8f)
 	{
-		vector vColor = vector(0.7f, 0.7f, 0.7f, 0.8f);
+		vector vColor = vector(0.9f, 0.9f, 0.9f, 0.3f);
 		Out.vColor *= vColor;
 	}
 	else if (vPosition.z > vShadowDepthInfo.r * 300.0f + 0.9f)
 	{
-		vector vColor = vector(0.7f, 0.7f, 0.7f, 0.9f);
+		vector vColor = vector(0.9f, 0.9f, 0.9f, 0.2f);
 		Out.vColor *= vColor;
 	}
 	else if (vPosition.z > vShadowDepthInfo.r * 300.0f + 1.f)
 	{
-		vector vColor = vector(0.7f, 0.7f, 0.7f, 1.f);
+		vector vColor = vector(0.9f, 0.9f, 0.9f, 0.1f);
 		Out.vColor *= vColor;
 	}
 
@@ -441,10 +441,10 @@ PS_OUT PS_Bloom(PS_IN In)
 	vector vFragColor = g_FinalTexture.Sample(LinearSampler, In.vTexUV);
 
 	float fBrightness = dot(vFragColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
-	if (fBrightness > 1.f)
-		fBrightness = vector(vFragColor.rgb, 1.f);
+	if (fBrightness > 0.7f)
+		fBrightColor = vector(vFragColor.rgb, 1.f);
 
-	Out.vColor = fBrightness;
+	Out.vColor = fBrightColor;
 
 	return Out;
 }
@@ -453,9 +453,9 @@ PS_OUT PS_Apply_Bloom(PS_IN In)
 {
 	PS_OUT         Out = (PS_OUT)0;
 
-	vector vHDRColor = g_FinalTexture.Sample(HDRSampler, In.vTexUV);
-	vector vBloomOriTex = g_BloomTextrue.Sample(BloomOriSampler, In.vTexUV);
-	vector vBloomColor = g_HDRTexture.Sample(BloomSampler, In.vTexUV);
+	vector vHDRColor = g_FinalTexture.Sample(HDRSampler, In.vTexUV); // 원본 텍스처
+	vector vBloomOriTex = g_BloomTextrue.Sample(BloomOriSampler, In.vTexUV); // 블룸 추출한 텍스처
+	vector vBloomColor = g_HDRTexture.Sample(BloomSampler, In.vTexUV); // 블룸 + 블러먹인 텍스처
 
 	if (vHDRColor.a == 0.f)
 		discard;
@@ -470,8 +470,8 @@ PS_OUT PS_Apply_Bloom(PS_IN In)
 	vOut += vBloom;
 	Out.vColor = pow(abs(vOut), 1 / 2.2f);
 
-	if (Out.vColor.a == 0.f)
-		discard;
+	/*if (Out.vColor.a == 0.f)
+		discard;*/
 
 	return Out;
 }
@@ -669,12 +669,12 @@ PS_OUT PS_Combine_Blur(PS_IN In)
 
 	if (Out.vColor.a == 0.f)
 		discard;
-	if (Out.vColor.a == 1.f)
+	/*if (Out.vColor.a == 1.f)
 		discard;
 	if (Out.vColor.r == float(1.f) && Out.vColor.g == float(1.f) && Out.vColor.b == float(1.f))
 		discard;
 	if (Out.vColor.r == float(0.f) && Out.vColor.g == float(0.f) && Out.vColor.b == float(0.f))
-		discard;
+		discard;*/
 
 	return Out;
 }
@@ -695,12 +695,12 @@ PS_OUT PS_Combine_SSAOBlur(PS_IN In)
 
 	if (Out.vColor.a == 0.f)
 		discard;
-	if (Out.vColor.a == 1.f)
+	/*if (Out.vColor.a == 1.f)
 		discard;
 	if (Out.vColor.r == float(1.f) && Out.vColor.g == float(1.f) && Out.vColor.b == float(1.f))
 		discard;
 	if (Out.vColor.r == float(0.f) && Out.vColor.g == float(0.f) && Out.vColor.b == float(0.f))
-		discard;
+		discard;*/
 
 	return Out;
 }

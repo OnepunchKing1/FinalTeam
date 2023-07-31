@@ -118,8 +118,8 @@ HRESULT CLevel_FinalBoss::Ready_Lights()
 
     LightDesc.eType = LIGHTDESC::TYPE_DIRECTION;
     LightDesc.vLightDir         = _float4(1.f, -1.f, 1.f, 0.f);
-    LightDesc.vLightDiffuse     = _float4(1.f, 1.f, 1.f, 1.f);
-    LightDesc.vLightAmbient     = _float4(1.f, 1.f, 1.f, 1.f);
+    LightDesc.vLightDiffuse     = _float4(0.5f, 0.5f, 0.5f, 0.5f);
+    LightDesc.vLightAmbient     = _float4(0.5f, 0.5f, 0.5f, 1.f);
     LightDesc.vLightSpecular    = _float4(1.f, 1.f, 1.f, 1.f);
 
   /*  if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc)))
