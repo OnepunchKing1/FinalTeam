@@ -258,6 +258,10 @@
     <ClInclude Include="..\Public\Player_Battle_Combo.h">
       <Filter>02. GameObjects\UI\02.Combo_Info\Combo</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AtkCollider.h" />
+    <ClInclude Include="..\Public\Monster.h">
+      <Filter>02. GameObjects\Character\Monster</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -358,6 +362,10 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_Battle_Combo.cpp">
       <Filter>02. GameObjects\UI\02.Combo_Info\Combo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AtkCollider.cpp" />
+    <ClCompile Include="..\Private\Monster.cpp">
+      <Filter>02. GameObjects\Character\Monster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
