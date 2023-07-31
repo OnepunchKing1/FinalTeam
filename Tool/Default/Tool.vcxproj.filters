@@ -91,6 +91,9 @@
     <Filter Include="02. GameObjects\Environment\Sky">
       <UniqueIdentifier>{5e8b0323-1ae6-42b4-b177-3f45332fb537}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObjects\AtkCollider">
+      <UniqueIdentifier>{187cb364-3b7c-430a-81da-b8f6876d0806}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -201,6 +204,9 @@
     <ClInclude Include="..\Public\Sky.h">
       <Filter>02. GameObjects\Environment\Sky</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AtkCollider.h">
+      <Filter>02. GameObjects\AtkCollider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tool.cpp">
@@ -295,6 +301,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>02. GameObjects\Environment\Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AtkCollider.cpp">
+      <Filter>02. GameObjects\AtkCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

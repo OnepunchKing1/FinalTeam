@@ -49,7 +49,7 @@ private:
 
 #pragma endregion
 
-#pragma region Light Set
+#pragma region Collider Set
 
 public:
 	void Set_DefaultLight_ImGui(LIGHTDESC LightDesc);

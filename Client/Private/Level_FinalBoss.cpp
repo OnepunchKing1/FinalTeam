@@ -2,6 +2,8 @@
 #include "..\Public\Level_FinalBoss.h"
 
 #include "GameInstance.h"
+#include "Level_Loading.h"
+
 #include "Camera.h"
 #include "Player.h"
 #include "MapObject.h"
@@ -80,6 +82,22 @@ void CLevel_FinalBoss::Tick(_double dTimeDelta)
 {
     __super::Tick(dTimeDelta);
     SetWindowText(g_hWnd, TEXT("FinalBoss"));
+
+    if (GetKeyState(VK_RETURN) & 0x8000)
+    {
+        HRESULT hr = 0;
+
+        CGameInstance* pGameInstance = CGameInstance::GetInstance();
+        Safe_AddRef(pGameInstance);
+
+        pGameInstance->Clear_Light();
+        hr = pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY), false, false);
+
+        Safe_Release(pGameInstance);
+
+        if (FAILED(hr))
+            return;
+    }
 }
 
 HRESULT CLevel_FinalBoss::Render()
@@ -885,6 +903,11 @@ HRESULT CLevel_FinalBoss::Load_MapObject_Info(const _tchar* pPath, const _tchar*
         ReadFile(hFile, &tMapObject_Info.fMaxSize, sizeof(_float), &dwByte, nullptr);
 
         ReadFile(hFile, &tMapObject_Info.iInstanceType, sizeof(_uint), &dwByte, nullptr);
+
+        ReadFile(hFile, &tMapObject_Info.bRandomRatationY, sizeof(_bool), &dwByte, nullptr);
+        ReadFile(hFile, &tMapObject_Info.iArrangementType, sizeof(_uint), &dwByte, nullptr);
+
+        ReadFile(hFile, &tMapObject_Info.iSceneType, sizeof(_uint), &dwByte, nullptr);
 
         ReadFile(hFile, &dwStrByte, sizeof(_ulong), &dwByte, nullptr);
         ReadFile(hFile, &tMapObject_Info.szMeshName, dwStrByte, &dwByte, nullptr);

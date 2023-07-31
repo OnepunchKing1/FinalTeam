@@ -116,7 +116,9 @@ HRESULT CModel_Instance::Initialize(void * pArg)
 	{
 		_float fSize = Get_RandomNumber((_int)(m_tModelInstanceDesc.fMinSize * (_int)1000.f), ((_int)m_tModelInstanceDesc.fMaxSize * (_int)1000.f)) / 1000.f;
 
-		float angle = Get_RandomNumber(0, 360) / 1.f;
+		float angle = 0.f;
+		if (m_tModelInstanceDesc.bRandomRatationY)
+			angle = Get_RandomNumber(0, 360) / 1.f;
 
 		_vector		vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f) * fSize;
 		_vector		vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f) * fSize;
@@ -128,10 +130,18 @@ HRESULT CModel_Instance::Initialize(void * pArg)
 		XMStoreFloat4(&pInstanceVertices[i].vUp, XMVector3TransformNormal(vUp, RotationMatrix));
 		XMStoreFloat4(&pInstanceVertices[i].vLook, XMVector3TransformNormal(vLook, RotationMatrix));
 
-		_float fRanNumX = Get_RandomNumber((_int)(-m_tModelInstanceDesc.fRange * 1000.f), (_int)(m_tModelInstanceDesc.fRange * 1000.f)) / 1000.f;
-		_float fRanNumZ = Get_RandomNumber((_int)(-m_tModelInstanceDesc.fRange * 1000.f), (_int)(m_tModelInstanceDesc.fRange * 1000.f)) / 1000.f;
+		if (m_tModelInstanceDesc.iArrangementType == 0)	// RECT
+		{
+			_float fRanNumX = Get_RandomNumber((_int)(-m_tModelInstanceDesc.fRange * 1000.f), (_int)(m_tModelInstanceDesc.fRange * 1000.f)) / 1000.f;
+			_float fRanNumZ = Get_RandomNumber((_int)(-m_tModelInstanceDesc.fRange * 1000.f), (_int)(m_tModelInstanceDesc.fRange * 1000.f)) / 1000.f;
 
-		pInstanceVertices[i].vTranslation = _float4(fRanNumX, 0.f, fRanNumZ, 1.f);
+			pInstanceVertices[i].vTranslation = _float4(fRanNumX, 0.f, fRanNumZ, 1.f);
+		}
+		else if (m_tModelInstanceDesc.iArrangementType == 1)	// LINEX
+			pInstanceVertices[i].vTranslation = _float4((i * m_tModelInstanceDesc.fRange) / (_float)m_tModelInstanceDesc.iNumInstance, 0.f, 0.f, 1.f);
+
+		else if (m_tModelInstanceDesc.iArrangementType == 2)	// LINEY
+			pInstanceVertices[i].vTranslation = _float4(0.f, 0.f, (i * m_tModelInstanceDesc.fRange) / (_float)m_tModelInstanceDesc.iNumInstance, 1.f);
 
 		pInstanceVertices[i].iNumInstance = m_tModelInstanceDesc.iNumInstance;
 	}
@@ -383,6 +393,8 @@ HRESULT CModel_Instance::Clear_LoadData()
 	{
 		Safe_Delete_Array(m_ModelData.pMeshData[i].pMeshVtxData);
 		Safe_Delete_Array(m_ModelData.pMeshData[i].pMeshIdxData);
+		//if (0 != m_ModelData.pMeshData[i].iNumBones)
+		//	Safe_Delete_Array(m_ModelData.pMeshData[i].pAnimMeshData);
 	}
 	if (0 != m_ModelData.iNumMeshes)
 		Safe_Delete_Array(m_ModelData.pMeshData);

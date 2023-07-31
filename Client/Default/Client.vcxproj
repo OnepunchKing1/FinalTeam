@@ -177,6 +177,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\AtkCollider.h" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Boss_Battle_Frame.h" />
     <ClInclude Include="..\Public\Boss_Battle_Hp.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\AtkCollider.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Boss_Battle_Frame.cpp" />
     <ClCompile Include="..\Private\Boss_Battle_Hp.cpp" />

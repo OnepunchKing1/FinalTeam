@@ -186,6 +186,9 @@ namespace Engine
 		float				fMinSize;
 		float				fMaxSize;
 
+		bool		bRandomRatationY = false;
+		unsigned int		iArrangementType = 0;
+
 	}MODELINSTANCEDESC;
 
 #pragma endregion

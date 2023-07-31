@@ -123,25 +123,27 @@ HRESULT CMainApp::Render()
 		m_TimeAcc = 0.0;
 	}
 
-	if (true == m_isRenderFPS)
-	{
-		if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), _float2(0.5f, 0.5f))))
+	if (m_isRenderDebugInfo) {
+
+		if (true == m_isRenderFPS)
+		{
+			if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), _float2(0.5f, 0.5f))))
+				return E_FAIL;
+		}
+
+		if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("Num0 To OnOff StaticCam"), _float2(0.f, 640.f), _float2(0.5f, 0.5f))))
 			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("Num9 To OnOff LockMouse"), _float2(0.f, 660.f), _float2(0.5f, 0.5f))))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F7 To OnOff FPS"), _float2(0.f, 680.f), _float2(0.5f, 0.5f))))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F8 To OnOff RenderDebug"), _float2(0.f, 700.f), _float2(0.5f, 0.5f))))
+			return E_FAIL;
+
 	}
-
-	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("Num0 To OnOff StaticCam"), _float2(0.f, 640.f), _float2(0.5f, 0.5f))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("Num9 To OnOff LockMouse"), _float2(0.f, 660.f), _float2(0.5f, 0.5f))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F7 To OnOff FPS"), _float2(0.f, 680.f), _float2(0.5f, 0.5f))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Draw_Font(TEXT("Font_KR"), TEXT("F8 To OnOff RenderDebug"), _float2(0.f, 700.f), _float2(0.5f, 0.5f))))
-		return E_FAIL;
-
-	
 	
 #endif // _DEBUG
 
@@ -219,7 +221,8 @@ void CMainApp::Key_Input(_double dTimeDelta)
 	if (m_pGameInstance->Get_DIKeyDown(DIK_F8))
 		m_pRenderer->OnOff_RenderTarget();
 	
-	
+	if (m_pGameInstance->Get_DIKeyDown(DIK_TAB))
+		m_isRenderDebugInfo = !m_isRenderDebugInfo;
 
 }
 #endif // _DEBUG
