@@ -39,6 +39,8 @@ HRESULT CPlayer_Tanjiro::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, { 150.f,0.f,150.f,1.f });
+
 	return S_OK;
 }
 

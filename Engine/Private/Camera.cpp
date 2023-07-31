@@ -44,7 +44,7 @@ void CCamera::Tick(_double dTimeDelta)
 	if (nullptr == m_pPipeLine)
 		return;
 	// Camera_Shake
-	Tick_Shake(dTimeDelta);
+	//Tick_Shake(dTimeDelta);
 
 	m_pPipeLine->Set_Transform(CPipeLine::D3DTS_VIEW, m_pTransformCom->Get_WorldFloat4x4_Inverse());
 

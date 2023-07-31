@@ -20,7 +20,10 @@ private:
 	HRESULT	Ready_Layer_BackGround(const _tchar* pLayerTag);
 	HRESULT	Ready_Layer_Camera(const _tchar* pLayerTag);
 	HRESULT	Ready_Layer_Player(const _tchar* pLayerTag);
+	HRESULT	Ready_Layer_Monster(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_MapObject(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Player_UI(const _tchar* pLayerTag);
+	HRESULT Ready_Layer_Boss_UI(const _tchar* pLayerTag);
 
 private:
 	HRESULT	Load_MapObject_Info(const _tchar* pPath, const _tchar* pLayerTag);	// ¸Ê ¿ÀºêÁ§Æ® ÆÄ½Ì(¾È¿ø)
