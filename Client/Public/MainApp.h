@@ -42,6 +42,7 @@ private:
 	
 
 	_bool					m_isRenderFPS = { true };
+	_bool                   m_isRenderDebugInfo = { true };
 #endif
 
 private:

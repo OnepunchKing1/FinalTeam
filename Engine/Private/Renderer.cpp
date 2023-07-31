@@ -7,6 +7,8 @@
 #include "VIBuffer_Rect.h"
 #include "PipeLine.h"
 #include "GameInstance.h"
+#include "UI.h"
+
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent(pDevice, pContext)
@@ -330,9 +332,18 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT(*fp)())
 	}
 
 #ifdef _DEBUG
-	if (true == m_isRenderTarget)
+	if(true == m_isRenderDebug)
 	{
 		if (FAILED(Render_Debug()))
+		{
+			MSG_BOX("Failed to Render_Debug");
+			return E_FAIL;
+		}
+	}
+
+	if (true == m_isRenderTarget)
+	{
+		if (FAILED(Render_RenderTaget()))
 		{
 			MSG_BOX("Failed to Render_Debug");
 			return E_FAIL;
@@ -757,6 +768,10 @@ HRESULT CRenderer::Render_Blend()
 
 HRESULT CRenderer::Render_UI()
 {
+	m_RenderObjects[RENDER_UI].sort([](CGameObject* pDest, CGameObject* pSrc)->bool {
+		return dynamic_cast<CUI*>(pDest)->Get_UI_Layer() < dynamic_cast<CUI*>(pSrc)->Get_UI_Layer();
+	});
+
 	for (auto& pGameObject : m_RenderObjects[RENDER_UI])
 	{
 		if (nullptr != pGameObject)
@@ -811,6 +826,11 @@ HRESULT CRenderer::Render_Debug()
 
 	m_DebugRender.clear();
 
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_RenderTaget()
+{
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 

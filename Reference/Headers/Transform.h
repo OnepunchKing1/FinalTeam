@@ -64,6 +64,7 @@ public:
 	void Chase_Target(_fvector vTargetPos, _double dTimeDelta, _double ChaseSpeed = 1.0);
 	void LookAt(_fvector vTargetPos);
 	void Set_Look(_float4 vDir_0);
+	void LerpVector(_fvector vTargetLook, _float weight);
 
 private:
 	_float4x4		m_WorldMatrix;

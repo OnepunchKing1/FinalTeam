@@ -91,8 +91,59 @@
     <Filter Include="02. GameObjects\Character\Player\Tanjiro">
       <UniqueIdentifier>{304c14bd-faf2-427b-b4cd-4fab27b67274}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObjects\AtkCollider">
-      <UniqueIdentifier>{4217705c-bb2c-4014-8026-5aae0ed86d69}</UniqueIdentifier>
+    <Filter Include="02. GameObjects\Character\Monster">
+      <UniqueIdentifier>{7c952342-53cd-43bb-9466-53e50141df7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\Character\Monster\Test">
+      <UniqueIdentifier>{77d1a976-2a7d-4590-9dea-f030a3b4999b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI">
+      <UniqueIdentifier>{7afcbce9-d973-4cb6-9ef8-0643e6e0f97f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Player_Battle_Bar">
+      <UniqueIdentifier>{31189834-560c-4c54-963d-5759dcde14bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\01.Boss_Battle_BAr">
+      <UniqueIdentifier>{f13d0d49-42ea-4e53-8dd2-9f26cf9f415b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Player_Battle_Bar\Frame">
+      <UniqueIdentifier>{99b17ca9-771c-4409-8058-387ba3f8c8cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Player_Battle_Bar\Hp_Bar">
+      <UniqueIdentifier>{44fdf3de-4e5f-4358-bc3e-04c748b5e6e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Player_Battle_Bar\Mp_Bar">
+      <UniqueIdentifier>{4b53252b-bc69-43b5-a502-8aeb0f33f4fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Player_Battle_Bar\Sup_Bar">
+      <UniqueIdentifier>{737eeae9-6477-497b-b695-212bde7aa94f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Player_Battle_Bar\Ult_Bar">
+      <UniqueIdentifier>{51aaec38-0e7b-4a45-b88c-2f526de4b2fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\01.Boss_Battle_BAr\Frame">
+      <UniqueIdentifier>{da25a8b7-bd41-458d-b89c-58daa3050c63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\01.Boss_Battle_BAr\Hp_Bar">
+      <UniqueIdentifier>{aca9ca19-5fde-4f45-a001-619d29b09a21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\02.Combo_Info">
+      <UniqueIdentifier>{3ffd5914-2d3f-4140-83f6-8b399a25f622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\02.Combo_Info\Combo">
+      <UniqueIdentifier>{cfcd049f-051e-4a94-9eac-bb9ad1ef641d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Player_Battle_Bar\Ult_Bar\Effect">
+      <UniqueIdentifier>{ce090631-8518-4c4a-b0fe-cf0531c25610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Player_Battle_Bar\Ult_Bar\Frame">
+      <UniqueIdentifier>{c34d91bb-0b04-48e2-9505-1e60445f2921}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Player_Battle_Bar\Sup_Bar\Effect">
+      <UniqueIdentifier>{5953ceac-3f27-4aad-93be-d12bd6f001df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\UI\00.Player_Battle_Bar\Sup_Bar\Frame">
+      <UniqueIdentifier>{75cdf47c-c18e-49a1-b217-8c15b666530c}</UniqueIdentifier>
     </Filter>
     <Filter Include="02. GameObjects\AtkCollider\Manager">
       <UniqueIdentifier>{4217c31b-b8df-4fde-a195-dfd3766bb9bb}</UniqueIdentifier>
@@ -183,8 +234,32 @@
     <ClInclude Include="..\Public\Player_Tanjiro.h">
       <Filter>02. GameObjects\Character\Player\Tanjiro</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\AtkCollider.h">
-      <Filter>02. GameObjects\AtkCollider</Filter>
+    <ClInclude Include="..\Public\Monster_Test.h">
+      <Filter>02. GameObjects\Character\Monster\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Battle_Frame.h">
+      <Filter>02. GameObjects\UI\00.Player_Battle_Bar\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Battle_Hp.h">
+      <Filter>02. GameObjects\UI\00.Player_Battle_Bar\Hp_Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Battle_Mp.h">
+      <Filter>02. GameObjects\UI\00.Player_Battle_Bar\Mp_Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Battle_Ult_Effect.h">
+      <Filter>02. GameObjects\UI\00.Player_Battle_Bar\Ult_Bar\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Battle_Ult_Frame.h">
+      <Filter>02. GameObjects\UI\00.Player_Battle_Bar\Ult_Bar\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Boss_Battle_Frame.h">
+      <Filter>02. GameObjects\UI\01.Boss_Battle_BAr\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Boss_Battle_Hp.h">
+      <Filter>02. GameObjects\UI\01.Boss_Battle_BAr\Hp_Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player_Battle_Combo.h">
+      <Filter>02. GameObjects\UI\02.Combo_Info\Combo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AtkCollManager.h">
       <Filter>02. GameObjects\AtkCollider\Manager</Filter>
@@ -263,8 +338,32 @@
     <ClCompile Include="..\Private\Player_Tanjiro.cpp">
       <Filter>02. GameObjects\Character\Player\Tanjiro</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\AtkCollider.cpp">
-      <Filter>02. GameObjects\AtkCollider</Filter>
+    <ClCompile Include="..\Private\Monster_Test.cpp">
+      <Filter>02. GameObjects\Character\Monster\Test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Battle_Frame.cpp">
+      <Filter>02. GameObjects\UI\00.Player_Battle_Bar\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Battle_Hp.cpp">
+      <Filter>02. GameObjects\UI\00.Player_Battle_Bar\Hp_Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Battle_Mp.cpp">
+      <Filter>02. GameObjects\UI\00.Player_Battle_Bar\Mp_Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Battle_Ult_Effect.cpp">
+      <Filter>02. GameObjects\UI\00.Player_Battle_Bar\Ult_Bar\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Battle_Ult_Frame.cpp">
+      <Filter>02. GameObjects\UI\00.Player_Battle_Bar\Ult_Bar\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss_Battle_Frame.cpp">
+      <Filter>02. GameObjects\UI\01.Boss_Battle_BAr\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Boss_Battle_Hp.cpp">
+      <Filter>02. GameObjects\UI\01.Boss_Battle_BAr\Hp_Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Battle_Combo.cpp">
+      <Filter>02. GameObjects\UI\02.Combo_Info\Combo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AtkCollManager.cpp">
       <Filter>02. GameObjects\AtkCollider\Manager</Filter>

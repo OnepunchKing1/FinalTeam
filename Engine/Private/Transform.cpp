@@ -302,24 +302,44 @@ void CTransform::Chase_Target(_fvector vTargetPos, _double dTimeDelta, _double C
 	Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
+
+
+void CTransform::LerpVector(_fvector vTargetLook, _float weight)
+{
+	_float3      vScale = Get_Scaled();
+
+
+	_vector      vCurrentLook = Get_State(CTransform::STATE_LOOK);
+	_vector      vInterPolatedLook = XMVectorLerp(vCurrentLook, vTargetLook, weight);
+
+	_vector      vLook = XMVector3Normalize(vInterPolatedLook) * vScale.z;
+
+	_vector      vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
+
+	_vector      vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
+
+	Set_State(CTransform::STATE_RIGHT, vRight);
+	Set_State(CTransform::STATE_UP, vUp);
+	Set_State(CTransform::STATE_LOOK, vLook);
+
+}
+
 void CTransform::LookAt(_fvector vTargetPos)
 {
-	_float3 vScale = Get_Scaled();
+	_float3		vScale = Get_Scaled();
 
-	_vector vPosition = Get_State(STATE_POSITION);
+	_vector		vLook = XMVector3Normalize(vTargetPos - Get_State(CTransform::STATE_POSITION)) * vScale.z;
 
-	_vector vDir = vTargetPos - vPosition;
+	_vector		vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
 
-	_vector vLook = XMVector3Normalize(vDir) * vScale.z;
+	_vector		vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
 
-	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
-
-	_vector vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
-
-	Set_State(STATE_RIGHT, vRight);
-	Set_State(STATE_UP, vUp);
-	Set_State(STATE_LOOK, vLook);
+	Set_State(CTransform::STATE_RIGHT, vRight);
+	Set_State(CTransform::STATE_UP, vUp);
+	Set_State(CTransform::STATE_LOOK, vLook);
 }
+
+
 
 void CTransform::Set_Look(_float4 vDir_0)
 {

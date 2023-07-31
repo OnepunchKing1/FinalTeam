@@ -31,7 +31,8 @@ public:
 
 #ifdef _DEBUG
 public:
-	void OnOff_RenderTarget() { m_isRenderTarget = !m_isRenderTarget; }
+	void OnOff_RenderDebug()	{ m_isRenderDebug = !m_isRenderDebug; }
+	void OnOff_RenderTarget()	{ m_isRenderTarget = !m_isRenderTarget; }
 
 public:
 	HRESULT Add_DebugGroup(CComponent* pComponent);
@@ -57,6 +58,7 @@ private:
 private:
 	list<CComponent*>		m_DebugRender;
 
+	_bool					m_isRenderDebug = { false };
 	_bool					m_isRenderTarget = { false };
 #endif // _DEBUG
 
@@ -81,6 +83,7 @@ private:
 #ifdef _DEBUG
 private:
 	HRESULT Render_Debug();
+	HRESULT Render_RenderTaget();
 #endif // _DEBUG
 
 private:

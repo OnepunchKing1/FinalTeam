@@ -47,7 +47,7 @@ public:
 
 public:
 	_bool			Intersect(CCollider* pTargetCollider);
-	_float			ComputePushVec(CCollider* pTargetCollider);
+	_vector			ComputePushVec(CCollider* pTargetCollider);
 
 #ifdef _DEBUG
 public:
