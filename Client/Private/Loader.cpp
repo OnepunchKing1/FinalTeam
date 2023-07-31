@@ -410,6 +410,7 @@ HRESULT CLoader::LoadingForGamePlay()
 		MSG_BOX("Failed to Add_Prototype_GameObject_Player_Tanjiro");
 		return E_FAIL;
 	}
+
 #pragma endregion
 
 #pragma region Environment

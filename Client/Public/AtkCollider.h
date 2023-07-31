@@ -21,6 +21,8 @@ public:
 		CTransform* pTransform = { nullptr };
 		CCollider::COLLIDERDESC ColliderDesc;
 		_double		dLifeTime = { 0.0 };
+
+		_float		fDamage = { 0.0 };
 	}ATKCOLLDESC;
 private:
 	CAtkCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

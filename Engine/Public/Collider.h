@@ -46,7 +46,8 @@ public:
 	void			Tick(_fmatrix TransformMatrix, _double dTimeDelta);
 
 public:
-	_bool Intersect(CCollider* pTargetCollider);
+	_bool			Intersect(CCollider* pTargetCollider);
+	_float			ComputePushVec(CCollider* pTargetCollider);
 
 #ifdef _DEBUG
 public:

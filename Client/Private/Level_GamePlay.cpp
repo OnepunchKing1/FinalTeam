@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "Player.h"
 #include "MapObject.h"
+#include "ColliderManager.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel(pDevice, pContext)
@@ -55,6 +56,8 @@ HRESULT CLevel_GamePlay::Initialize()
 void CLevel_GamePlay::Tick(_double dTimeDelta)
 {
     __super::Tick(dTimeDelta);
+
+    CColliderManager::GetInstance()->Check_Collider(LEVEL_GAMEPLAY, dTimeDelta);
 
     SetWindowText(g_hWnd, TEXT("Tuto"));
 

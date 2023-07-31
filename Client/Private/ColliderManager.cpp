@@ -54,6 +54,13 @@ HRESULT CColliderManager::Check_PlayerToMonster(_uint iLevelIndex, _double dTime
 
 				if (true == pPlayerCollider->Get_Coll())
 					iCollCount++;
+
+				if (true == pMonsterCollider->Get_Coll())
+				{
+					CTransform* pMonsterTransform = dynamic_cast<CTransform*>(pMonster->Find_Component(TEXT("Com_Transfrom")));
+
+					//pMonsterTransform->Go_Dir(dTimeDelta, )
+				}
 			}
 		}
 	}
