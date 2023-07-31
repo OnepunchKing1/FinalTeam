@@ -86,18 +86,7 @@ void CPlayer::Dir_Setting(_bool Reverse)
 	_vector quaternionRotation2 = XMQuaternionRotationAxis(vUp, XMConvertToRadians(135.0f));
 	_vector v135Rotate = XMVector3Rotate(vLook, quaternionRotation2);
 
-	if (pGameInstance->Get_DIKeyDown(DIK_Z))
-	{
-		m_pRendererCom->Set_Invert();
-	}
-	if (pGameInstance->Get_DIKeyDown(DIK_X))
-	{
-		m_pRendererCom->Set_GrayScale();
-	}
-	if (pGameInstance->Get_DIKeyDown(DIK_C))
-	{
-		m_pRendererCom->Set_Sepia();
-	}
+	
 
 	if (Reverse)
 	{
@@ -155,10 +144,10 @@ void CPlayer::Trigger_Hit(_double dTimeDelta)
 	Safe_AddRef(pGameInstance);
 	
 	//임시 히트
-	if (pGameInstance->Get_DIKeyDown(DIK_Z))
+	/*if (pGameInstance->Get_DIKeyDown(DIK_Z))
 	{
 		m_Moveset.m_Down_Dmg_Small = true;
-	}
+	}*/
 
 	Safe_Release(pGameInstance);
 }
@@ -167,6 +156,19 @@ void CPlayer::Key_Input(_double dTimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
+
+	if (pGameInstance->Get_DIKeyDown(DIK_Z))
+	{
+		m_pRendererCom->Set_Invert();
+	}
+	if (pGameInstance->Get_DIKeyDown(DIK_X))
+	{
+		m_pRendererCom->Set_GrayScale();
+	}
+	if (pGameInstance->Get_DIKeyDown(DIK_C))
+	{
+		m_pRendererCom->Set_Sepia();
+	}
 
 #pragma region Test
 	if (pGameInstance->Get_DIKeyState(DIK_HOME) & 0x80)

@@ -31,7 +31,7 @@ public:
 
 #ifdef _DEBUG
 public:
-
+	
 	void Set_Sepia() { m_bSepia = !m_bSepia; }
 	void Set_GrayScale() { m_bGrayScale = !m_bGrayScale; }
 	void Set_Invert() { m_bInvert = !m_bInvert; }

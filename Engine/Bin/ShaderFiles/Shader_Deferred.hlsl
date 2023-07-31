@@ -317,7 +317,6 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 		//// 새로 계산된 결과를 적용하여 최종 결과를 만듦
 		//Out.vColor = adjustedDiffuse * adjustedShade;
 
-
 		/*if (vShade.r < 0.21f)
 			vShade.rgb = float3(0.2f, 0.2f, 0.2f);
 		else if (vShade.r >= 0.21f && vShade.r < 0.41f)
