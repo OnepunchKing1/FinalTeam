@@ -84,7 +84,7 @@ HRESULT CRenderer::Initialize_Prototype()
 	///* For.Target_CombineBlur */
 	_float4 vColor_Blur = { 1.f, 1.f, 1.f, 0.f };
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_CombineBlur")
-		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_BlurY)))
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_Blur)))
 		return E_FAIL;
 
 	///* For.Target_SSAOBlurX */
@@ -107,30 +107,30 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	///* For.Target_ShadowBlurX */
 	//_float4 vColor_BlurX = { 1.f, 1.f, 1.f, 0.f };
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowBlurX")
-		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_BlurX)))
-		return E_FAIL;
+	//if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowBlurX")
+	//	, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_BlurX)))
+	//	return E_FAIL;
 
-	///* For.Target_ShadowBlurY */
-	//_float4 vColor_BlurY = { 1.f, 1.f, 1.f, 0.f };
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowBlurY")
-		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_BlurY)))
-		return E_FAIL;
+	/////* For.Target_ShadowBlurY */
+	////_float4 vColor_BlurY = { 1.f, 1.f, 1.f, 0.f };
+	//if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowBlurY")
+	//	, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_BlurY)))
+	//	return E_FAIL;
 
-	///* For.Target_ShadowBlur */
-	//_float4 vColor_SSAOBlur = { 1.f, 1.f, 1.f, 1.f };
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowBlur")
-		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_SSAOBlur)))
-		return E_FAIL;
+	/////* For.Target_ShadowBlur */
+	////_float4 vColor_SSAOBlur = { 1.f, 1.f, 1.f, 1.f };
+	//if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ShadowBlur")
+	//	, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_SSAOBlur)))
+	//	return E_FAIL;
 
 	/* For.Target_ExportFinal */
-	_float4 vColor_ExportTexture = { 0.f, 0.f, 0.f, 1.f };
+	_float4 vColor_ExportTexture = { 0.f, 0.f, 0.f, 0.f };
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ExportFinal")
 		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_ExportTexture)))
 		return E_FAIL;
 
 	/* For.Target_HDR */
-	_float4 vColor_HDRTexture = { 0.f, 0.f, 0.f, 1.f };
+	_float4 vColor_HDRTexture = { 0.f, 0.f, 0.f, 0.f };
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_HDR")
 		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_HDRTexture)))
 		return E_FAIL;
@@ -178,15 +178,15 @@ HRESULT CRenderer::Initialize_Prototype()
 		return E_FAIL;
 
 	//그림자블러
-	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_ShadowBlurX"), TEXT("Target_ShadowBlurX"))))
+	/*if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_ShadowBlurX"), TEXT("Target_ShadowBlurX"))))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_ShadowBlurY"), TEXT("Target_ShadowBlurY"))))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_ShadowBlur"), TEXT("Target_ShadowBlur"))))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	//HDR
-	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_ExportHDR"), TEXT("Target_ExportFinal"))))
+ 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_ExportHDR"), TEXT("Target_ExportFinal"))))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_HDR"), TEXT("Target_HDR"))))
 		return E_FAIL;
@@ -376,7 +376,7 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT(*fp)())
 		MSG_BOX("Failed to Render_BlurY");
 		return E_FAIL;
 	}
-	if (FAILED(Render_CombineBlur())) // 최종적으로 그려짐
+	if (FAILED(Render_CombineBlur())) // 
 	{
 		MSG_BOX("Failed to Render_CombineBlur");
 		return E_FAIL;
@@ -868,10 +868,10 @@ HRESULT CRenderer::Render_BlurX()
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ExportFinal"), m_pShader, "g_BlurTexture")))
 		return E_FAIL;
 
-	/*if (FAILED(m_pShader->Begin(6)))
-		return E_FAIL;*/
-	if (FAILED(m_pShader->Begin(10)))
+	if (FAILED(m_pShader->Begin(6)))
 		return E_FAIL;
+	/*if (FAILED(m_pShader->Begin(10)))
+		return E_FAIL;*/
 
 	if (FAILED(m_pVIBuffer->Render()))
 		return E_FAIL;
@@ -909,10 +909,10 @@ HRESULT CRenderer::Render_BlurY()
 	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ExportFinal"), m_pShader, "g_BlurTexture")))
 		return E_FAIL;
 
-	/*if (FAILED(m_pShader->Begin(7)))
-		return E_FAIL;*/
-	if (FAILED(m_pShader->Begin(11)))
+	if (FAILED(m_pShader->Begin(7)))
 		return E_FAIL;
+	/*if (FAILED(m_pShader->Begin(11)))
+		return E_FAIL;*/
 
 	if (FAILED(m_pVIBuffer->Render()))
 		return E_FAIL;

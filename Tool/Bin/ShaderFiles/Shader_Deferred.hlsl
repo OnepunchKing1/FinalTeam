@@ -306,8 +306,8 @@ PS_OUT PS_MAIN_DEFERRED(PS_IN In)
 	//vector      vSSAO = g_SSAOTexture.Sample(PointClampSampler, In.vTexUV);
 	vShade = ceil(vShade * 3) / 3.0f; // 보통 3톤 이건 근데 자유 5톤까지
 
-	if (vDiffuse.a == 0.f)
-		discard;
+	/*if (vDiffuse.a == 0.f)
+		discard;*/
 	//vector adjustedDiffuse = vDiffuse * vSSAO;
 	//vector adjustedShade = vShade * vSSAO;
 
@@ -441,7 +441,7 @@ PS_OUT PS_Bloom(PS_IN In)
 	vector vFragColor = g_FinalTexture.Sample(LinearSampler, In.vTexUV);
 
 	float fBrightness = dot(vFragColor.rgb, float3(0.2126f, 0.7152f, 0.0722f));
-	if (fBrightness > 0.7f)
+	if (fBrightness > 0.8f)
 		fBrightColor = vector(vFragColor.rgb, 1.f);
 
 	Out.vColor = fBrightColor;
@@ -470,8 +470,8 @@ PS_OUT PS_Apply_Bloom(PS_IN In)
 	vOut += vBloom;
 	Out.vColor = pow(abs(vOut), 1 / 2.2f);
 
-	/*if (Out.vColor.a == 0.f)
-		discard;*/
+	if (Out.vColor.a == 0.f)
+		discard;
 
 	return Out;
 }
@@ -667,8 +667,8 @@ PS_OUT PS_Combine_Blur(PS_IN In)
 	//vFinal *= vSSAO.r;
 	Out.vColor = ((vFinal + vBlurX + vBlurY) / 3.f);
 
-	if (Out.vColor.a == 0.f)
-		discard;
+	/*if (Out.vColor.a == 0.f)
+		discard;*/
 	/*if (Out.vColor.a == 1.f)
 		discard;
 	if (Out.vColor.r == float(1.f) && Out.vColor.g == float(1.f) && Out.vColor.b == float(1.f))
