@@ -50,13 +50,14 @@ void CInstanceMapObject::Tick(_double TimeDelta)
 	{
 		static _float	fDir = 1.f;
 
-		m_fTimeDelta += 0.01f * fDir;
+		m_fTimeDelta += 0.1f * fDir;
 
-		if (m_fTimeDelta < -1.f)
+		if (m_fTimeDelta <= -1.f)
 			fDir = 1.f;
-
 		if (m_fTimeDelta > 1.f)
 			fDir = -1.f;
+		if (m_fTimeDelta >= 2.f)
+			m_fTimeDelta = 0.f;
 	}
 
 	//m_pModelInstanceCom->Tick(TimeDelta);

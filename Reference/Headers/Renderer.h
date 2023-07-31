@@ -70,9 +70,11 @@ private:
 	HRESULT Render_SSAOBlurX();
 	HRESULT Render_SSAOBlurY();
 	HRESULT Render_SSAOFinal();
+	HRESULT Render_ExportDeferred();
 	HRESULT Render_BlurX();
 	HRESULT Render_BlurY();
 	HRESULT Render_CombineBlur();
+	HRESULT Render_Bloom();
 	HRESULT Render_NonBlend();
 	HRESULT Render_NonLight();
 	HRESULT Render_Blend();

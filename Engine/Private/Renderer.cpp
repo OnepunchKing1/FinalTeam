@@ -121,6 +121,18 @@ HRESULT CRenderer::Initialize_Prototype()
 		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_SSAOBlur)))
 		return E_FAIL;
 
+	/* For.Target_ExportFinal */
+	_float4 vColor_ExportTexture = { 1.f, 1.f, 1.f, 0.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_ExportFinal")
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_ExportTexture)))
+		return E_FAIL;
+
+	/* For.Target_HDR */
+	_float4 vColor_HDRTexture = { 1.f, 1.f, 1.f, 0.f };
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(m_pDevice, m_pContext, TEXT("Target_HDR")
+		, (_uint)Viewport.Width, (_uint)Viewport.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, vColor_HDRTexture)))
+		return E_FAIL;
+
 
 	/* For.MRT_GameObject */
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Diffuse"))))
@@ -171,6 +183,12 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_ShadowBlur"), TEXT("Target_ShadowBlur"))))
 		return E_FAIL;
 
+	//HDR
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_ExportHDR"), TEXT("Target_ExportFinal"))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_HDR"), TEXT("Target_HDR"))))
+		return E_FAIL;
+
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(Viewport.Width, Viewport.Height, 1.f));
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(Viewport.Width, Viewport.Height, 0.f, 1.f));
@@ -205,6 +223,8 @@ HRESULT CRenderer::Initialize_Prototype()
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_CombineBlur"), 150.0f, 500.f, 100.f, 100.f)))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_SSAOBlur"), 50.0f, 600.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Ready_Debug(TEXT("Target_HDR"), 250.0f, 100.f, 100.f, 100.f)))
 		return E_FAIL;
 #endif // _DEBUG
 
@@ -338,6 +358,12 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT(*fp)())
 		return E_FAIL;
 	}
 
+	if (FAILED(Render_ExportDeferred()))
+	{
+		MSG_BOX("Failed to Render_ExportBloom");
+		return E_FAIL;
+	}
+	
 	if (FAILED(Render_BlurX()))
 	{
 		MSG_BOX("Failed to Render_BlurX");
@@ -351,6 +377,11 @@ HRESULT CRenderer::Draw_RenderObjects(HRESULT(*fp)())
 	if (FAILED(Render_CombineBlur())) // 최종적으로 그려짐
 	{
 		MSG_BOX("Failed to Render_CombineBlur");
+		return E_FAIL;
+	}
+	if (FAILED(Render_Bloom())) // 최종적으로 그려짐
+	{
+		MSG_BOX("Failed to Render_Bloom");
 		return E_FAIL;
 	}
 
@@ -778,6 +809,41 @@ HRESULT CRenderer::Render_SSAOFinal()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_ExportDeferred()
+{
+	// 최종 장면을 추출
+	// 최종 장면에서 밝은 부분만 추출 -> 블룸
+	// 추출한걸 X,Y 블러 적용
+	// 최종 + X + Y
+	// 블룸 적용 -> 최종화면적용
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_ExportHDR"))))
+		return E_FAIL; 
+
+	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_CombineBlur"), m_pShader, "g_FinalTexture")))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Begin(12)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+
+
+	if (FAILED(m_pTarget_Manager->End_MRT()))
+		return E_FAIL;
+}
+
+
 HRESULT CRenderer::Render_BlurX()
 {
 	if (nullptr == m_pTarget_Manager)
@@ -797,7 +863,7 @@ HRESULT CRenderer::Render_BlurX()
 	if (FAILED(m_pShader->SetUp_RawValue("g_bSSAO", &m_bSSAOBlur, sizeof(_bool))))
 		return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_CombineBlur"), m_pShader, "g_BlurTexture")))
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ExportFinal"), m_pShader, "g_BlurTexture")))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Begin(6)))
@@ -817,6 +883,8 @@ HRESULT CRenderer::Render_BlurX()
 
 HRESULT CRenderer::Render_BlurY()
 {
+	
+
 	if (nullptr == m_pTarget_Manager)
 		return E_FAIL;
 
@@ -834,7 +902,7 @@ HRESULT CRenderer::Render_BlurY()
 	if (FAILED(m_pShader->SetUp_RawValue("g_bSSAO", &m_bSSAOBlur, sizeof(_bool))))
 		return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_CombineBlur"), m_pShader, "g_BlurXTexture")))
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ExportFinal"), m_pShader, "g_BlurTexture")))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Begin(7)))
@@ -853,7 +921,10 @@ HRESULT CRenderer::Render_BlurY()
 
 HRESULT CRenderer::Render_CombineBlur()
 {
+	
 	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_HDR"))))
 		return E_FAIL;
 
 	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -877,6 +948,40 @@ HRESULT CRenderer::Render_CombineBlur()
 		return E_FAIL;
 
 	if (FAILED(m_pShader->Begin(8)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBuffer->Render()))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->End_MRT()))
+		return E_FAIL;
+
+	return S_OK;
+}
+HRESULT CRenderer::Render_Bloom()
+{
+	if (nullptr == m_pTarget_Manager)
+		return E_FAIL;
+	/*if (FAILED(m_pTarget_Manager->Begin_MRT(TEXT("MRT_HDR"))))
+		return E_FAIL;*/
+
+	if (FAILED(m_pShader->SetUp_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShader->SetUp_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_HDR"), m_pShader, "g_HDRTexture"))) // 블룸 + 블러 
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_ExportFinal"), m_pShader, "g_BloomTextrue"))) // 블룸 -> 밝은 부분만 추출
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_CombineBlur"), m_pShader, "g_FinalTexture"))) // 디퍼드 최종 텍스처
+		return E_FAIL;
+	/*if (FAILED(m_pTarget_Manager->Bind_ShaderResourceView(TEXT("Target_SSAO"), m_pShader, "g_SSAOTexture")))
+		return E_FAIL;*/
+		
+	if (FAILED(m_pShader->Begin(13)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBuffer->Render()))
@@ -1071,7 +1176,7 @@ HRESULT CRenderer::Render_Lights()
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	if (pGameInstance->Get_DIKeyDown(DIK_LCONTROL))
+	if (pGameInstance->Get_DIKeyDown(DIK_TAB))
 	{
 		if (m_bSSAOSwitch == false)
 			m_bSSAOSwitch = true;
