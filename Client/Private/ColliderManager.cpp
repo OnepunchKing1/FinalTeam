@@ -138,21 +138,23 @@ HRESULT CColliderManager::Check_MonsterToMonster(_uint iLevelIndex, _double dTim
 
 	list<CGameObject*>* pMonsters = pGameInstance->Get_GameObjects(iLevelIndex, TEXT("Layer_Monster"));
 
-	_uint iSourIndex = { 0 };
-	_uint iDestIndex = { 0 };
-	
 	if (nullptr != pMonsters)
 	{
+		_uint iSourIndex = { 0 };
 		for (auto& pSourMonster : (*pMonsters))
 		{
 			if (nullptr != pSourMonster)
 			{
+				_uint iDestIndex = { 0 };
 				for (auto& pDestMonster : (*pMonsters))
 				{
 					if (nullptr != pDestMonster)
 					{
 						if (iSourIndex == iDestIndex)
+						{
+							iDestIndex++;
 							continue;
+						}
 
 						CCollider* pSourCollider = dynamic_cast<CCollider*>(pSourMonster->Find_Component(TEXT("Com_Sphere")));
 						CCollider* pDestCollider = dynamic_cast<CCollider*>(pDestMonster->Find_Component(TEXT("Com_Sphere")));
